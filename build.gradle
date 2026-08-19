@@ -1,0 +1,66 @@
+/*
+ *     Copyright © 2018-2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'io.freefair.lombok' version '9.5.0'
+}
+
+version = "0.0.1"
+
+group = 'nu.mine.mosher.zoom'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of 21
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://maven.scijava.org/repository/releases'
+    }
+    maven {
+        url = 'https://artifacts.unidata.ucar.edu/repository/unidata-all'
+    }
+}
+
+application {
+    mainClass = 'nu.mine.mosher.zoom.javafx.GraphicsScalingApp'
+}
+
+javafx {
+    version = '21'
+    modules = [
+        'javafx.base',
+        'javafx.graphics',
+        'javafx.controls',
+        'javafx.swing',
+        'javafx.media'
+    ]
+}
+
+dependencies {
+    implementation 'net.imglib2:imglib2:latest.release'
+    implementation 'net.imglib2:imglib2-ij:latest.release'
+    implementation 'net.imglib2:imglib2-cache:1.0.0-beta-20'
+
+    implementation 'org.locationtech.jts:jts-core:latest.release'
+}
