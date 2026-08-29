@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,12 +16,13 @@
  */
 
 package nu.mine.mosher.zoom.imglib2;
-import net.imglib2.RandomAccessibleInterval;
+/*import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+*/
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,9 +33,8 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 public class MouseZoomPanel extends JPanel {
-
+/*
     // --- 1. MEMORY-MANAGED BOUNDED MIPMAP CACHE ---
     private static final int MAX_CACHE_SIZE = 4;
     private final LinkedHashMap<Double, BufferedImage> mipmapCache =
@@ -259,4 +259,6 @@ public class MouseZoomPanel extends JPanel {
             frame.setVisible(true);
         });
     }
+
+ */
 }

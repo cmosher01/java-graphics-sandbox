@@ -17,25 +17,38 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
+import lombok.val;
 import nu.mine.mosher.zoom.swinglayer.Solarized;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.font.*;
+import java.awt.geom.*;
 
-class RedSquare extends Rectangle2D.Double {
-    public RedSquare() {
-        super(0D, 0D, 100D, 100D);
+public class LineOfText {
+    private static Font FONT = new Font("Courier New", Font.PLAIN, 32);
+    private final String s;
+    private final Rectangle2D bounds;
+    private final Point2D at;
+
+    public LineOfText(final String s, final Point2D at) {
+        this.s = s;
+        this.at = at;
+        this.bounds = bounds(s, at);
+    }
+
+    private static Rectangle2D bounds(final String s, final Point2D at) {
+        val ctx = new FontRenderContext(new AffineTransform(), true, true);
+        val layout = new TextLayout(s, FONT, ctx);
+        return layout.getPixelBounds(ctx, (float)at.getX(), (float)at.getY());
     }
 
     public void paint(final Graphics2D g) {
-        g.setColor(Solarized.MAGENTA);
-        g.fill(this);
-//        g.setColor(Color.BLACK);
-//        g.draw(this);
-//        System.out.println("DRAWING");
+        g.setColor(Solarized.VIOLET);
+        g.setFont(FONT);
+        g.drawString(s, (float)at.getX(), (float)at.getY());
     }
 
     public Rectangle2D bounds() {
-        return getBounds2D();
+        return this.bounds.getBounds2D();
     }
 }

@@ -15,22 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.aigen;
-
-import lombok.val;
+package nu.mine.mosher.zoom.swinglayer;
 
 import java.awt.*;
+import java.awt.geom.*;
 
-public class BigCanvas extends Canvas {
-    public static BigCanvas create() {
-        val c = new BigCanvas();
-        return c;
+public final class Swings {
+    @Deprecated
+    private Swings() {
+        throw new UnsupportedOperationException();
     }
 
-    private BigCanvas() {
+    public static Point2D.Double pt2d(final Point ptInt) {
+        return new Point2D.Double(ptInt.x, ptInt.y);
     }
 
-    @Override
-    protected void drawOnto(final Graphics2D g) {
+    public static Rectangle2D.Double outset(final Rectangle2D r, final double d) {
+        return new Rectangle2D.Double(r.getX()-d, r.getY()-d, r.getWidth()+2*d, r.getHeight()+2*d);
     }
 }

@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,15 +16,16 @@
  */
 
 package nu.mine.mosher.zoom.imglib2;
-
+/*
 import net.imglib2.cache.img.*;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.view.Views;
 import net.imglib2.RandomAccess;
-
+*/
 import java.nio.file.Path;
 
 public class UltraLargeCanvas {
+    /*
     public static void main(String[] args) {
         // 1. Define dimensions (100 Million x 100 Million)
         long[] dimensions = new long[] { 100_000_000L, 100_000_000L };
@@ -63,4 +64,6 @@ public class UltraLargeCanvas {
         // Every pixel read here looks at every 2nd pixel of the base image automatically
         var zoomLevel1 = Views.subsample(baseImage, 2);
     }
+
+     */
 }

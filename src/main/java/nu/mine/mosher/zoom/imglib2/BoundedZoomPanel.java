@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 
 package nu.mine.mosher.zoom.imglib2;
 
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
+//import net.imglib2.RandomAccessibleInterval;
+//import net.imglib2.type.numeric.integer.UnsignedByteType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BoundedZoomPanel extends JPanel {
-
+/*
     private static final int MAX_CACHE_SIZE = 4;
     private final Map<Double, BufferedImage> mipmapCache = Collections.synchronizedMap(
             new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
@@ -264,4 +264,6 @@ public class BoundedZoomPanel extends JPanel {
             frame.setVisible(true);
         });
     }
+
+ */
 }

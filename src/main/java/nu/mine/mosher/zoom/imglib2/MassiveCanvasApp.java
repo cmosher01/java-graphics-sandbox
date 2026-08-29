@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 package nu.mine.mosher.zoom.imglib2;
-
+/*
 import net.imglib2.RandomAccess;
 import net.imglib2.cache.CacheLoader;
 import net.imglib2.cache.img.*;
@@ -26,7 +26,7 @@ import net.imglib2.img.basictypeaccess.array.DoubleArray;
 import net.imglib2.img.cell.*;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.view.Views;
-
+*/
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class MassiveCanvasApp {
-
+/*
     public static void main(String[] args) {
         long[] totalDimensions = new long[]{100000000L, 100000000L};
         int[] cellSizes = new int[]{512, 512};
@@ -271,13 +271,5 @@ public class MassiveCanvasApp {
             g2.drawString("Use Mouse Wheel to Zoom, Drag to Pan across 100M x 100M grid", 15, 25);
         }
     }
+    */
 }
-
-
-
-
-
-
-
-
-

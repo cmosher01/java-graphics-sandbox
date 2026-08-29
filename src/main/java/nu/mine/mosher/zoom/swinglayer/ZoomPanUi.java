@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import java.awt.event.*;
 
 import static java.awt.AWTEvent.*;
 
+/**
+ * Adds zooming and panning capabilities to a JPanel.
+ */
 public final class ZoomPanUi extends LayerUI<JPanel> {
     private static final long NO_EVENTS_MASK = 0L;
 

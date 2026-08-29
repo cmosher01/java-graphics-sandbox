@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+@SuppressWarnings("unchecked")
 public class InfCanvas2 extends JPanel {
     // Spatial Index holding all our diagram objects
     private final STRtree spatialIndex = new STRtree();
@@ -92,7 +93,7 @@ public class InfCanvas2 extends JPanel {
         Envelope viewEnvelope = getVisibleWorldBounds();
 
         // Fetch only visible elements from the Spatial Index
-        List<DiagramElement> visibleElements = spatialIndex.query(viewEnvelope);
+        List<DiagramElement> visibleElements = (List<DiagramElement>)(spatialIndex.query(viewEnvelope));
 
         // Extract exact zoom scale and top-left virtual coordinates
         double scale = transform.getScaleX();

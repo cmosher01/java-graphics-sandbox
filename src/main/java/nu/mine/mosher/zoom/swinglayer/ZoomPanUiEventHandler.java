@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,15 +23,19 @@ import javax.swing.*;
 import javax.swing.plaf.LayerUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.util.Objects;
 
 import static java.awt.event.MouseEvent.*;
 import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
 import static java.awt.event.MouseEvent.MOUSE_WHEEL;
+import static nu.mine.mosher.zoom.swinglayer.Swings.*;
 
 public class ZoomPanUiEventHandler {
     private final ZoomPan zp;
-    private Point pDragPivot;
+    private Point2D.Double pDragPivot;
+
+
 
     public ZoomPanUiEventHandler(final ZoomPan zp) {
         this.zp = zp;
@@ -39,30 +43,13 @@ public class ZoomPanUiEventHandler {
 
 
 
-    private <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
-        final LayerUI<? super V> ui = l.getUI();
-        try {
-            l.setUI(null); // prevent recursion on dispatch
-            l.getView().dispatchEvent(e);
-        } finally {
-            l.setUI(ui);
-        }
-    }
-
-    private boolean mine(final MouseEvent e, final JLayer<? extends JPanel> l) {
-        return
-            (e.getSource() == l || e.getSource() == l.getView()) &&
-            !e.isConsumed();
-    }
-
-
-
-    public void processMouseEvent(final MouseEvent e, final JLayer<? extends JPanel> l) {
+    public <V extends JPanel> void processMouseEvent(final MouseEvent e, final JLayer<V> l) {
         dispatch(e, l);
         if (mine(e, l)) {
             if (e.getID() == MOUSE_PRESSED) {
-                val p = e.getPoint();
+                val p = pt2d(e.getPoint());
                 this.pDragPivot = p;
+                l.repaint();
                 e.consume();
             } else if (e.getID() == MOUSE_RELEASED) {
                 if (Objects.nonNull(this.pDragPivot)) {
@@ -73,12 +60,12 @@ public class ZoomPanUiEventHandler {
         }
     }
 
-    public void processMouseMotionEvent(final MouseEvent e, final JLayer<? extends JPanel> l) {
+    public <V extends JPanel> void processMouseMotionEvent(final MouseEvent e, final JLayer<V> l) {
         dispatch(e, l);
         if (mine(e, l)) {
             if (e.getID() == MOUSE_DRAGGED) {
                 if (Objects.nonNull(this.pDragPivot)) {
-                    val p = e.getPoint();
+                    val p = pt2d(e.getPoint());
                     this.zp.pan(p.getX() - this.pDragPivot.x, p.getY() - this.pDragPivot.y);
                     this.pDragPivot = p;
                     l.repaint();
@@ -88,15 +75,33 @@ public class ZoomPanUiEventHandler {
         }
     }
 
-    public void processMouseWheelEvent(final MouseWheelEvent e, final JLayer<? extends JPanel> l) {
+    public <V extends JPanel> void processMouseWheelEvent(final MouseWheelEvent e, final JLayer<V> l) {
         dispatch(e, l);
         if (mine(e, l)) {
             if (e.getID() == MOUSE_WHEEL) {
-                val p = e.getPoint();
+                val p = pt2d(e.getPoint());
                 this.zp.zoom(e.getWheelRotation(), p.getX(), p.getY());
                 l.repaint();
                 e.consume();
             }
         }
+    }
+
+
+
+    private static <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
+        final LayerUI<? super V> ui = l.getUI();
+        try {
+            l.setUI(null); // prevent recursion on dispatch
+            l.getView().dispatchEvent(e);
+        } finally {
+            l.setUI(ui);
+        }
+    }
+
+    private static <V extends JPanel> boolean mine(final MouseEvent e, final JLayer<V> l) {
+        return
+            (e.getSource() == l || e.getSource() == l.getView()) &&
+            !e.isConsumed();
     }
 }

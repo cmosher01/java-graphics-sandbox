@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,15 +24,15 @@ import javax.swing.*;
 
 public class Diva {
     public static void main(String[] args) throws InterruptedException, InvocationTargetException {
-        javax.swing.SwingUtilities.invokeAndWait(Diva::createUI);
+        SwingUtilities.invokeAndWait(Diva::createUI);
     }
 
     public static void createUI() {
-        val jlayer = new JLayer<>(createPanel(), new SpotlightLayerUI());
+        val p = new JLayer<>(createPanel(), new SpotlightLayerUI());
 
         val f = new JFrame ("Diva");
 
-        f.add(jlayer);
+        f.add(p);
 
         f.setSize(300, 200);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,11 +41,11 @@ public class Diva {
     }
 
     private static JPanel createPanel() {
-        JPanel p = new JPanel();
+        val p = new JPanel();
 
         p.addMouseListener(new MyMouseAdapter(p));
 
-        ButtonGroup entreeGroup = new ButtonGroup();
+        val entreeGroup = new ButtonGroup();
         JRadioButton radioButton;
         p.add(radioButton = new JRadioButton("Beef", true));
         entreeGroup.add(radioButton);
@@ -61,7 +61,7 @@ public class Diva {
         p.add(new JLabel("Special requests:"));
         p.add(new JTextField(20));
 
-        JButton orderButton = new JButton("Place Order");
+        val orderButton = new JButton("Place Order");
         p.add(orderButton);
 
         return p;

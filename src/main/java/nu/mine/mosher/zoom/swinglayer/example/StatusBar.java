@@ -19,23 +19,35 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import nu.mine.mosher.zoom.swinglayer.Solarized;
 
+import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.util.Objects;
 
-class RedSquare extends Rectangle2D.Double {
-    public RedSquare() {
-        super(0D, 0D, 100D, 100D);
+public final class StatusBar extends JPanel {
+    private static final String DEFAULT_TEXT = " ";
+    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+
+    private final JLabel label;
+
+    public StatusBar() {
+        super(new BorderLayout());
+        setBorder(new EmptyBorder(4,14,5,14));
+        setBackground(Solarized.BASE_2);
+
+        this.label = new JLabel(DEFAULT_TEXT);
+        this.label.setBackground(this.getBackground());
+        this.label.setFont(FONT);
+        add(this.label, BorderLayout.LINE_START);
     }
 
-    public void paint(final Graphics2D g) {
-        g.setColor(Solarized.MAGENTA);
-        g.fill(this);
-//        g.setColor(Color.BLACK);
-//        g.draw(this);
-//        System.out.println("DRAWING");
-    }
-
-    public Rectangle2D bounds() {
-        return getBounds2D();
+    public void setText(final String s) {
+        final String t;
+        if (Objects.isNull(s) || s.isBlank()) {
+            t = DEFAULT_TEXT;
+        } else {
+            t = s.strip();
+        }
+        this.label.setText(t);
     }
 }

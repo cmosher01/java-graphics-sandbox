@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -15,73 +15,84 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *
- *   - Neither the name of Oracle or the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 // From: https://docs.oracle.com/javase/tutorial/uiswing/examples/painting/
 // with my corrections, additions, and refactorings (Chris Mosher)
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.val;
+import lombok.*;
 import nu.mine.mosher.zoom.swinglayer.*;
 
 import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
+import javax.swing.plaf.metal.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class JavaTutorialSwingPaintDemo4 {
-    public static void main(final String... args) throws InterruptedException, InvocationTargetException {
+    @SneakyThrows
+    public static void main(final String... args) {
+        System.setProperty("sun.awt.noerasebackground", "true");
+        System.setProperty("swing.boldMetal", "false");
+        System.setProperty("sun.java2d.opengl", "true");
         SwingUtilities.invokeAndWait(JavaTutorialSwingPaintDemo4::createAndShowGUI);
     }
 
+    @SneakyThrows
     private static void createAndShowGUI() {
 //        for (val ffn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
 //            System.out.println(ffn);
 //        }
-//        System.out.println("Created GUI on EDT? " + SwingUtilities.isEventDispatchThread());
+
+//        JFrame.setDefaultLookAndFeelDecorated(true);
+//        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
         val f = new JFrame("Swing Paint Demo");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // TODO can we calculate min/max/speed based on bounds of image?
-        val zp = new ZoomPan(1e-1, 1e+4, 5e-2);
 
-        val panel = new MyPanel(zp);
+
+        f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//        f.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//            }
+//
+//            @Override
+//            public void mouseMoved(MouseEvent e) {
+//                f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//            }
+//        });
+
+
+
+        val zp = new ZoomPan();
+
+        val sb = new StatusBar();
+
+        val panel = new MyPanel(zp, sb);
         val uiZoomPan = new ZoomPanUi(zp);
 
         val panelZoomPan = new JLayer<>(panel, uiZoomPan);
 
-        f.add(panelZoomPan);
+        f.getContentPane().add(panelZoomPan, BorderLayout.CENTER);
+        f.getContentPane().add(sb, BorderLayout.PAGE_END);
 
-        f.setSize(640, 480);
+
+
+        final var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        final int w = (int)Math.round(Math.rint(0.80D * screenSize.getWidth ()));
+        final int h = (int)Math.round(Math.rint(0.80D * screenSize.getHeight()));
+        f.setSize(w, h);
+        f.setLocationRelativeTo(null);
+
+
+
+        // for testing: this should never show up in the GUI
+//        f.setBackground(Solarized.GREEN);
+
+
+
         f.setVisible(true);
     }
 }

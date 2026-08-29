@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,24 +20,28 @@ package nu.mine.mosher.zoom.swinglayer;
 import lombok.val;
 
 import java.awt.*;
+import java.awt.geom.*;
 
 /**
  * Implements zooming and panning algorithms.
  */
 public class ZoomPan {
-    private final double zoomOutMin;
-    private final double zoomInMax;
-    private final double depthFactor;
+    // minimum visible dimension size in pixels
+    private static final double DIMENSION_MIN = 10;
 
-    public double zoomFactor = 1D;
-    public double panX;
-    public double panY;
+    private Rectangle2D bounds;
+    private double zoomOutMin = 1.0e-1D;
+    private double zoomInMax  = 1.0e+2D;
+    private double zoomFactor = 1.0D;
 
-    public ZoomPan(final double zoomOutMin, final double zoomInMax, final double depthFactor) {
-        this.zoomOutMin = zoomOutMin;
-        this.zoomInMax = zoomInMax;
-        this.depthFactor = depthFactor;
-    }
+    // TODO: do we need these?
+    private double dxZoomOffset = +0.0D;
+    private double dyZoomOffset = +0.0D;
+
+    private double depthFactor = 5e-2;
+
+    private double panX;
+    private double panY;
 
     /**
      * <p>Zooms the wrapped panel.</p>
@@ -61,9 +65,14 @@ public class ZoomPan {
      */
     public void zoom(final int depth, final double x, final double y) {
         val oldZoom = this.zoomFactor;
-        this.zoomFactor = Math.clamp(this.zoomFactor/Math.exp(depthFactor*depth), zoomOutMin, zoomInMax);
+        this.zoomFactor /= Math.exp(depthFactor*depth);
+        clampZoom();
         val z = 1 - this.zoomFactor/oldZoom;
-        pan(z * (x-this.panX), z * (y-this.panY));
+        pan(z * (x+dxZoomOffset-this.panX), z * (y+dyZoomOffset-this.panY));
+    }
+
+    private void clampZoom() {
+        this.zoomFactor = Math.clamp(this.zoomFactor, zoomOutMin, zoomInMax);
     }
 
     /**
@@ -82,9 +91,40 @@ public class ZoomPan {
         g.scale(this.zoomFactor, this.zoomFactor);
     }
 
-    public Point viewportToCanvas(final Point p) {
-        return new Point(
-            (int)Math.round(Math.rint((p.x-panX)/zoomFactor)),
-            (int)Math.round(Math.rint((p.y-panY)/zoomFactor)));
+    public Point2D.Double canvasToViewport(final Point2D.Double p) {
+        return new Point2D.Double(zoomFactor*p.getX()+panX, zoomFactor*p.getY()+panY);
+    }
+
+    public Point2D.Double viewportToCanvas(final Point2D.Double p) {
+        return new Point2D.Double((p.getX()-panX)/zoomFactor, (p.getY()-panY)/zoomFactor);
+    }
+
+    public Rectangle2D.Double viewportToCanvas(final Rectangle2D.Double v) {
+        final var vTL = new Point2D.Double(v.x, v.y);
+        final var cTL = viewportToCanvas(vTL);
+        final var vBR = new Point2D.Double(v.x+v.width, v.y+v.height);
+        final var cBR = viewportToCanvas(vBR);
+        return new Rectangle2D.Double(cTL.x, cTL.y, cBR.x-cTL.x, cBR.y-cTL.y);
+    }
+
+    public void setCanvasBounds(final Rectangle2D b) {
+        this.bounds = b.getBounds2D();
+        this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
+//        System.out.printf("zoom out min: %f\n", this.zoomOutMin);
+        clampZoom();
+    }
+
+    public Rectangle2D bounds() {
+        return this.bounds.getBounds2D();
+    }
+
+    public double zoomFactor() {
+        return this.zoomFactor;
+    }
+
+
+    private static int rnd(double d) {
+        d = Math.rint(d);
+        return (int)Math.round(d);
     }
 }

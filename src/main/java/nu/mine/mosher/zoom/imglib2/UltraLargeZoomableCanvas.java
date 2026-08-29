@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@
  */
 
 package nu.mine.mosher.zoom.imglib2;
-import net.imglib2.Cursor;
+/*import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.sparse.NtreeImgFactory;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
-
+*/
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -36,7 +36,7 @@ import java.util.Random;
 public class UltraLargeZoomableCanvas extends JPanel {
     private static final long CANVAS_SIZE = 100_000_000L;
 
-    private final Img<UnsignedByteType> img;
+/*    private final Img<UnsignedByteType> img;
 
     // Smooth rendering transformation configurations
     private double scale = .1; // was: 0.000005;
@@ -237,4 +237,5 @@ public class UltraLargeZoomableCanvas extends JPanel {
             frame.setVisible(true);
         });
     }
+ */
 }
