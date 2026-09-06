@@ -15,34 +15,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
-
-import nu.mine.mosher.zoom.swinglayer.Solarized;
+package nu.mine.mosher.zoom.swinglayer2;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.plaf.LayerUI;
 import java.awt.*;
 
-public final class StatusBar extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
-
-    private final Status status;
-    private final JLabel label;
-
-    public StatusBar(final Status status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE_2);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+public class PlaqueUi extends LayerUI<JComponent> {
+    @Override
+    public void paint(Graphics g, JComponent c) {
+        System.out.println("PlaqueUi.paint 1");
+        System.out.println("Graphics: "+ggg(g));
+        super.paint(g, c);
+        if (g instanceof Graphics2D g2) {
+            g2.setColor(new Color(0, 255, 0));
+            g2.fillRect(200, 200, 200, 100);
+        }
+        System.out.println("PlaqueUi.paint 2");
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    public static String ggg(Object o) {
+        return o.getClass().getName() + "@" + Integer.toHexString(o.hashCode());
     }
 }

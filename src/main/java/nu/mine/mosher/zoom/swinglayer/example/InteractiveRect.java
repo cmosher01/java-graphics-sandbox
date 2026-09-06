@@ -19,30 +19,41 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import nu.mine.mosher.zoom.swinglayer.Solarized;
 
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
+import java.awt.geom.*;
 
-public final class StatusBar extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+public class InteractiveRect extends Rectangle2D.Double {
+    private boolean selected;
 
-    private final Status status;
-    private final JLabel label;
-
-    public StatusBar(final Status status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE_2);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+    public InteractiveRect(final double x, final double y, final double width, final double height) {
+        super(x, y, width, height);
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    public boolean selected() {
+        return this.selected;
+    }
+
+    public void select(final boolean selected) {
+        this.selected = selected;
+    }
+
+
+
+    public void move(final Point2D.Double d) {
+        this.x += d.getX();
+        this.y += d.getY();
+    }
+
+
+
+    // TODO potential optimization in drawing when zoomed far out
+    public void paint(final Graphics2D g) {
+        if (this.selected) {
+            g.setColor(Solarized.MAGENTA);
+        } else {
+            g.setColor(Solarized.CYAN);
+        }
+
+        g.fill(this);
     }
 }

@@ -15,27 +15,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
+package nu.mine.mosher.zoom.swingselection;
 
-import nu.mine.mosher.zoom.swinglayer.Solarized;
-
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-
-class RedSquare extends Rectangle2D.Double {
-    public RedSquare() {
-        super(0D, 0D, 100D, 100D);
-    }
-
-    public void paint(final Graphics2D g) {
-        g.setColor(Solarized.MAGENTA);
-        g.fill(this);
-//        g.setColor(Color.BLACK);
-//        g.draw(this);
-//        System.out.println("DRAWING");
-    }
-
-    public Rectangle2D bounds() {
-        return getBounds2D();
-    }
+public interface Repaintable {
+    void repaint();
 }

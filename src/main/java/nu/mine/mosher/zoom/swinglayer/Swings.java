@@ -17,7 +17,10 @@
 
 package nu.mine.mosher.zoom.swinglayer;
 
+import javax.swing.*;
+import javax.swing.plaf.LayerUI;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.awt.geom.*;
 
 public final class Swings {
@@ -26,11 +29,29 @@ public final class Swings {
         throw new UnsupportedOperationException();
     }
 
-    public static Point2D.Double pt2d(final Point ptInt) {
-        return new Point2D.Double(ptInt.x, ptInt.y);
+    public static Point2D.Double pointOf(final MouseEvent e) {
+        return pt2d(e.getPoint());
+    }
+
+    public static Point2D.Double pt2d(final Point2D pt) {
+        return new Point2D.Double(pt.getX(), pt.getY());
     }
 
     public static Rectangle2D.Double outset(final Rectangle2D r, final double d) {
         return new Rectangle2D.Double(r.getX()-d, r.getY()-d, r.getWidth()+2*d, r.getHeight()+2*d);
+    }
+
+    public static Point2D.Double delta(final Point2D from, final Point2D to) {
+        return new Point2D.Double(to.getX()-from.getX(), to.getY()-from.getY());
+    }
+
+    public static <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
+        final LayerUI<? super V> ui = l.getUI();
+        try {
+            l.setUI(null); // prevent recursion on dispatch
+            l.getView().dispatchEvent(e);
+        } finally {
+            l.setUI(ui);
+        }
     }
 }

@@ -29,19 +29,19 @@ public class ZoomPan {
     // minimum visible dimension size in pixels
     private static final double DIMENSION_MIN = 10;
 
-    private Rectangle2D bounds;
     private double zoomOutMin = 1.0e-1D;
     private double zoomInMax  = 1.0e+2D;
-    private double zoomFactor = 1.0D;
-
-    // TODO: do we need these?
-    private double dxZoomOffset = +0.0D;
-    private double dyZoomOffset = +0.0D;
-
+    // may want to add this as a user preference setting later; but hardcode for now:
     private double depthFactor = 5e-2;
+
+
+
+    private double zoomFactor = 1.0D;
 
     private double panX;
     private double panY;
+
+
 
     /**
      * <p>Zooms the wrapped panel.</p>
@@ -68,7 +68,7 @@ public class ZoomPan {
         this.zoomFactor /= Math.exp(depthFactor*depth);
         clampZoom();
         val z = 1 - this.zoomFactor/oldZoom;
-        pan(z * (x+dxZoomOffset-this.panX), z * (y+dyZoomOffset-this.panY));
+        pan(z * (x-this.panX), z * (y-this.panY));
     }
 
     private void clampZoom() {
@@ -91,40 +91,28 @@ public class ZoomPan {
         g.scale(this.zoomFactor, this.zoomFactor);
     }
 
-    public Point2D.Double canvasToViewport(final Point2D.Double p) {
+    public Point2D.Double canvasToViewport(final Point2D p) {
         return new Point2D.Double(zoomFactor*p.getX()+panX, zoomFactor*p.getY()+panY);
     }
 
-    public Point2D.Double viewportToCanvas(final Point2D.Double p) {
+    public Point2D.Double viewportToCanvas(final Point2D p) {
         return new Point2D.Double((p.getX()-panX)/zoomFactor, (p.getY()-panY)/zoomFactor);
     }
 
-    public Rectangle2D.Double viewportToCanvas(final Rectangle2D.Double v) {
-        final var vTL = new Point2D.Double(v.x, v.y);
+    public Rectangle2D.Double viewportToCanvas(final Rectangle2D v) {
+        final var vTL = new Point2D.Double(v.getX(), v.getY());
         final var cTL = viewportToCanvas(vTL);
-        final var vBR = new Point2D.Double(v.x+v.width, v.y+v.height);
+        final var vBR = new Point2D.Double(v.getX()+v.getWidth(), v.getY()+v.getHeight());
         final var cBR = viewportToCanvas(vBR);
         return new Rectangle2D.Double(cTL.x, cTL.y, cBR.x-cTL.x, cBR.y-cTL.y);
     }
 
-    public void setCanvasBounds(final Rectangle2D b) {
-        this.bounds = b.getBounds2D();
+    public void setZoomOutMinFromBounds(final Rectangle2D b) {
         this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
-//        System.out.printf("zoom out min: %f\n", this.zoomOutMin);
         clampZoom();
-    }
-
-    public Rectangle2D bounds() {
-        return this.bounds.getBounds2D();
     }
 
     public double zoomFactor() {
         return this.zoomFactor;
-    }
-
-
-    private static int rnd(double d) {
-        d = Math.rint(d);
-        return (int)Math.round(d);
     }
 }

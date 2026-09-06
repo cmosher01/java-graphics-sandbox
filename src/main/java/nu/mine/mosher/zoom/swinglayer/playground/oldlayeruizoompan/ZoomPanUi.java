@@ -15,9 +15,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer;
+package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
+import nu.mine.mosher.zoom.swinglayer.ZoomPan;
 
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
@@ -67,7 +68,7 @@ public final class ZoomPanUi extends LayerUI<JPanel> {
     @Override
     protected void processMouseMotionEvent(MouseEvent e, JLayer<? extends JPanel> l) {
         super.processMouseMotionEvent(e, l);
-        this.handler.processMouseMotionEvent(e, l);
+        this.handler.processMouseEvent(e, l);
     }
 
     @Override
@@ -83,7 +84,7 @@ public final class ZoomPanUi extends LayerUI<JPanel> {
         val g2 = (Graphics2D)g.create();
         g2.setClip(null);
         this.zp.paint(g2);
-        c.paint(g2);
+        super.paint(g2, c);
         g2.dispose();
     }
 }

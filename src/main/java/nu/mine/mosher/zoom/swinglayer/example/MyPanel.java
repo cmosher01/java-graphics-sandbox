@@ -21,205 +21,176 @@ import lombok.val;
 import nu.mine.mosher.zoom.swinglayer.*;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.*;
-import java.util.List;
 
-import static java.awt.BasicStroke.*;
 import static nu.mine.mosher.zoom.swinglayer.Solarized.*;
 
-final class MyPanel extends JPanel {
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+public final class MyPanel extends JPanel {
     private static final LayoutManager NO_LAYOUT_MANAGER = null;
     private static final Point2D.Double ORIGIN = new Point2D.Double();
 
     private static final boolean BACKGROUND_FILL = true;
-    private static final Color COLOR_BACKGROUND = BASE_01;
+    private static final Color BACKGROUND_COLOR = BASE_3;
 
     private static final boolean AXES = true;
-    private static final Color COLOR_AXES = BASE_1;
+    private static final Color AXES_COLOR = BASE_1;
+    private static final Stroke AXES_STROKE = new BasicStroke(1.0F);
 
-    private static final boolean BOUNDS_FILL = true;
-    private static final Color COLOR_CANVAS_BG = BASE_3;
-
-    private static final boolean BOUNDS_DRAW = false;
-    private static final Stroke LINE_BOUNDS = new BasicStroke(2F, CAP_BUTT, JOIN_BEVEL);
-
-    private static final boolean CLIP_DRAW = true;
+    private static final boolean CLIP_DRAW = false;
     private static final double CLIP_DRAW_INSET = 10.0D;
-    private static final Color COLOR_CLIP = YELLOW;
+    private static final Color CLIP_COLOR = YELLOW;
 
 
-    private final StatusBar sb;
+//    private final StatusBar sb;
     private final ZoomPan zp;
-    private final Status status;
-
-    private final RedSquare sq = new RedSquare();
-    private final LineOfText tx = new LineOfText("This is my custom Panel!", new Point2D.Double(200D,200D));
+//    private final Status status;
 
 
 
-    public MyPanel(final ZoomPan zp, StatusBar sb) {
+//    private Optional<Graphic> graphic = Optional.of(new DropLineChart());
+//    private Optional<Graphic> graphic = Optional.empty();
+    private final RedSquaresModel model;
+    private final DragSelectionModel modelDragSelection;
+
+
+    public MyPanel(RedSquaresModel model, final ZoomPan zp,/*, StatusBar sb*/DragSelectionModel modelDragSelection) {
         super(NO_LAYOUT_MANAGER);
-        this.sb = sb;
+        this.model = model;
+        this.modelDragSelection = modelDragSelection;
+//        this.sb = sb;
         this.zp = zp;
-        this.status = new Status(zp, this);
+//        this.status = new Status(zp, this);
+
+
 
         setOpaque(false);
 
-        resetZoomLimits();
+//        this.graphic.ifPresent(Graphic::updateBounds);
+//        resetZoomLimits();
 
-        new Timer(200, e -> sb.setText(this.status.set())).start();
 
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                sb.setText(MyPanel.this.status.set());
-            }
-        });
 
-        val mouser = new MouseAdapter() {
-            private Point2D draggedFrom;
+//        new Timer(200, e -> sb.setText(this.status.set())).start();
 
-            private boolean mine(final MouseEvent e) {
-                return Objects.nonNull(e) && e.getSource() == MyPanel.this && !e.isConsumed();
-            }
+//        addComponentListener(new ComponentAdapter() {
+//            @Override
+//            public void componentResized(ComponentEvent e) {
+//                sb.setText(MyPanel.this.status.set());
+//            }
+//        });
 
-            @Override
-            public void mouseMoved(final MouseEvent e) {
-                if (mine(e)) {
-                    sb.setText(MyPanel.this.status.set(e.getPoint()));
-                }
-            }
+//        val mouser = new MouseAdapter() {
+//            private Optional<Point2D> draggedFrom = Optional.empty();
+//
+//            @Override
+//            public void mouseMoved(final MouseEvent e) {
+//                if (mine(e)) {
+//                    sb.setText(MyPanel.this.status.set(pointOf(e)));
+//                }
+//            }
+//
+//            @Override
+//            public void mousePressed(final MouseEvent e) {
+//                val p = zp.viewportToCanvas(pointOf(e));
+//                if (mine(e) && graphic.isPresent() && graphic.get().press(p, e)) {
+//                    draggedFrom = Optional.of(p);
+//                    repaint();
+//                    e.consume();
+//                }
+//            }
+//
+//            @Override
+//            public void mouseDragged(final MouseEvent e) {
+//                if (mine(e) && draggedFrom.isPresent()) {
+//                    final Point2D p = zp.viewportToCanvas(pointOf(e));
+//                    graphic.get().drag(Swings.delta(draggedFrom.get(), p), e);
+//                    draggedFrom = Optional.of(p);
+//                    resetZoomLimits();
+//                    repaint();
+//                    e.consume();
+//                }
+////                sb.setText(MyPanel.this.status.set(e.getPoint()));
+//            }
+//
+//            @Override
+//            public void mouseReleased(final MouseEvent e) {
+//                if (mine(e) && draggedFrom.isPresent()) {
+//                    draggedFrom = Optional.empty();
+//                    repaint();
+//                    e.consume();
+//                }
+//            }
+//
+//            @Override
+//            public void mouseWheelMoved(final MouseWheelEvent e) {
+//                if (mine(e)) {
+//                    sb.setText(MyPanel.this.status.set(pointOf(e)));
+//                }
+//            }
+//
+//
+//
+//            private boolean mine(final MouseEvent e) {
+//                return Objects.nonNull(e) && e.getSource() == MyPanel.this && !e.isConsumed();
+//            }
+//        };
 
-            @Override
-            public void mousePressed(final MouseEvent e) {
-                val pView = e.getPoint();
-                val p = zp.viewportToCanvas(new Point2D.Double(pView.x, pView.y));
-                if (mine(e) && sq.contains(p)) {
-                    draggedFrom = p;
-                    repaint();
-                    e.consume();
-                }
-            }
-
-            @Override
-            public void mouseDragged(final MouseEvent e) {
-                if (mine(e) && Objects.nonNull(draggedFrom)) {
-                    final Point2D p = zp.viewportToCanvas(new Point2D.Double(e.getX(), e.getY()));
-                    sq.setRect(sq.x+p.getX()-draggedFrom.getX(), sq.y+p.getY()-draggedFrom.getY(), sq.width, sq.height);
-                    draggedFrom = p;
-                    resetZoomLimits();
-                    repaint();
-                    e.consume();
-                }
-                sb.setText(MyPanel.this.status.set(e.getPoint()));
-            }
-
-            @Override
-            public void mouseReleased(final MouseEvent e) {
-                if (mine(e) && Objects.nonNull(draggedFrom)) {
-                    draggedFrom = null;
-                    resetZoomLimits();
-                    repaint();
-                    e.consume();
-                }
-                val p = zp.viewportToCanvas(new Point2D.Double(e.getX(), e.getY()));
-                val clip = clip();
-                if (clip.contains(p)) {
-                    sb.setText(MyPanel.this.status.set(e.getPoint()));
-                } else {
-                    sb.setText(MyPanel.this.status.set());
-                }
-            }
-
-            @Override
-            public void mouseWheelMoved(final MouseWheelEvent e) {
-                if (mine(e)) {
-                    sb.setText(MyPanel.this.status.set(e.getPoint()));
-                }
-            }
-
-            @Override
-            public void mouseEntered(final MouseEvent e) {
-                if (mine(e)) {
-                    sb.setText(MyPanel.this.status.set(e.getPoint()));
-                }
-            }
-
-            @Override
-            public void mouseExited(final MouseEvent e) {
-                sb.setText(MyPanel.this.status.set());
-            }
-        };
-
-        addMouseListener(mouser);
-        addMouseMotionListener(mouser);
-        addMouseWheelListener(mouser);
+//        addMouseListener(mouser);
+//        addMouseMotionListener(mouser);
+//        addMouseWheelListener(mouser);
     }
 
 
 
-    private void resetZoomLimits() {
-        val b = this.sq.bounds();
-        Rectangle2D.union(this.tx.bounds(), b, b);
-        this.zp.setCanvasBounds(b);
-    }
+//    private void resetZoomLimits() {
+//        this.graphic.ifPresent(gr -> this.zp.setZoomOutMinFromBounds(gr.bounds()));
+//        this.zp.setZoomOutMinFromBounds(this.model.bounds());
+//    }
 
     @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
         val g2 = (Graphics2D)g;
 
+        this.zp.paint(g2);
+
         val clip = clip();
         g2.setClip(clip);
 
         if (BACKGROUND_FILL) {
-            g2.setColor(COLOR_BACKGROUND);
+            g2.setColor(BACKGROUND_COLOR);
             g2.fill(clip);
         }
 
-        if (BOUNDS_FILL) {
-            g2.setColor(COLOR_CANVAS_BG);
-            g2.fill(this.zp.bounds());
-        }
-
-        if (BOUNDS_DRAW) {
-            g2.setStroke(LINE_BOUNDS);
-            g2.setColor(Color.BLACK);
-            g2.draw(this.zp.bounds());
-        }
+        // TODO
+//        this.graphic.ifPresent(gr -> gr.paintBackground(g2, clip));
+        this.model.paintBackground(g2, clip);
 
         if (AXES) {
-            g2.setColor(COLOR_AXES);
+            g2.setStroke(AXES_STROKE);
+            g2.setColor(AXES_COLOR);
             axesClipped(g2);
 //            axesSimple(g2);
         }
 
         // to show (an inset) clipping region
         if (CLIP_DRAW) {
-            g2.setColor(COLOR_CLIP);
+            g2.setColor(CLIP_COLOR);
             g2.draw(new Rectangle2D.Double(clip.x+CLIP_DRAW_INSET, clip.y+CLIP_DRAW_INSET, clip.width-2*CLIP_DRAW_INSET, clip.height-2*CLIP_DRAW_INSET));
         }
 
-
-
-        if (this.tx.bounds().intersects(clip)) {
-            this.tx.paint(g2);
-        }
-
-        if (this.sq.bounds().intersects(clip)) {
-            this.sq.paint(g2);
-        }
+//        this.graphic.ifPresent(gr -> gr.paint(g2, clip));
+        this.model.paint(g2, clip);
+        this.modelDragSelection.paint(g2, this.zp);
     }
 
     private void axesClipped(final Graphics2D g) {
         // calculate clipping manually works:
         final double zer = 0D;
-        final double wid = getWidth();
-        final double hgt = getHeight();
+        final double wid = super.getWidth();
+        final double hgt = super.getHeight();
 
         // L = left, R = right, T = top, B = bottom
         val c_L = zp.viewportToCanvas(new Point2D.Double(zer, zp.canvasToViewport(ORIGIN).y));
@@ -242,12 +213,12 @@ final class MyPanel extends JPanel {
 
     /**
      * Calculates the clipping rectangle in viewport coordinates
-     * @return
+     * @return viewport
      */
     public Rectangle2D.Double viewportClip() {
-        val ipt = getLocation();
-        val idim = getSize();
-        return new Rectangle2D.Double(ipt.x, ipt.y, idim.width, idim.height);
+        return new Rectangle2D.Double(
+            super.getX(), super.getY(),
+            Math.max(0.0, super.getWidth()), Math.max(0.0, super.getHeight()));
     }
 
     /**

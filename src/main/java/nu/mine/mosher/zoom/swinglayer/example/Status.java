@@ -26,80 +26,94 @@ import java.awt.geom.*;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType"})
-class Status {
+public final class Status {
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
     private static final String TIMES = "\u00d7";
+
     private static final Point2D.Double NAN = new Point2D.Double(Double.NaN, Double.NaN);
+    private static final double MOUSE_INFO_DY = +1.0D;
+    private static final double MOUSE_PANE_DY = +1.0D;
+
+
 
     private final ZoomPan zp;
     private final MyPanel pane;
 
-    private Point2D.Double cnv_mouseEvntPrev = NAN;
+    private String s = " ";
+    private Point2D.Double canvas_mouseEvntPrev = NAN;
 
-    public Status(ZoomPan zp, MyPanel pane) {
+
+
+    public Status(final ZoomPan zp, final MyPanel pane) {
         this.zp = zp;
         this.pane = pane;
     }
 
-    public String set() {
-        return set(Optional.empty());
+
+
+    public String get() {
+        return this.s;
     }
 
-    public String set(final Point mouse) {
-        return set(Optional.of(new Point2D.Double(mouse.getX(), mouse.getY())));
+    public void set() {
+        set(Optional.empty());
     }
 
-    private static final double MOUSE_INFO_DY = +1.0D;
-    private static final double MOUSE_PANE_DY = +1.0D;
-
-    // gets the current mouse position in canvas coordinates
-    private Point2D.Double mouse(final Optional<Point2D.Double> opt_pan_mouseEvnt) {
-        Optional<Point2D.Double> opt_cnv_mouseEvnt = Optional.empty();
-        if (opt_pan_mouseEvnt.isPresent()) {
-            this.cnv_mouseEvntPrev = this.zp.viewportToCanvas(opt_pan_mouseEvnt.get());
-            opt_cnv_mouseEvnt = Optional.of(this.cnv_mouseEvntPrev);
-        }
-
-        Optional<Point2D.Double> opt_cnv_mouseInfo = Optional.empty();
-        {
-            val pi = MouseInfo.getPointerInfo();
-            if (Objects.nonNull(pi)) {
-                val pan_mouseInfoRaw = pi.getLocation();
-                if (Objects.nonNull(pan_mouseInfoRaw)) {
-                    SwingUtilities.convertPointFromScreen(pan_mouseInfoRaw, this.pane);
-                    val pan_mouseInfo = new Point2D.Double(pan_mouseInfoRaw.getX(), pan_mouseInfoRaw.getY()+MOUSE_INFO_DY);
-                    opt_cnv_mouseInfo = Optional.of(this.zp.viewportToCanvas(pan_mouseInfo));
-                }
-            }
-        }
-
-        Optional<Point2D.Double> opt_cnv_mousePane = Optional.empty();
-        {
-            val pan_mousePaneRaw = this.pane.getMousePosition();
-            if (Objects.nonNull(pan_mousePaneRaw)) {
-                val pan_mousePane = new Point2D.Double(pan_mousePaneRaw.getX(), pan_mousePaneRaw.getY()+MOUSE_PANE_DY);
-                opt_cnv_mousePane = Optional.of(this.zp.viewportToCanvas(pan_mousePane));
-            }
-        }
-
-        return opt_cnv_mouseEvnt.orElse(opt_cnv_mouseInfo.orElse(opt_cnv_mousePane.orElse(cnv_mouseEvntPrev)));
+    public void set(final Point2D mouse) {
+        set(Optional.of(new Point2D.Double(mouse.getX(), mouse.getY())));
     }
 
-    public String set(final Optional<Point2D.Double> opt_pan_mouseEvnt) {
-        val mouse = mouse(opt_pan_mouseEvnt);
+
+
+    private void set(final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+        val mouse = mouse(opt_vwport_mouseEvnt);
         val clip = this.pane.clip();
-        return String.format("zoom=%08.4f%s window=(%.1f,%.1f)[%.1f%s%.1f] mouse=(%.3f,%.3f)",
+        this.s = String.format("zoom=%012.8f%s window=(%.1f,%.1f)[%.1f%s%.1f] mouse=(%.2f,%.2f)",
             this.zp.zoomFactor(), TIMES,
             clip.getX(), clip.getY(), clip.getWidth(), TIMES, clip.getHeight(),
             mouse.getX(), mouse.getY());
     }
 
-    // will we ever need this?
-    public boolean inBounds() {
-        // TODO check for nulls; use doubles
-        val siz = this.pane.getSize();
-        val loc = this.pane.getLocationOnScreen();
-        val vp = new Rectangle(loc.x, loc.y, siz.width, siz.height);
-        val mousePosition = MouseInfo.getPointerInfo().getLocation();
-        return vp.contains(mousePosition);
+    // gets the current mouse position in canvas coordinates
+    private Point2D.Double mouse(final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+        Optional<Point2D.Double> opt_canvas_mouseEvnt = Optional.empty();
+        if (opt_vwport_mouseEvnt.isPresent()) {
+            this.canvas_mouseEvntPrev = this.zp.viewportToCanvas(opt_vwport_mouseEvnt.get());
+            opt_canvas_mouseEvnt = Optional.of(this.canvas_mouseEvntPrev);
+        }
+
+        Optional<Point2D.Double> opt_canvas_mouseInfo = Optional.empty();
+        {
+            val pi = MouseInfo.getPointerInfo();
+            if (Objects.nonNull(pi)) {
+                val vwport_mouseInfoRaw = pi.getLocation();
+                if (Objects.nonNull(vwport_mouseInfoRaw)) {
+                    SwingUtilities.convertPointFromScreen(vwport_mouseInfoRaw, this.pane);
+                    val vwport_mouseInfo = new Point2D.Double(vwport_mouseInfoRaw.getX(), vwport_mouseInfoRaw.getY()+MOUSE_INFO_DY);
+                    opt_canvas_mouseInfo = Optional.of(this.zp.viewportToCanvas(vwport_mouseInfo));
+                }
+            }
+        }
+
+        Optional<Point2D.Double> opt_canvas_mousePane = Optional.empty();
+        {
+            val vwport_mousePaneRaw = this.pane.getMousePosition();
+            if (Objects.nonNull(vwport_mousePaneRaw)) {
+                val vwport_mousePane = new Point2D.Double(vwport_mousePaneRaw.getX(), vwport_mousePaneRaw.getY()+MOUSE_PANE_DY);
+                opt_canvas_mousePane = Optional.of(this.zp.viewportToCanvas(vwport_mousePane));
+            }
+        }
+
+        return opt_canvas_mouseEvnt.orElse(opt_canvas_mouseInfo.orElse(opt_canvas_mousePane.orElse(canvas_mouseEvntPrev)));
     }
+
+    // will we ever need this?
+//    public boolean inBounds() {
+//        // TODO check for nulls; use doubles
+//        val siz = this.pane.getSize();
+//        val loc = this.pane.getLocationOnScreen();
+//        val vp = new Rectangle(loc.x, loc.y, siz.width, siz.height);
+//        val mousePosition = MouseInfo.getPointerInfo().getLocation();
+//        return vp.contains(mousePosition);
+//    }
 }

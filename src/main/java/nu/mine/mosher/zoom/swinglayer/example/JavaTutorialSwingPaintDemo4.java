@@ -24,7 +24,6 @@ import lombok.*;
 import nu.mine.mosher.zoom.swinglayer.*;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -52,31 +51,38 @@ public class JavaTutorialSwingPaintDemo4 {
 
 
         f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//        f.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//            }
-//
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//            }
-//        });
 
 
 
         val zp = new ZoomPan();
+        val zpm = new ZoomPanMouse(zp);
+        val model = new RedSquaresModel();
+        zp.setZoomOutMinFromBounds(model.bounds());
+        val modelMouse = new RedSquaresMouse(model, zp);
+        val modelDragSelection = new DragSelectionModel();
+        val mouseCtlrDragSelection = new DragSelectionMouse(modelDragSelection, model, zp);
+        val panel = new MyPanel(model, zp, modelDragSelection);
+        val status = new Status(zp, panel);
+        val sb = new StatusBar(status);
 
-        val sb = new StatusBar();
 
-        val panel = new MyPanel(zp, sb);
-        val uiZoomPan = new ZoomPanUi(zp);
 
-        val panelZoomPan = new JLayer<>(panel, uiZoomPan);
+//        val uiZoomPan = new ZoomPanUi(zp);
+//        val panelZoomPan = new JLayer<>(panel, uiZoomPan);
+//        f.getContentPane().add(panelZoomPan, BorderLayout.CENTER);
 
-        f.getContentPane().add(panelZoomPan, BorderLayout.CENTER);
+        f.getContentPane().add(panel, BorderLayout.CENTER);
         f.getContentPane().add(sb, BorderLayout.PAGE_END);
+
+        f.setGlassPane(new MyGlassPane(panel, sb, zp, zpm, status, modelMouse, mouseCtlrDragSelection));
+        f.getGlassPane().setVisible(true);
+        f.addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowLostFocus(final WindowEvent e) {
+                f.getGlassPane().dispatchEvent(new MouseEvent(f, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
+                    0, 0, 0, 1, false, MouseEvent.BUTTON1));
+            }
+        });
 
 
 

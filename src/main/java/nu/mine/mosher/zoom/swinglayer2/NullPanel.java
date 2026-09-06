@@ -15,34 +15,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
-
-import nu.mine.mosher.zoom.swinglayer.Solarized;
+package nu.mine.mosher.zoom.swinglayer2;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
 
-public final class StatusBar extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
-
-    private final Status status;
-    private final JLabel label;
-
-    public StatusBar(final Status status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE_2);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
-    }
-
-    public void refresh() {
-        this.label.setText(this.status.get());
+public class NullPanel extends JPanel {
+    public NullPanel() {
+        setOpaque(false);
     }
 }

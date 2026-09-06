@@ -25,9 +25,9 @@ import java.awt.font.*;
 import java.awt.geom.*;
 
 public class LineOfText {
-    private static Font FONT = new Font("Courier New", Font.PLAIN, 32);
+    private static Font FONT = new Font("Courier New", Font.PLAIN, 8);
     private final String s;
-    private final Rectangle2D bounds;
+    private final Rectangle2D.Double bounds;
     private final Point2D at;
 
     public LineOfText(final String s, final Point2D at) {
@@ -36,10 +36,11 @@ public class LineOfText {
         this.bounds = bounds(s, at);
     }
 
-    private static Rectangle2D bounds(final String s, final Point2D at) {
+    private static Rectangle2D.Double bounds(final String s, final Point2D at) {
         val ctx = new FontRenderContext(new AffineTransform(), true, true);
         val layout = new TextLayout(s, FONT, ctx);
-        return layout.getPixelBounds(ctx, (float)at.getX(), (float)at.getY());
+        val r = layout.getPixelBounds(ctx, (float)at.getX(), (float)at.getY());
+        return new Rectangle2D.Double(r.getX(), r.getY(), r.getWidth(), r.getHeight());
     }
 
     public void paint(final Graphics2D g) {
@@ -48,7 +49,7 @@ public class LineOfText {
         g.drawString(s, (float)at.getX(), (float)at.getY());
     }
 
-    public Rectangle2D bounds() {
-        return this.bounds.getBounds2D();
+    public Rectangle2D.Double bounds() {
+        return (Rectangle2D.Double)this.bounds.getBounds2D();
     }
 }

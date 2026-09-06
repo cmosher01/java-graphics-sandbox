@@ -15,13 +15,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer;
+package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
+import nu.mine.mosher.zoom.swinglayer.ZoomPan;
 
 import javax.swing.*;
-import javax.swing.plaf.LayerUI;
-import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.Objects;
@@ -54,16 +53,9 @@ public class ZoomPanUiEventHandler {
             } else if (e.getID() == MOUSE_RELEASED) {
                 if (Objects.nonNull(this.pDragPivot)) {
                     this.pDragPivot = null;
+                    e.consume();
                 }
-                e.consume();
-            }
-        }
-    }
-
-    public <V extends JPanel> void processMouseMotionEvent(final MouseEvent e, final JLayer<V> l) {
-        dispatch(e, l);
-        if (mine(e, l)) {
-            if (e.getID() == MOUSE_DRAGGED) {
+            } else if (e.getID() == MOUSE_DRAGGED) {
                 if (Objects.nonNull(this.pDragPivot)) {
                     val p = pt2d(e.getPoint());
                     this.zp.pan(p.getX() - this.pDragPivot.x, p.getY() - this.pDragPivot.y);
@@ -88,16 +80,6 @@ public class ZoomPanUiEventHandler {
     }
 
 
-
-    private static <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
-        final LayerUI<? super V> ui = l.getUI();
-        try {
-            l.setUI(null); // prevent recursion on dispatch
-            l.getView().dispatchEvent(e);
-        } finally {
-            l.setUI(ui);
-        }
-    }
 
     private static <V extends JPanel> boolean mine(final MouseEvent e, final JLayer<V> l) {
         return

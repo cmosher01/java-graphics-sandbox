@@ -15,34 +15,29 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
-
-import nu.mine.mosher.zoom.swinglayer.Solarized;
+package nu.mine.mosher.zoom.swingselection;
+import lombok.*;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
 
-public final class StatusBar extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+public class SelectionDemo extends JFrame {
+    public SelectionDemo() {
+        setTitle("SelectionDemo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1024, 768);
+        setLocationRelativeTo(null);
 
-    private final Status status;
-    private final JLabel label;
 
-    public StatusBar(final Status status) {
-        super(new BorderLayout());
-        this.status = status;
 
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE_2);
+        val sel = new Selection();
 
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+        val panel = new SimpleExamplePanel(sel);
+        sel.setSelectable(panel);
+        add(panel);
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    @SneakyThrows
+    public static void main(String[] args) {
+        SwingUtilities.invokeAndWait(() -> new SelectionDemo().setVisible(true));
     }
 }
