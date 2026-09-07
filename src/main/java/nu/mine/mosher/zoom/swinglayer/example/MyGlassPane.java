@@ -18,15 +18,13 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
-import java.util.Objects;
 
-import static nu.mine.mosher.zoom.swinglayer.Swings.*;
+import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
 public class MyGlassPane extends JComponent {
     public static final int STATUS_REFRESH_MILLIS = 500;
@@ -43,7 +41,8 @@ public class MyGlassPane extends JComponent {
 
             @Override
             public void mouseMoved(final MouseEvent e) {
-                status.set(pointOf(e));
+                val at = pointOf(e);
+                status.set(at);
                 sb.refresh();
             }
 
@@ -59,7 +58,6 @@ public class MyGlassPane extends JComponent {
                     if (e.isShiftDown()) {
                         mouseCtlrDragSelection.press(clipPoint(e.getPoint()));
                     } else if (modelMouse.want(cnvAt)) {
-                        System.out.println("mouse squares press");
                         modelMouse.press();
                     } else {
                         zpMouse.press(at);
@@ -73,13 +71,12 @@ public class MyGlassPane extends JComponent {
             @Override
             public void mouseDragged(final MouseEvent e) {
                 val at = pointOf(e);
-                val cnvAt = zp.viewportToCanvas(at);
 
                 this.dragged = true;
                 if (mouseCtlrDragSelection.selecting()) {
                     mouseCtlrDragSelection.drag(clipPoint(e.getPoint()));
                 } else if (modelMouse.has()) {
-                    System.out.println("mouse squares drag");
+                    val cnvAt = zp.viewportToCanvas(at);
                     modelMouse.drag(cnvAt);
                 } else {
                     zpMouse.drag(at);
@@ -96,20 +93,16 @@ public class MyGlassPane extends JComponent {
                 if (mouseCtlrDragSelection.selecting()) {
                     mouseCtlrDragSelection.release();
                 } else if (modelMouse.has()) {
-                    System.out.println("mouse squares release");
                     modelMouse.release(this.dragged);
                 } else if (this.dragged) {
                     zpMouse.release();
                 } else {
-                    System.out.println("DEFAULT release (clear selection)");
                     modelMouse.release(this.dragged);
                 }
                 this.dragged = false;
 
                 paneMain.repaint();
-                if (Objects.nonNull(e)) {
-                    e.consume();
-                }
+                e.consume();
             }
 
 
@@ -142,11 +135,11 @@ public class MyGlassPane extends JComponent {
         addMouseMotionListener(mouse);
         addMouseWheelListener(mouse);
 
-//        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-//            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
-//                mouse.mouseReleased(null);
-//            }
-//        }, AWTEvent.MOUSE_EVENT_MASK);
+        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+                awtMouseReleased();
+            }
+        }, AWTEvent.MOUSE_EVENT_MASK);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -174,5 +167,22 @@ public class MyGlassPane extends JComponent {
         return new Point2D.Double(
             Math.clamp(p.x, 0, this.paneMain.getWidth()),
             Math.clamp(p.y, 0, this.paneMain.getHeight()));
+    }
+
+
+
+    // TODO With these two methods as NOPs, selection functionality works nominally
+    // except for a couple corner cases:
+    // 1. fast dragging and releasing out of the windows, sometimes causing dropped MOUSE_RELEASE messages
+    // 2. window losing focus (e.g., alt-tab) sometimes causing the same
+    // A dropped MOUSE_RELEASE can cause the selection rectangle to stay on the screen.
+    // It's proving difficult to fix these without ruining the nominal behavior.
+
+    public void windowLostFocus() {
+        // TODO fix
+    }
+
+    private void awtMouseReleased() {
+        // TODO fix
     }
 }

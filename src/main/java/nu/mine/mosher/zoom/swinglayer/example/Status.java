@@ -18,11 +18,10 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.ZoomPan;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.Point2D;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType"})

@@ -17,10 +17,8 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import nu.mine.mosher.zoom.swinglayer.Solarized;
-
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public final class StatusBar extends JPanel {

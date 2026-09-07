@@ -17,12 +17,9 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.*;
-import nu.mine.mosher.zoom.swinglayer.ZoomPan;
+import lombok.RequiredArgsConstructor;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
+import java.awt.geom.Point2D;
 
 
 @RequiredArgsConstructor

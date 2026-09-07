@@ -18,7 +18,6 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.*;
-import nu.mine.mosher.zoom.swinglayer.*;
 
 import java.awt.geom.Point2D;
 import java.util.Optional;
@@ -26,6 +25,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class RedSquaresMouse {
+    // slight performance improvement (only slight) by setting this
+    // to false, which causes the chart-bounding-rectangle to be updated
+    // only AFTER dragging items off the edge is COMPLETE (i.e., on mouse release)
+    private static final boolean DYNAMIC_BOUNDS_UPDATING = true;
+
     private final RedSquaresModel model;
     private final ZoomPan zp;
 
@@ -63,6 +67,10 @@ public class RedSquaresMouse {
             val d = Swings.delta(this.optptDragPivot.get(), at);
             if (d.x != 0 && d.y != 0) {
                 this.model.moveSelection(d);
+                if (DYNAMIC_BOUNDS_UPDATING) {
+                    this.model.updateBounds();
+                    this.zp.setZoomOutMinFromBounds(this.model.bounds());
+                }
                 this.optptDragPivot = Optional.of(at);
             }
         }

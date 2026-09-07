@@ -15,10 +15,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
+package nu.mine.mosher.zoom.swinglayer.playground;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.Solarized;
+import nu.mine.mosher.zoom.swinglayer.example.Solarized;
 
 import java.awt.*;
 import java.awt.font.*;

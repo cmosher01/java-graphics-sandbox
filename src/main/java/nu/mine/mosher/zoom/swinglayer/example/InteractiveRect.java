@@ -17,8 +17,6 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import nu.mine.mosher.zoom.swinglayer.Solarized;
-
 import java.awt.*;
 import java.awt.geom.*;
 

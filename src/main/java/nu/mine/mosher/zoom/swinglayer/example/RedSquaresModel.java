@@ -17,16 +17,13 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import com.sun.javafx.font.directwrite.RECT;
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.Swings;
 
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
 
-import static java.awt.BasicStroke.*;
-import static nu.mine.mosher.zoom.swinglayer.Solarized.*;
+import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 public class RedSquaresModel {
     private static final int ITEM_COUNT = 1_000_000;
@@ -129,14 +126,13 @@ public class RedSquaresModel {
     private static final Color COLOR_CANVAS_BG = BASE_3;
 
     private static final boolean BOUNDS_DRAW = true;
-    private static final Stroke BOUNDS_STROKE = new BasicStroke(10.0F, CAP_BUTT, JOIN_BEVEL);
+    private static final Stroke BOUNDS_STROKE = Swings.simpleStroke();
 
 
 
     public void paintBackground(final Graphics2D g, final Rectangle2D clip) {
         if (BOUNDS_FILL) {
             g.setColor(COLOR_CANVAS_BG);
-            // some glitching at zoom in greater than ~30:
             g.fill(bounds());
         }
 

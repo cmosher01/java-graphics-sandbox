@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer;
+package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
 

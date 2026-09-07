@@ -21,7 +21,6 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.*;
-import nu.mine.mosher.zoom.swinglayer.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,72 +32,72 @@ public class JavaTutorialSwingPaintDemo4 {
         System.setProperty("sun.awt.noerasebackground", "true");
         System.setProperty("swing.boldMetal", "false");
         System.setProperty("sun.java2d.opengl", "true");
+
         SwingUtilities.invokeAndWait(JavaTutorialSwingPaintDemo4::createAndShowGUI);
     }
 
+
+
     @SneakyThrows
     private static void createAndShowGUI() {
-//        for (val ffn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-//            System.out.println(ffn);
-//        }
-
-//        JFrame.setDefaultLookAndFeelDecorated(true);
-//        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
-        val f = new JFrame("Swing Paint Demo");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-
-        f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
-
-
         val zp = new ZoomPan();
         val zpm = new ZoomPanMouse(zp);
+
         val model = new RedSquaresModel();
         zp.setZoomOutMinFromBounds(model.bounds());
         val modelMouse = new RedSquaresMouse(model, zp);
+
         val modelDragSelection = new DragSelectionModel();
-        val mouseCtlrDragSelection = new DragSelectionMouse(modelDragSelection, model, zp);
-        val panel = new MyPanel(model, zp, modelDragSelection);
+        val cntlrDragSelection = new DragSelectionMouse(modelDragSelection, model, zp);
+
+        val axes = new Axes(zp);
+
+        val panel = new MyPanel(model, zp, modelDragSelection, axes);
+
         val status = new Status(zp, panel);
         val sb = new StatusBar(status);
 
 
 
-//        val uiZoomPan = new ZoomPanUi(zp);
-//        val panelZoomPan = new JLayer<>(panel, uiZoomPan);
-//        f.getContentPane().add(panelZoomPan, BorderLayout.CENTER);
+        val f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        f.getContentPane().add(panel, BorderLayout.CENTER);
-        f.getContentPane().add(sb, BorderLayout.PAGE_END);
+//        JFrame.setDefaultLookAndFeelDecorated(true);
+//        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
-        f.setGlassPane(new MyGlassPane(panel, sb, zp, zpm, status, modelMouse, mouseCtlrDragSelection));
-        f.getGlassPane().setVisible(true);
+        // top-level view is the content pane
+        val view = f.getContentPane();
+        view.add(panel, BorderLayout.CENTER);
+        view.add(sb, BorderLayout.PAGE_END);
+
+        // top-level controller is the glass pane
+        val controller = new MyGlassPane(panel, sb, zp, zpm, status, modelMouse, cntlrDragSelection);
         f.addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowLostFocus(final WindowEvent e) {
-                f.getGlassPane().dispatchEvent(new MouseEvent(f, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(),
-                    0, 0, 0, 1, false, MouseEvent.BUTTON1));
+                controller.windowLostFocus();
             }
         });
+        f.setGlassPane(controller);
+        controller.setVisible(true);
 
 
 
-        final var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        final int w = (int)Math.round(Math.rint(0.80D * screenSize.getWidth ()));
-        final int h = (int)Math.round(Math.rint(0.80D * screenSize.getHeight()));
-        f.setSize(w, h);
+        // resize main frame window to 80% of screen size, and center it
+        val screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        f.setSize(pct80(screenSize.getWidth()), pct80(screenSize.getHeight()));
         f.setLocationRelativeTo(null);
 
+        f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-
-        // for testing: this should never show up in the GUI
+        // uncomment this for testing purposes
+        // (the green should never be visible in the GUI)
 //        f.setBackground(Solarized.GREEN);
 
-
-
         f.setVisible(true);
+    }
+
+    private static int pct80(final double d) {
+        return (int)Math.round(Math.rint(0.80D * d));
     }
 }

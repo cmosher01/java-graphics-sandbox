@@ -15,10 +15,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.*;
-import javax.swing.plaf.LayerUI;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.*;
@@ -45,13 +43,9 @@ public final class Swings {
         return new Point2D.Double(to.getX()-from.getX(), to.getY()-from.getY());
     }
 
-    public static <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
-        final LayerUI<? super V> ui = l.getUI();
-        try {
-            l.setUI(null); // prevent recursion on dispatch
-            l.getView().dispatchEvent(e);
-        } finally {
-            l.setUI(ui);
-        }
+    private static final Stroke STROKE_SIMPLE = new BasicStroke(1F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+
+    public static Stroke simpleStroke() {
+        return STROKE_SIMPLE;
     }
 }

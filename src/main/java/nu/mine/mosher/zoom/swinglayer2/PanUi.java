@@ -29,7 +29,7 @@ import java.util.Objects;
 import static java.awt.AWTEvent.*;
 import static java.awt.event.MouseEvent.*;
 import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
-import static nu.mine.mosher.zoom.swinglayer.Swings.pt2d;
+import static nu.mine.mosher.zoom.swinglayer.example.Swings.pt2d;
 import static nu.mine.mosher.zoom.swinglayer2.PlaqueUi.ggg;
 
 public class PanUi extends LayerUI<JPanel> {

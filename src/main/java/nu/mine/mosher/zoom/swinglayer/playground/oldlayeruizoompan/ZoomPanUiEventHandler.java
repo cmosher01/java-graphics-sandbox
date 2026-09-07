@@ -18,9 +18,10 @@
 package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.ZoomPan;
+import nu.mine.mosher.zoom.swinglayer.example.ZoomPan;
 
 import javax.swing.*;
+import javax.swing.plaf.LayerUI;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.Objects;
@@ -28,7 +29,7 @@ import java.util.Objects;
 import static java.awt.event.MouseEvent.*;
 import static java.awt.event.MouseEvent.MOUSE_DRAGGED;
 import static java.awt.event.MouseEvent.MOUSE_WHEEL;
-import static nu.mine.mosher.zoom.swinglayer.Swings.*;
+import static nu.mine.mosher.zoom.swinglayer.example.Swings.*;
 
 public class ZoomPanUiEventHandler {
     private final ZoomPan zp;
@@ -79,6 +80,17 @@ public class ZoomPanUiEventHandler {
         }
     }
 
+
+
+    private static <V extends JPanel> void dispatch(final MouseEvent e, final JLayer<V> l) {
+        final LayerUI<? super V> ui = l.getUI();
+        try {
+            l.setUI(null); // prevent recursion on dispatch
+            l.getView().dispatchEvent(e);
+        } finally {
+            l.setUI(ui);
+        }
+    }
 
 
     private static <V extends JPanel> boolean mine(final MouseEvent e, final JLayer<V> l) {
