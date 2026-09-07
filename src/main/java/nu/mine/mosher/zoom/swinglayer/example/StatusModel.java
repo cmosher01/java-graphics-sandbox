@@ -25,7 +25,7 @@ import java.awt.geom.Point2D;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType"})
-public final class Status {
+public final class StatusModel {
     @SuppressWarnings("UnnecessaryUnicodeEscape")
     private static final String TIMES = "\u00d7";
 
@@ -35,15 +35,15 @@ public final class Status {
 
 
 
-    private final ZoomPan zp;
-    private final MyPanel pane;
+    private final ZoomPanModel zp;
+    private final MainPane pane;
 
     private String s = " ";
     private Point2D.Double canvas_mouseEvntPrev = NAN;
 
 
 
-    public Status(final ZoomPan zp, final MyPanel pane) {
+    public StatusModel(final ZoomPanModel zp, final MainPane pane) {
         this.zp = zp;
         this.pane = pane;
     }

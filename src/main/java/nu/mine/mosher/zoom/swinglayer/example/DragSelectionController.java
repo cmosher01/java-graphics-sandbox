@@ -23,10 +23,10 @@ import java.awt.geom.Point2D;
 
 
 @RequiredArgsConstructor
-public class DragSelectionMouse {
+public class DragSelectionController {
     private final DragSelectionModel model;
-    private final RedSquaresModel modelItems;
-    private final ZoomPan zp;
+    private final InteractiveRectsModel modelItems;
+    private final ZoomPanModel zp;
 
 
 

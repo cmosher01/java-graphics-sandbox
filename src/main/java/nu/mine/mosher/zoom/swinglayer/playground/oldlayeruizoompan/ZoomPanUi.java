@@ -18,7 +18,7 @@
 package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.example.ZoomPan;
+import nu.mine.mosher.zoom.swinglayer.example.ZoomPanModel;
 
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
@@ -33,10 +33,10 @@ import static java.awt.AWTEvent.*;
 public final class ZoomPanUi extends LayerUI<JPanel> {
     private static final long NO_EVENTS_MASK = 0L;
 
-    private final ZoomPan zp;
+    private final ZoomPanModel zp;
     private final ZoomPanUiEventHandler handler;
 
-    public ZoomPanUi(final ZoomPan zp) {
+    public ZoomPanUi(final ZoomPanModel zp) {
         this.zp = zp;
         this.handler = new ZoomPanUiEventHandler(zp);
     }

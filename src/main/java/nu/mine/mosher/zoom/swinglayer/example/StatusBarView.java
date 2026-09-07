@@ -21,13 +21,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public final class StatusBar extends JPanel {
+public final class StatusBarView extends JPanel {
     private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
 
-    private final Status status;
+    private final StatusModel status;
     private final JLabel label;
 
-    public StatusBar(final Status status) {
+    public StatusBarView(final StatusModel status) {
         super(new BorderLayout());
         this.status = status;
 

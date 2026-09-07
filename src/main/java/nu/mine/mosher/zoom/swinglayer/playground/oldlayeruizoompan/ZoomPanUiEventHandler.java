@@ -18,7 +18,7 @@
 package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.example.ZoomPan;
+import nu.mine.mosher.zoom.swinglayer.example.ZoomPanModel;
 
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
@@ -32,12 +32,12 @@ import static java.awt.event.MouseEvent.MOUSE_WHEEL;
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.*;
 
 public class ZoomPanUiEventHandler {
-    private final ZoomPan zp;
+    private final ZoomPanModel zp;
     private Point2D.Double pDragPivot;
 
 
 
-    public ZoomPanUiEventHandler(final ZoomPan zp) {
+    public ZoomPanUiEventHandler(final ZoomPanModel zp) {
         this.zp = zp;
     }
 

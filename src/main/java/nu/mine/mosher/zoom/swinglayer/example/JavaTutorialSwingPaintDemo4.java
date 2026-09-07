@@ -40,22 +40,21 @@ public class JavaTutorialSwingPaintDemo4 {
 
     @SneakyThrows
     private static void createAndShowGUI() {
-        val zp = new ZoomPan();
+        val zp = new ZoomPanModel();
         val zpm = new ZoomPanMouse(zp);
 
-        val model = new RedSquaresModel();
-        zp.setZoomOutMinFromBounds(model.bounds());
-        val modelMouse = new RedSquaresMouse(model, zp);
+        val modelInteractiveRects = new InteractiveRectsModel();
+        val cntlrInteractiveRects = new InteractiveRectsController(modelInteractiveRects, zp);
 
         val modelDragSelection = new DragSelectionModel();
-        val cntlrDragSelection = new DragSelectionMouse(modelDragSelection, model, zp);
+        val cntlrDragSelection = new DragSelectionController(modelDragSelection, modelInteractiveRects, zp);
 
-        val axes = new Axes(zp);
+        val axes = new AxesModel(zp);
 
-        val panel = new MyPanel(model, zp, modelDragSelection, axes);
+        val panel = new MainPane(modelInteractiveRects, zp, modelDragSelection, axes);
 
-        val status = new Status(zp, panel);
-        val sb = new StatusBar(status);
+        val status = new StatusModel(zp, panel);
+        val sb = new StatusBarView(status);
 
 
 
@@ -71,7 +70,7 @@ public class JavaTutorialSwingPaintDemo4 {
         view.add(sb, BorderLayout.PAGE_END);
 
         // top-level controller is the glass pane
-        val controller = new MyGlassPane(panel, sb, zp, zpm, status, modelMouse, cntlrDragSelection);
+        val controller = new MainController(panel, sb, zp, zpm, status, cntlrInteractiveRects, cntlrDragSelection);
         f.addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowLostFocus(final WindowEvent e) {

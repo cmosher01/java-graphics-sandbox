@@ -48,4 +48,8 @@ public final class Swings {
     public static Stroke simpleStroke() {
         return STROKE_SIMPLE;
     }
+
+    public static Stroke simpleStroke(final float width) {
+        return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    }
 }

@@ -50,7 +50,7 @@ public class DragSelectionModel {
 
 
 
-    public void paint(final Graphics2D g, ZoomPan zp) {
+    public void paint(final Graphics2D g, ZoomPanModel zp) {
         if (selecting()) {
             g.setColor(RECT_FILL_COLOR);
             g.fill(zp.viewportToCanvas(this.bounds));

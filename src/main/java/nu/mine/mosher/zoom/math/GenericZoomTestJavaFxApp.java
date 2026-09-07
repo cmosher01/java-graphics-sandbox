@@ -271,7 +271,7 @@ public class GenericZoomTestJavaFxApp extends Application {
 //                    System.out.printf("-----------------------------------------------------------------------------------------\n");
 
 
-//    private static Node createViewPort(final StatusBar sb) {
+//    private static Node createViewPort(final StatusBarView sb) {
 //        final var canvas = createCanvas();
 //        canvas.setOnMouseMoved(e -> sb.updateCanvas(new Point2D(e.getX(), e.getY())));
 //

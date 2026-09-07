@@ -26,12 +26,12 @@ import java.awt.geom.Point2D;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
-public class MyGlassPane extends JComponent {
+public class MainController extends JComponent {
     public static final int STATUS_REFRESH_MILLIS = 500;
 
     private final Component paneMain;
 
-    public MyGlassPane(final MyPanel paneMain, final StatusBar sb, ZoomPan zp, final ZoomPanMouse zpMouse, final Status status, final RedSquaresMouse modelMouse, final DragSelectionMouse mouseCtlrDragSelection) {
+    public MainController(final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouse zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
         this.paneMain = paneMain;
 
         setOpaque(false);

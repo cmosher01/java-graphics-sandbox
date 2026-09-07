@@ -27,12 +27,12 @@ import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE_1;
 
 
 @RequiredArgsConstructor
-public class Axes {
+public class AxesModel {
     private static final Point2D.Double ORIGIN = new Point2D.Double();
     private static final Color AXES_COLOR = BASE_1;
     private static final Stroke AXES_STROKE = Swings.simpleStroke();
 
-    private final ZoomPan zp;
+    private final ZoomPanModel zp;
 
     public void paint(final Graphics2D g, final double w, final double h) {
         g.setStroke(AXES_STROKE);
@@ -42,10 +42,11 @@ public class Axes {
 
     private void axesClipped(final Graphics2D g, final double w, final double h) {
         // L = left, R = right, T = top, B = bottom
-        final double y = zp.canvasToViewport(ORIGIN).y;
+        val origin = zp.canvasToViewport(ORIGIN);
+        val y = origin.y;
         val c_L = zp.viewportToCanvas(new Point2D.Double(0, y));
         val c_R = zp.viewportToCanvas(new Point2D.Double(w, y));
-        final double x = zp.canvasToViewport(ORIGIN).x;
+        val x = origin.x;
         val c_T = zp.viewportToCanvas(new Point2D.Double(x, 0));
         val c_B = zp.viewportToCanvas(new Point2D.Double(x, h));
 

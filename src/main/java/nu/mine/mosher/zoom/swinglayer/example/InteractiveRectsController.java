@@ -22,21 +22,25 @@ import lombok.*;
 import java.awt.geom.Point2D;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class RedSquaresMouse {
+public class InteractiveRectsController {
     // slight performance improvement (only slight) by setting this
     // to false, which causes the chart-bounding-rectangle to be updated
     // only AFTER dragging items off the edge is COMPLETE (i.e., on mouse release)
     private static final boolean DYNAMIC_BOUNDS_UPDATING = true;
 
-    private final RedSquaresModel model;
-    private final ZoomPan zp;
+    private final InteractiveRectsModel model;
+    private final ZoomPanModel zp;
 
     private Optional<InteractiveRect> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
 
+    public InteractiveRectsController(InteractiveRectsModel model, ZoomPanModel zp) {
+        this.model = model;
+        this.zp = zp;
+        zp.setZoomOutMinFromBounds(model.bounds());
+    }
 
 
     public boolean want(final Point2D.Double at) {

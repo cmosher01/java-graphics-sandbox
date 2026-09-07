@@ -23,11 +23,11 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public class ZoomPanMouse {
-    private final ZoomPan zp;
+    private final ZoomPanModel zp;
 
     private Point2D.Double ptDragPivot;
 
-    public ZoomPanMouse(final ZoomPan zp) {
+    public ZoomPanMouse(final ZoomPanModel zp) {
         this.zp = zp;
     }
 

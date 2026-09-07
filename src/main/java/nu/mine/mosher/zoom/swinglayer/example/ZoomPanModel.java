@@ -25,7 +25,7 @@ import java.awt.geom.*;
 /**
  * Implements zooming and panning algorithms.
  */
-public class ZoomPan {
+public class ZoomPanModel {
     // minimum visible dimension size in pixels
     private static final double DIMENSION_MIN = 10;
 

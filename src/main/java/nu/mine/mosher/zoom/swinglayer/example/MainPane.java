@@ -26,7 +26,7 @@ import java.awt.geom.Rectangle2D;
 import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE_3;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public final class MyPanel extends JPanel {
+public final class MainPane extends JPanel {
     private static final LayoutManager NO_LAYOUT_MANAGER = null;
 
     private static final boolean BACKGROUND_FILL = true;
@@ -36,13 +36,13 @@ public final class MyPanel extends JPanel {
 
 
 
-    private final RedSquaresModel model;
-    private final ZoomPan zp;
+    private final InteractiveRectsModel model;
+    private final ZoomPanModel zp;
     private final DragSelectionModel modelDragSelection;
-    private final Axes axes;
+    private final AxesModel axes;
 
 
-    public MyPanel(final RedSquaresModel model, final ZoomPan zp, final DragSelectionModel modelDragSelection, final Axes axes) {
+    public MainPane(final InteractiveRectsModel model, final ZoomPanModel zp, final DragSelectionModel modelDragSelection, final AxesModel axes) {
         super(NO_LAYOUT_MANAGER);
 
         this.model = model;
@@ -51,7 +51,6 @@ public final class MyPanel extends JPanel {
         this.axes = axes;
 
         setOpaque(false);
-
     }
 
 
@@ -63,15 +62,15 @@ public final class MyPanel extends JPanel {
         if (graphics instanceof final Graphics2D g) {
             g.setStroke(Swings.simpleStroke());
 
+            if (BACKGROUND_FILL) {
+                g.setColor(BACKGROUND_COLOR);
+                g.fill(viewportClip());
+            }
+
             this.zp.paint(g);
 
             val clip = clip();
             g.setClip(clip);
-
-            if (BACKGROUND_FILL) {
-                g.setColor(BACKGROUND_COLOR);
-                g.fill(clip);
-            }
 
             this.model.paintBackground(g, clip);
 

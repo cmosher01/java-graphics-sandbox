@@ -43,6 +43,7 @@ public class InteractiveRect extends Rectangle2D.Double {
     }
 
 
+    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
     // TODO potential optimization in drawing when zoomed far out
     public void paint(final Graphics2D g) {
@@ -51,7 +52,14 @@ public class InteractiveRect extends Rectangle2D.Double {
         } else {
             g.setColor(Solarized.CYAN);
         }
-
         g.fill(this);
+
+//        g.setStroke(STROKE);
+//        if (this.selected) {
+//            g.setColor(Solarized.CYAN);
+//        } else {
+//            g.setColor(Solarized.MAGENTA);
+//        }
+//        g.draw(this);
     }
 }

@@ -25,7 +25,7 @@ import java.util.*;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
-public class RedSquaresModel {
+public class InteractiveRectsModel {
     private static final int ITEM_COUNT = 1_000_000;
     private static final double MAX_COORD = 1.0e8D;
     public static final double ITEM_WIDTH = 10_000.0D;
@@ -40,7 +40,7 @@ public class RedSquaresModel {
 
 
 
-    public RedSquaresModel() {
+    public InteractiveRectsModel() {
         generateRandomObjects();
         updateBounds();
     }
