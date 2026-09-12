@@ -22,14 +22,14 @@ import lombok.*;
 import java.awt.*;
 import java.awt.geom.*;
 
-import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE_1;
+import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE__1_GRAY__BRT;
 
 
 
 @RequiredArgsConstructor
 public class AxesModel {
     private static final Point2D.Double ORIGIN = new Point2D.Double();
-    private static final Color AXES_COLOR = BASE_1;
+    private static final Color AXES_COLOR = BASE__1_GRAY__BRT;
     private static final Stroke AXES_STROKE = Swings.simpleStroke();
 
     private final ZoomPanModel zp;

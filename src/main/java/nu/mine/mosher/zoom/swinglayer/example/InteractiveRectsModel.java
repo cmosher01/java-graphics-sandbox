@@ -18,6 +18,7 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
+import nu.mine.mosher.zoom.spacialgrid.SpatialGrid;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -33,9 +34,23 @@ public class InteractiveRectsModel {
 
     private static final double BOUNDS_OUTSET = ITEM_WIDTH;
 
+
+
+    /**
+     * All interactive rectangles, in back-to-front Z-order.
+     */
+    private static final boolean USE_SPATIAL_TREE = false; // doesn't work when zooming out; no noticeable improvement anyway
     private final ArrayList<InteractiveRect> sqs = new ArrayList<>();
+    private final SpatialGrid<InteractiveRect> sqq = new SpatialGrid<>(ITEM_WIDTH);
+
+
+
     private Rectangle2D.Double bounds;
     private Rectangle2D.Double boundsOutset;
+
+    /**
+     * Set of currently selected items. Redundant with InteractiveRect::selected() property.
+     */
     private final Set<InteractiveRect> selection = Collections.newSetFromMap(new IdentityHashMap<>());
 
 
@@ -50,7 +65,11 @@ public class InteractiveRectsModel {
         for (int i = 0; i < ITEM_COUNT; i++) {
             final double x = rand.nextDouble(-MAX_COORD, MAX_COORD);
             final double y = rand.nextDouble(-MAX_COORD, MAX_COORD);
-            this.sqs.add(new InteractiveRect(x, y, ITEM_WIDTH, ITEM_HEIGHT));
+            val item = new InteractiveRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+            this.sqs.add(item);
+            if (USE_SPATIAL_TREE) {
+                this.sqq.insert(new SpatialGrid.Rectangle<>(x, y, ITEM_WIDTH, ITEM_HEIGHT, item));
+            }
         }
     }
 
@@ -77,10 +96,16 @@ public class InteractiveRectsModel {
 
 
     public Optional<InteractiveRect> getAt(final Point2D.Double at) {
-        // TODO potential optimization in searching for hits
-        for (val sq : this.sqs.reversed()) {
-            if (sq.contains(at)) {
-                return Optional.of(sq);
+        if (USE_SPATIAL_TREE) {
+            var found = this.sqq.query(at.getX()-1, at.getY()-1, 2, 2);
+            if (!found.isEmpty()) {
+                return Optional.of(found.getLast().unwrap());
+            }
+        } else {
+            for (val sq : this.sqs.reversed()) {
+                if (sq.contains(at)) {
+                    return Optional.of(sq);
+                }
             }
         }
         return Optional.empty();
@@ -95,7 +120,7 @@ public class InteractiveRectsModel {
         this.selection.clear();
     }
 
-    public void select(final InteractiveRect sq, final boolean select) {
+    public void selectOne(final InteractiveRect sq, final boolean select) {
         sq.select(select);
         if (select) {
             this.selection.add(sq);
@@ -106,14 +131,25 @@ public class InteractiveRectsModel {
 
     public void setSelectionFromRectangle(final Rectangle2D.Double r) {
         // TODO potential optimization in searching for hits
-        for (val sq : this.sqs.reversed()) {
-            val hit = sq.intersects(r);
-            select(sq, hit);
+        if (USE_SPATIAL_TREE) {
+            var found = this.sqq.query(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+            clearSelection();
+            found.forEach(h -> selectOne(h.unwrap(), true));
+        } else {
+            for (val sq : this.sqs.reversed()) {
+                val hit = sq.intersects(r);
+                selectOne(sq, hit);
+            }
         }
     }
 
     public void moveSelection(final Point2D.Double delta) {
-        this.selection.forEach(sq -> sq.move(delta));
+        this.selection.forEach(sq -> {
+            sq.move(delta);
+            if (USE_SPATIAL_TREE) {
+                throw new UnsupportedOperationException("need to update spatial tree");
+            }
+        });
     }
 
 
@@ -122,33 +158,38 @@ public class InteractiveRectsModel {
 
 
 
-    private static final boolean BOUNDS_FILL = false;
-    private static final Color COLOR_CANVAS_BG = BASE_3;
+    private static final boolean BOUNDS_FILL = true;
+    private static final Color BOUNDS_FILL_COLOR = BASE__3_BEIGE_BRT;
 
     private static final boolean BOUNDS_DRAW = true;
-    private static final Stroke BOUNDS_STROKE = Swings.simpleStroke();
+    private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
+    private static final Stroke BOUNDS_DRAW_STROKE = Swings.simpleStroke(100);
 
 
 
-    public void paintBackground(final Graphics2D g, final Rectangle2D clip) {
+    public void paintBackground(final Graphics2D g) {
         if (BOUNDS_FILL) {
-            g.setColor(COLOR_CANVAS_BG);
-            g.fill(bounds());
+            g.setColor(BOUNDS_FILL_COLOR);
+            g.fill(boundsOutset());
         }
 
         if (BOUNDS_DRAW) {
-            g.setStroke(BOUNDS_STROKE);
-            g.setColor(BASE_03);
+            g.setStroke(BOUNDS_DRAW_STROKE);
+            g.setColor(BOUNDS_DRAW_COLOR);
             g.draw(boundsOutset());
         }
     }
 
-    public void paint(final Graphics2D g, final Rectangle2D clip) {
-        // TODO potential optimization in searching for clip region
-        this.sqs.forEach(sq -> {
-            if (sq.intersects(clip)) {
-                sq.paint(g);
-            }
-        });
+    public void paint(final Graphics2D g, final Rectangle2D clip, ZoomPanModel zp) {
+        if (USE_SPATIAL_TREE && 0.0001 < zp.zoomFactor()) {
+            var found = this.sqq.query(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
+            found.forEach(h -> h.unwrap().paint(g));
+        } else {
+            this.sqs.forEach(sq -> {
+                if (sq.intersects(clip)) {
+                    sq.paint(g);
+                }
+            });
+        }
     }
 }

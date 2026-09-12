@@ -15,32 +15,27 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
+package nu.mine.mosher.zoom.swingquit;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.desktop.*;
 
-public final class StatusBarView extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+import static java.awt.Desktop.Action.*;
+import static java.awt.desktop.QuitStrategy.*;
 
-    private final StatusModel status;
-    private final JLabel label;
+public class DesktopController {
+    private static final Desktop DT = Desktop.getDesktop();
 
-    public StatusBarView(final StatusModel status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE__2_BEIGE_DRK);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+    public DesktopController(final QuitController controller) {
+        if (DT.isSupported(APP_QUIT_HANDLER)) {
+            DT.setQuitHandler((e, response) -> quit(controller, response));
+            DT.disableSuddenTermination();
+            DT.setQuitStrategy(CLOSE_ALL_WINDOWS);
+        }
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    private static void quit(final QuitController controller, final QuitResponse response) {
+        SwingUtilities.invokeLater(() -> controller.quit(response));
     }
 }

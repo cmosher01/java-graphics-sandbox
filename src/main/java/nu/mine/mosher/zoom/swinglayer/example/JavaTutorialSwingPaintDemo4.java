@@ -27,11 +27,16 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class JavaTutorialSwingPaintDemo4 {
+    private static final String title = "Family Tree XY Editor";
+
     @SneakyThrows
     public static void main(final String... args) {
+        System.setProperty("apple.awt.application.name", title);
         System.setProperty("sun.awt.noerasebackground", "true");
         System.setProperty("swing.boldMetal", "false");
         System.setProperty("sun.java2d.opengl", "true");
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
 
         SwingUtilities.invokeAndWait(JavaTutorialSwingPaintDemo4::createAndShowGUI);
     }
@@ -40,6 +45,12 @@ public class JavaTutorialSwingPaintDemo4 {
 
     @SneakyThrows
     private static void createAndShowGUI() {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+
+
+
+
         val zp = new ZoomPanModel();
         val zpm = new ZoomPanMouse(zp);
 
@@ -51,40 +62,54 @@ public class JavaTutorialSwingPaintDemo4 {
 
         val axes = new AxesModel(zp);
 
-        val panel = new MainPane(modelInteractiveRects, zp, modelDragSelection, axes);
+        val viewMain = new MainPane(modelInteractiveRects, zp, modelDragSelection, axes);
 
-        val status = new StatusModel(zp, panel);
+        val status = new StatusModel(zp, viewMain);
         val sb = new StatusBarView(status);
 
 
 
-        val f = new JFrame();
+
+
+        val f = new JFrame(title);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-//        JFrame.setDefaultLookAndFeelDecorated(true);
-//        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
-        // top-level view is the content pane
-        val view = f.getContentPane();
-        view.add(panel, BorderLayout.CENTER);
-        view.add(sb, BorderLayout.PAGE_END);
 
-        // top-level controller is the glass pane
-        val controller = new MainController(panel, sb, zp, zpm, status, cntlrInteractiveRects, cntlrDragSelection);
+
+        val db = new DatabaseModel();
+
+        val commands = new CommandController(db);
+        val desktop = new DesktopController(commands);
+        val mb = MenuController.createMenuBar(commands, title, db);
+        f.setJMenuBar(mb);
+
+        val controller = new MouseController(viewMain, sb, zp, zpm, status, cntlrInteractiveRects, cntlrDragSelection);
         f.addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowLostFocus(final WindowEvent e) {
                 controller.windowLostFocus();
             }
         });
-        f.setGlassPane(controller);
-        controller.setVisible(true);
+
+
+
+
+        val paneComposite = new JPanel();
+        paneComposite.setLayout(new OverlayLayout(paneComposite));
+        paneComposite.add(controller);
+        paneComposite.add(viewMain);
+
+        val view = f.getContentPane();
+        view.add(paneComposite, BorderLayout.CENTER);
+        view.add(sb, BorderLayout.PAGE_END);
+
+
 
 
 
         // resize main frame window to 80% of screen size, and center it
-        val screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        f.setSize(pct80(screenSize.getWidth()), pct80(screenSize.getHeight()));
+        f.setSize(Swings.scale(.8, Toolkit.getDefaultToolkit().getScreenSize()));
         f.setLocationRelativeTo(null);
 
         f.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -96,7 +121,4 @@ public class JavaTutorialSwingPaintDemo4 {
         f.setVisible(true);
     }
 
-    private static int pct80(final double d) {
-        return (int)Math.round(Math.rint(0.80D * d));
-    }
 }

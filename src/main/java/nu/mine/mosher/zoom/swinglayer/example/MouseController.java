@@ -26,14 +26,12 @@ import java.awt.geom.Point2D;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
-public class MainController extends JComponent {
+public class MouseController extends JComponent {
     public static final int STATUS_REFRESH_MILLIS = 500;
 
-    private final Component paneMain;
 
-    public MainController(final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouse zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
-        this.paneMain = paneMain;
 
+    public MouseController(final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouse zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
         setOpaque(false);
 
         val mouse = new MouseAdapter() {
@@ -50,22 +48,20 @@ public class MainController extends JComponent {
 
             @Override
             public void mousePressed(final MouseEvent e) {
-                if (isPaneMain(e.getPoint())) {
-                    val at = pointOf(e);
-                    val cnvAt = zp.viewportToCanvas(at);
+                val at = pointOf(e);
+                val cnvAt = zp.viewportToCanvas(at);
 
-                    this.dragged = false;
-                    if (e.isShiftDown()) {
-                        mouseCtlrDragSelection.press(clipPoint(e.getPoint()));
-                    } else if (modelMouse.want(cnvAt)) {
-                        modelMouse.press();
-                    } else {
-                        zpMouse.press(at);
-                    }
-
-                    paneMain.repaint();
-                    e.consume();
+                this.dragged = false;
+                if (e.isShiftDown()) {
+                    mouseCtlrDragSelection.press(clipPoint(e.getPoint()));
+                } else if (modelMouse.want(cnvAt)) {
+                    modelMouse.press();
+                } else {
+                    zpMouse.press(at);
                 }
+
+                paneMain.repaint();
+                e.consume();
             }
 
             @Override
@@ -109,25 +105,21 @@ public class MainController extends JComponent {
 
             @Override
             public void mouseClicked(final MouseEvent e) {
-                if (isPaneMain(e.getPoint())) {
-                    e.consume();
-                }
+                e.consume();
             }
 
 
 
             @Override
             public void mouseWheelMoved(final MouseWheelEvent e) {
-                if (isPaneMain(e.getPoint())) {
-                    val at = pointOf(e);
+                val at = pointOf(e);
 
-                    zpMouse.rotate(at, e.getWheelRotation());
+                zpMouse.rotate(at, e.getWheelRotation());
 
-                    paneMain.repaint();
-                    status.set(at);
-                    sb.refresh();
-                    e.consume();
-                }
+                paneMain.repaint();
+                status.set(at);
+                sb.refresh();
+                e.consume();
             }
         };
 
@@ -157,32 +149,26 @@ public class MainController extends JComponent {
 
 
 
-    private boolean isPaneMain(final Point at) {
-        val ptLocal = SwingUtilities.convertPoint(this, at, this.paneMain);
-        val compHit = SwingUtilities.getDeepestComponentAt(this.paneMain, ptLocal.x, ptLocal.y);
-        return compHit == this.paneMain;
-    }
-
-    private Point2D.Double clipPoint(final Point p) {
-        return new Point2D.Double(
-            Math.clamp(p.x, 0, this.paneMain.getWidth()),
-            Math.clamp(p.y, 0, this.paneMain.getHeight()));
-    }
-
-
-
     // TODO With these two methods as NOPs, selection functionality works nominally
     // except for a couple corner cases:
-    // 1. fast dragging and releasing out of the windows, sometimes causing dropped MOUSE_RELEASE messages
+    // 1. fast dragging and releasing out of the window, sometimes causing dropped MOUSE_RELEASE messages
     // 2. window losing focus (e.g., alt-tab) sometimes causing the same
     // A dropped MOUSE_RELEASE can cause the selection rectangle to stay on the screen.
     // It's proving difficult to fix these without ruining the nominal behavior.
 
     public void windowLostFocus() {
-        // TODO fix
     }
 
     private void awtMouseReleased() {
-        // TODO fix
+    }
+
+
+
+
+
+    private Point2D.Double clipPoint(final Point p) {
+        return new Point2D.Double(
+            Math.clamp(p.x, 0, getWidth()),
+            Math.clamp(p.y, 0, getHeight()));
     }
 }

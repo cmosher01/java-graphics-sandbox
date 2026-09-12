@@ -20,6 +20,9 @@ package nu.mine.mosher.zoom.swinglayer.example;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.*;
+import java.util.Map;
+
+import static java.awt.RenderingHints.*;
 
 public final class Swings {
     @Deprecated
@@ -51,5 +54,25 @@ public final class Swings {
 
     public static Stroke simpleStroke(final float width) {
         return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    }
+
+    public static Dimension scale(final double scale, final Dimension dim) {
+        return new Dimension(toInt(scale*dim.getWidth()), toInt(scale*dim.getHeight()));
+    }
+
+    public static final Map<RenderingHints.Key, Object> GLOBAL_RENDERING_HINTS = Map.of(
+        KEY_RENDERING, VALUE_RENDER_SPEED,
+        KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF,
+        KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_OFF,
+        KEY_FRACTIONALMETRICS, VALUE_FRACTIONALMETRICS_OFF,
+        KEY_INTERPOLATION, VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
+        KEY_STROKE_CONTROL, VALUE_STROKE_PURE,
+        KEY_COLOR_RENDERING, VALUE_COLOR_RENDER_SPEED,
+        KEY_ALPHA_INTERPOLATION, VALUE_ALPHA_INTERPOLATION_SPEED,
+        KEY_DITHERING, VALUE_DITHER_DISABLE
+    );
+
+    private static int toInt(final double d) {
+        return (int)Math.round(Math.rint(d));
     }
 }

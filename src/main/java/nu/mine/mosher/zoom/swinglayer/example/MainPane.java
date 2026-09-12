@@ -23,14 +23,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE_3;
+import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class MainPane extends JPanel {
     private static final LayoutManager NO_LAYOUT_MANAGER = null;
 
     private static final boolean BACKGROUND_FILL = true;
-    private static final Color BACKGROUND_COLOR = BASE_3;
+    private static final Color BACKGROUND_COLOR = BASE__1_GRAY__BRT;
 
     private static final boolean AXES = true;
 
@@ -60,25 +60,28 @@ public final class MainPane extends JPanel {
         super.paintComponent(graphics);
 
         if (graphics instanceof final Graphics2D g) {
+            g.addRenderingHints(Swings.GLOBAL_RENDERING_HINTS);
             g.setStroke(Swings.simpleStroke());
+            g.setClip(viewportClip());
 
             if (BACKGROUND_FILL) {
                 g.setColor(BACKGROUND_COLOR);
                 g.fill(viewportClip());
             }
 
+
+
             this.zp.paint(g);
 
             val clip = clip();
-            g.setClip(clip);
 
-            this.model.paintBackground(g, clip);
+            this.model.paintBackground(g);
 
             if (AXES) {
                 this.axes.paint(g, super.getWidth(), super.getHeight());
             }
 
-            this.model.paint(g, clip);
+            this.model.paint(g, clip, this.zp);
             this.modelDragSelection.paint(g, this.zp);
         }
     }
@@ -92,7 +95,7 @@ public final class MainPane extends JPanel {
     public Rectangle2D.Double viewportClip() {
         return new Rectangle2D.Double(
             super.getX(), super.getY(),
-            Math.max(0, super.getWidth()), Math.max(0, super.getHeight()));
+            Math.max(1, super.getWidth()), Math.max(1, super.getHeight()));
     }
 
     /**

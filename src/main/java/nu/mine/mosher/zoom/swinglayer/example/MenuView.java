@@ -17,30 +17,38 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import javax.swing.event.*;
 
-public final class StatusBarView extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
-
-    private final StatusModel status;
-    private final JLabel label;
-
-    public StatusBarView(final StatusModel status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE__2_BEIGE_DRK);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+/**
+ * Use refresh() to facilitate menu state updates.
+ * Don't use any other methods in this interface.
+ */
+@FunctionalInterface
+public interface MenuView extends MenuListener {
+    /**
+     * Pass result to JMenu.addMenuListener().
+     * Upon menu selection, the lambda will be called.
+     * The lambda is intended to set the menu state appropriately
+     * (enabled/disabled items, etc.)
+     * @param lambda
+     * @return
+     */
+    static MenuView refresh(final Runnable lambda) {
+        return lambda::run;
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    void run();
+
+    @Override
+    default void menuSelected(MenuEvent e) {
+        run();
+    }
+
+    @Override
+    default void menuDeselected(MenuEvent e) {
+    }
+
+    @Override
+    default void menuCanceled(MenuEvent e) {
     }
 }

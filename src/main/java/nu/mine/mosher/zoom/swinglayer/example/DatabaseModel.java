@@ -17,30 +17,26 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.nio.file.Path;
+import java.util.Objects;
 
-public final class StatusBarView extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+public class DatabaseModel {
+    private Path file;
 
-    private final StatusModel status;
-    private final JLabel label;
-
-    public StatusBarView(final StatusModel status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE__2_BEIGE_DRK);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+    public void open(final Path file) {
+        if (isOpen()) {
+            close();
+        }
+        this.file = file;
+        System.out.println("Opened: "+this.file);
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    public boolean isOpen() {
+        return Objects.nonNull(this.file);
+    }
+
+    public void close() {
+        System.out.println("Closing: "+this.file);
+        this.file = null;
     }
 }

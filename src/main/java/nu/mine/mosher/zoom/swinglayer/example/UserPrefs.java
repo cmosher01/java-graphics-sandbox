@@ -17,30 +17,33 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import lombok.val;
 
-public final class StatusBarView extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+import java.nio.file.Path;
+import java.util.prefs.Preferences;
 
-    private final StatusModel status;
-    private final JLabel label;
-
-    public StatusBarView(final StatusModel status) {
-        super(new BorderLayout());
-        this.status = status;
-
-        setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE__2_BEIGE_DRK);
-
-        this.label = new JLabel();
-        this.label.setBackground(this.getBackground());
-        this.label.setFont(FONT);
-        add(this.label, BorderLayout.LINE_START);
+public class UserPrefs {
+    public static Preferences prefs() {
+        return Preferences.userNodeForPackage(UserPrefs.class);
     }
 
-    public void refresh() {
-        this.label.setText(this.status.get());
+    public static Path dir() {
+        val cur = prefs().get("dir", "").strip();
+        val sys = System.getProperty("user.home", "").strip();
+
+        final String def;
+        if (!cur.isBlank()) {
+            def = cur;
+        } else if (!sys.isBlank()) {
+            def = sys;
+        } else {
+            def = "./";
+        }
+
+        return Path.of(prefs().get("dir", def).strip());
+    }
+
+    public static void dir(final Path dir) {
+        prefs().put("dir", dir.toString().strip());
     }
 }

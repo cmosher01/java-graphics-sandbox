@@ -43,7 +43,7 @@ public class InteractiveRect extends Rectangle2D.Double {
     }
 
 
-    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+//    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
     // TODO potential optimization in drawing when zoomed far out
     public void paint(final Graphics2D g) {
@@ -52,7 +52,14 @@ public class InteractiveRect extends Rectangle2D.Double {
         } else {
             g.setColor(Solarized.CYAN);
         }
+
+        // fill and fillRect seem equally fast, and sufficient:
+        // there is only the slighted perceptible lagging when quickly
+        // panning a million rectangles within the clipping region
         g.fill(this);
+//        g.fillRect((int)x, (int)y, (int)width, (int)height);
+
+
 
 //        g.setStroke(STROKE);
 //        if (this.selected) {

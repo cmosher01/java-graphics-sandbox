@@ -21,16 +21,16 @@ import java.awt.*;
 
 public class Solarized {
     // lighter
-    public static final Color BASE_3  = Color.getHSBColor(0.12F, 0.10F, 0.99F);  // BG   bright beige
-    public static final Color BASE_2  = Color.getHSBColor(0.12F, 0.11F, 0.93F);  // BG   dark   beige
+    public static final Color BASE__3_BEIGE_BRT = Color.getHSBColor(0.12F, 0.10F, 0.99F);  // BG   bright beige
+    public static final Color BASE__2_BEIGE_DRK = Color.getHSBColor(0.12F, 0.11F, 0.93F);  // BG   dark   beige
     //
-    public static final Color BASE_1  = Color.getHSBColor(0.50F, 0.09F, 0.63F);  // FG   bright gray
-    public static final Color BASE_0  = Color.getHSBColor(0.52F, 0.13F, 0.59F);  // FG   light  gray
-    public static final Color BASE_00 = Color.getHSBColor(0.54F, 0.23F, 0.51F);  // FG   dim    gray
-    public static final Color BASE_01 = Color.getHSBColor(0.54F, 0.25F, 0.46F);  // FG   dark   gray
+    public static final Color BASE__1_GRAY__BRT = Color.getHSBColor(0.50F, 0.09F, 0.63F);  // FG   bright gray
+    public static final Color BASE__0_GRAY__LGT = Color.getHSBColor(0.52F, 0.13F, 0.59F);  // FG   light  gray
+    public static final Color BASE_00_GRAY__DIM = Color.getHSBColor(0.54F, 0.23F, 0.51F);  // FG   dim    gray
+    public static final Color BASE_01_GRAY__DRK = Color.getHSBColor(0.54F, 0.25F, 0.46F);  // FG   dark   gray
     //
-    public static final Color BASE_02 = Color.getHSBColor(0.53F, 0.90F, 0.26F);  // BG   bright black
-    public static final Color BASE_03 = Color.getHSBColor(0.54F, 0.99F, 0.21F);  // BG   dark   black
+    public static final Color BASE_02_BLACK_BRT = Color.getHSBColor(0.53F, 0.90F, 0.26F);  // BG   bright black
+    public static final Color BASE_03_BLACK_DRK = Color.getHSBColor(0.54F, 0.99F, 0.21F);  // BG   dark   black
     // darker
 
 
