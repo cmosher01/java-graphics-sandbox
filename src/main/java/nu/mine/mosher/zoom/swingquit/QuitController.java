@@ -69,7 +69,7 @@ public class QuitController {
                 log("    model is dirty");
                 answer = this.view.dialogs().askSaveDiscardCancel();
             } else {
-                log("    model is not dirty");
+                log("    model is not dirty (OK to discard)");
                 answer = DialogViews.QuitOptions.DISCARD;
             }
             if (answer == DialogViews.QuitOptions.CANCEL) {
@@ -83,7 +83,7 @@ public class QuitController {
                     log("    user did not respond; will auto-save changes");
                     this.command.save(false);
                 } else {
-                    log("    user chose to Discard changes");
+                    log("    any changes will be discarded");
                 }
                 this.approved.set(true);
                 r.performQuit();

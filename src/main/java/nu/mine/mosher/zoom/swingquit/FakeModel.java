@@ -19,9 +19,38 @@ package nu.mine.mosher.zoom.swingquit;
 
 import lombok.*;
 
-@Getter
-@Setter
+import java.util.UUID;
+
 public class FakeModel {
-    private String name;
+    private static final String UNTITLED_NAME = "untitled";
+
+    private final UUID uuid = UUID.randomUUID();
+
+    @Setter
+    private String name = UNTITLED_NAME+": "+uuid;
+
+    @Getter
+    @Setter
     private boolean dirty = true;
+
+
+
+    public String getName() {
+        return this.name+(this.dirty?" *":"");
+    }
+
+
+
+    public Immutable readOnly() {
+        return new Immutable();
+    }
+
+    public class Immutable {
+        public String getName() {
+            return FakeModel.this.getName();
+        }
+        public boolean isDirty() {
+            return dirty;
+        }
+    }
 }

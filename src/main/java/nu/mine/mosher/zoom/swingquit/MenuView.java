@@ -37,7 +37,8 @@ public class MenuView extends JMenuBar {
     private final JMenuItem quit = new JMenuItem(CMD_QUIT);
     private final JMenuItem exit = new JMenuItem(CMD_EXIT);
     private final JMenuItem line = new JMenuItem(CMD_LINE);
-    private final List<AbstractButton> actions = List.of(save, quit, exit, line);
+    private final JMenuItem thrw = new JMenuItem(CMD_THROW);
+    private final List<AbstractButton> actions = List.of(save, quit, exit, line, thrw);
 
     public void addActionListener(final ActionListener controller) {
         this.actions.forEach(a -> a.addActionListener(controller));
@@ -61,6 +62,7 @@ public class MenuView extends JMenuBar {
         file.add(exit);
         file.addSeparator();
         file.add(line);
+        file.add(thrw);
         add(file);
     }
 }

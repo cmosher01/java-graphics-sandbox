@@ -23,14 +23,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SwingQuitView extends JFrame implements Disposable {
-    private static final String UNTITLED_NAME = "untitled";
     private static final Component CENTER = null;
     private static final Toolkit TK = Toolkit.getDefaultToolkit();
 
-    private final DialogViews dialogs = new DialogViews(this);
+    private final FakeModel.Immutable model;
 
-    public SwingQuitView(final MenuView viewMenu) {
-        super(UNTITLED_NAME);
+    private final DialogViews dialogs = new DialogViews(this);
+    private MenuView menu;
+
+    public SwingQuitView(final FakeModel.Immutable model) {
+        this.model = model;
+        this.menu = new MenuView();
 
         val dim = TK.getScreenSize();
         setSize(new Dimension((int)(.8*dim.width), (int)(.8*dim.height)));
@@ -44,7 +47,7 @@ public class SwingQuitView extends JFrame implements Disposable {
 //            }
 //        });
 
-        setJMenuBar(viewMenu);
+        setJMenuBar(this.menu);
     }
 
     public void display() {
@@ -53,5 +56,15 @@ public class SwingQuitView extends JFrame implements Disposable {
 
     public DialogViews dialogs() {
         return this.dialogs;
+    }
+
+    public MenuView menu() {
+        return this.menu;
+    }
+
+    public void refresh() {
+        // this would read from the model and set visible Swing elements
+        setTitle(this.model.getName());
+        System.out.println("Refresh view from model: "+this.model.getName()+" [dirty: "+this.model.isDirty()+"]");
     }
 }

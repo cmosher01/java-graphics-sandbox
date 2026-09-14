@@ -24,14 +24,16 @@ public class MenuController {
     public static final String CMD_QUIT = "Quit";
     public static final String CMD_EXIT = "Exit";
     public static final String CMD_LINE = "Line";
+    public static final String CMD_THROW = "Throw";
 
     public MenuController(final MenuView view, final CommandController command, final QuitController controllerQuit) {
         view.addActionListener(e -> {
-            // TODO commands
             switch (e.getActionCommand()) {
                 case CMD_SAVE -> command.save();
                 case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
                 case CMD_LINE -> System.out.println("-".repeat(64));
+                // by default, EDT write stack trace to stderr on throw:
+                case CMD_THROW -> throw new RuntimeException("User requested RuntimeException");
             }
         });
     }

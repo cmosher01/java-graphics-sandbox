@@ -21,18 +21,25 @@ import lombok.*;
 
 @RequiredArgsConstructor
 public class CommandController {
+    private final SwingQuitView view;
+    private final FakeModel model;
+
     public void save() {
         save(true);
     }
 
     public void save(final boolean attended) {
-        // TODO unattended save (auto back up of existing file, or creation on new file for untitled documents)
-        // or allow an app-specific user setting for unattended auto save
-        System.out.println("[save"+(attended?"":" UNATTENDED")+"]");
+        // For an unattended save: auto back up of existing file, or creation on new file for untitled documents
+        // Can allow an app-specific user settings for unattended auto save behavior
         // make sure unattended saves do not do anything with the view
         // because it could be happening during an app shutdown sequence
-    }
 
-    public void close() {
+        System.out.println("[save "+(attended?"":" UN")+"ATTENDED]: "+this.model.getName());
+
+        this.model.setDirty(false);
+
+        if (attended) {
+            this.view.refresh();
+        }
     }
 }

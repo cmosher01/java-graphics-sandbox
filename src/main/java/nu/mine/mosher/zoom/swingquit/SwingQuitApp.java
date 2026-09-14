@@ -21,31 +21,36 @@ import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class SwingQuitApp {
-    private static final Toolkit TK = Toolkit.getDefaultToolkit();
-    private static final Desktop DT = Desktop.getDesktop();
-
     @SneakyThrows
     public static void main(final String... args) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-        SwingUtilities.invokeAndWait(SwingQuitApp::create);
+        val app = new SwingQuitApp(args);
+        app.preSwingSetup();
+        SwingUtilities.invokeAndWait(app::mainMvc);
     }
 
-    @SuppressWarnings("InstantiationOfUtilityClass")
-    private static void create() {
+
+
+    private static final Toolkit TK = Toolkit.getDefaultToolkit();
+    private static final Desktop DT = Desktop.getDesktop();
+    private final List<String> args;
+
+    private SwingQuitApp(final String... args) {
+        this.args = List.of(args);
+    }
+
+    private void preSwingSetup() {
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+    }
+
+    private void mainMvc() {
         val model = new FakeModel();
+        val view = new SwingQuitView(model.readOnly());
+        val controller = new SwingQuitController(model, view);
 
-        val viewMenu = new MenuView();
-        val view = new SwingQuitView(viewMenu);
-
-        val controllerCommand = new CommandController();
-        val controllerQuit = new QuitController(controllerCommand, view, model);
-        val controllerDesktop = new DesktopController(controllerQuit);
-        val controllerKill = new KillController(controllerCommand, controllerQuit);
-        val controllerMenu = new MenuController(viewMenu, controllerCommand, controllerQuit);
-
-        view.display();
+        controller.mainMvc(this.args);
     }
 }
