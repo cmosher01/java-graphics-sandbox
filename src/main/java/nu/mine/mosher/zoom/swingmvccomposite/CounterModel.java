@@ -15,24 +15,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swingmvccomposite;
 
-import java.awt.event.*;
+import lombok.Getter;
 
-public class MenuController {
-    public static final String CMD_SAVE = "Save";
-    public static final String CMD_QUIT = "Quit";
-    public static final String CMD_EXIT = "Exit";
-    public static final String CMD_LINE = "Line";
+public class CounterModel {
+    @Getter
+    private int count;
 
-    public MenuController(final MenuView view, final CommandController command, final QuitController controllerQuit) {
-        view.addActionListener(e -> {
-            // TODO commands
-            switch (e.getActionCommand()) {
-                case CMD_SAVE -> command.save();
-                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
-                case CMD_LINE -> System.out.println("-".repeat(64));
-            }
-        });
-    }
+    public void increment() { this.count++; }
+    public void reset() { this.count = 0; }
 }

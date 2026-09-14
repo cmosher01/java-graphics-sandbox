@@ -18,8 +18,11 @@
 package nu.mine.mosher.zoom.swingdialogtimeout;
 
 import lombok.*;
+import nu.mine.mosher.zoom.swingquit.TimedOptionPane;
 
 import javax.swing.*;
+
+import java.util.List;
 
 import static javax.swing.JOptionPane.*;
 import static javax.swing.WindowConstants.*;
@@ -32,12 +35,17 @@ public class TimedDialogDemo {
 //    private static final boolean TEST_CASE = false;
     private static final boolean TEST_CASE = true;
 
+    // timeout in seconds
+    private static final int TIMEOUT_SECONDS = 5;
+
 
 
     @SneakyThrows
     public static void main(String[] args) {
         SwingUtilities.invokeAndWait(TimedDialogDemo::gui);
     }
+
+
 
     @SneakyThrows
     private static void gui() {
@@ -51,24 +59,47 @@ public class TimedDialogDemo {
 
 
         final Object answer;
+        final long ianswer;
         final Object save;
+        final Object discard;
+        final Object cancel;
         if (TEST_CASE) {
-            // Experimental showTimedOptionsDialog test case.
-            save = new TimedOptionPane.TimerButton("Save (%ds)");
-            answer = TimedOptionPane.showTimedOptionsDialog(5, frame, "Save?", "Quitting",
-                YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, new Object[]{save, "Discard", "Cancel"}, save);
+            // Experimental showTimedOptionsDialog test case. ****
+            save = new TimedOptionPane.TimerButton("Save (%ds)"); // <--- ****
+            discard = "Discard";
+            cancel = "Cancel";
+            val options = List.of(save, discard, cancel).toArray();
+            answer = TimedOptionPane.showTimedOptionDialog(
+                TIMEOUT_SECONDS, // <--- ****
+                frame, "Save?", "Quitting", YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, options, save);
         } else {
-            // Normal showOptionDialog use case, for comparison, and "control" test case.
+            // Nominal showOptionDialog use case, for comparison, and "control" test case.
             save = "Save";
-            answer = JOptionPane.showOptionDialog(frame, "Save?", "QUIT", YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, new Object[]{save, "Discard", "Cancel"}, save);
+            discard = "Discard";
+            cancel = "Cancel";
+            val options = List.of(save, discard, cancel).toArray();
+            answer = JOptionPane.showOptionDialog(
+                frame, "Save?", "Quitting", YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, options, save);
+        }
+
+        if (answer instanceof Number n) {
+            ianswer = n.longValue();
+        } else {
+            ianswer = -999; // not a number
         }
 
         if (answer == TimedOptionPane.TIMEOUT) {
             System.out.println("Result: [no button was pressed before the dialog timed out]");
-        } else if (answer == save) {
-            System.out.println("Result: [default button was pressed] SAVE!");
+        } else if (answer.equals(CLOSED_OPTION) || ianswer == CLOSED_OPTION) {
+            System.out.println("Result: [dialog box terminated (ESC or closed window)]");
+        } else if (answer == save || ianswer == YES_OPTION) {
+            System.out.println("Result: [default button: SAVE]");
+        } else if (answer == discard || ianswer == NO_OPTION) {
+            System.out.println("Result: [DISCARD]");
+        } else if (answer == cancel || ianswer == CANCEL_OPTION) {
+            System.out.println("Result: [CANCEL]");
         } else {
-            System.out.println("Result: " + answer);
+            System.out.println("Result: [unknown returned value: " + answer+"]");
         }
         System.out.flush();
 

@@ -15,17 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingdialogtimeout;
+package nu.mine.mosher.zoom.swingquit;
 
 import javax.swing.*;
+import javax.swing.Timer;
 
 import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
 
 /**
  * JOptionPane subclass that provides a timeout.
  */
 public class TimedOptionPane extends JOptionPane {
+    private static final KeyboardFocusManager KFM = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+
     private final Timer timer = new Timer(1000, e -> updateTimeout());
     private final String messageTemplate;
     private JDialog dialog;
@@ -57,7 +62,7 @@ public class TimedOptionPane extends JOptionPane {
         }
     }
 
-    public static Object showTimedOptionsDialog(
+    public static Object showTimedOptionDialog(
         final int timeoutSeconds,
         final Component parentComponent,
         final Object message,
@@ -70,12 +75,24 @@ public class TimedOptionPane extends JOptionPane {
     ) {
         final TimedOptionPane t = new TimedOptionPane(timeoutSeconds, message, messageType, optionType, icon, options, initialValue);
         t.dialog = t.createDialog(parentComponent, title);
+
         t.addPropertyChangeListener(VALUE_PROPERTY, e -> t.dialog.dispose());
+
+        final KeyEventDispatcher detectKeypress = e -> {
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+                // the user is here, so stop the countdown
+                t.timer.stop();
+            }
+            return false;
+        };
+
         t.updateTimeout();
+        KFM.addKeyEventDispatcher(detectKeypress);
         t.timer.start();
         t.dialog.setVisible(true);
         t.timer.stop();
-        return t.getValue();
+        KFM.removeKeyEventDispatcher(detectKeypress);
+        return Optional.ofNullable(t.getValue()).orElse(CLOSED_OPTION);
     }
 
 
@@ -92,6 +109,9 @@ public class TimedOptionPane extends JOptionPane {
         }
         this.secondsRemaining--;
     }
+
+
+
 
 
     /**

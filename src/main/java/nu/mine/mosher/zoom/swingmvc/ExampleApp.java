@@ -15,24 +15,29 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swingmvc;
 
-import java.awt.event.*;
+import lombok.*;
 
-public class MenuController {
-    public static final String CMD_SAVE = "Save";
-    public static final String CMD_QUIT = "Quit";
-    public static final String CMD_EXIT = "Exit";
-    public static final String CMD_LINE = "Line";
+import javax.swing.*;
+import java.util.List;
 
-    public MenuController(final MenuView view, final CommandController command, final QuitController controllerQuit) {
-        view.addActionListener(e -> {
-            // TODO commands
-            switch (e.getActionCommand()) {
-                case CMD_SAVE -> command.save();
-                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
-                case CMD_LINE -> System.out.println("-".repeat(64));
-            }
-        });
+/**
+ * See "Simple Java Swing  Model-View-Controller architecture" at
+ * <a href="https://www.tldraw.com/p/dFnLn33eeS05HJAdDu_W8?d=v-995.-3608.3040.1986.page">tldraw</a>
+ */
+public class ExampleApp {
+    @SneakyThrows
+    public static void main(final String... args) {
+        val commandLineArguments = List.of(args);
+        SwingUtilities.invokeAndWait(() -> mainMvc(commandLineArguments));
+    }
+
+    private static void mainMvc(final List<String> args) {
+        val model = new ExampleModel();
+        val view = new ExampleView(new ExampleImmutableModel(model));
+        val controller = new ExampleController(model, view);
+
+        controller.main(args);
     }
 }

@@ -22,12 +22,16 @@ import lombok.*;
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.List;
 
 import static javax.swing.JOptionPane.*;
 
+@RequiredArgsConstructor
 public class DialogViews {
-    @Setter
-    private Component parent;
+    // TODO make TIMEOUT_SECONDS a user preference
+    private static final int TIMEOUT_SECONDS = 15;
+
+    private final Component parent;
 
     /**
      * @return
@@ -39,13 +43,35 @@ public class DialogViews {
         return new JFileChooser().showSaveDialog(this.parent);
     }
 
+
+
+    public enum QuitOptions {
+        SAVE, DISCARD, CANCEL, TIMED_OUT
+    }
+
     /**
-     * @return
-     * JOptionPane.YES_OPTION
-     * JOptionPane.NO_OPTION
-     * JOptionPane.CANCEL_OPTION
+     * @return QuitOptions: SAVE, DISCARD, CANCEL, TIMED_OUT
      */
-    public int askOk() {
-        return JOptionPane.showConfirmDialog(this.parent, "Save?", "QUIT", YES_NO_CANCEL_OPTION, WARNING_MESSAGE);
+    public QuitOptions askSaveDiscardCancel() {
+        val save = new TimedOptionPane.TimerButton("Save (%ds)");
+        val discard = "Discard";
+        val cancel = "Cancel";
+        val options = List.of(save, discard, cancel).toArray();
+
+        val answer = TimedOptionPane.showTimedOptionDialog(
+            TIMEOUT_SECONDS, this.parent, "Save?", "Quitting",
+            YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, options, save);
+
+        final QuitOptions ret;
+        if (answer == save) {
+            ret = QuitOptions.SAVE;
+        } else if (answer == discard) {
+            ret = QuitOptions.DISCARD;
+        } else if (answer == cancel || answer.equals(CLOSED_OPTION)) {
+            ret = QuitOptions.CANCEL;
+        } else {
+            ret = QuitOptions.TIMED_OUT;
+        }
+        return ret;
     }
 }

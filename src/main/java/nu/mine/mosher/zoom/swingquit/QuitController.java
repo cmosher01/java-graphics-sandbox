@@ -20,22 +20,31 @@ package nu.mine.mosher.zoom.swingquit;
 import lombok.*;
 
 import java.awt.desktop.QuitResponse;
+import java.awt.event.*;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static javax.swing.JOptionPane.*;
-
-@RequiredArgsConstructor
 public class QuitController {
     private final LocalQuitResponse LOCAL_QUIT = new LocalQuitResponse();
 
     private final CommandController command;
-    private final DialogViews dlg;
+    private final SwingQuitView view;
+    private final FakeModel model;
 
-    @Setter
-    private Disposable window;
+    private final AtomicBoolean approved = new AtomicBoolean();
 
-    private boolean approved;
+    public QuitController(CommandController command, SwingQuitView view, FakeModel model) {
+        this.command = command;
+        this.view = view;
+        this.model = model;
 
+        view.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent e) {
+                quit();
+            }
+        });
+    }
 
 
     public void quit() {
@@ -43,29 +52,53 @@ public class QuitController {
     }
 
     public void quit(final QuitResponse r) {
-        if (this.approved) {
-            this.approved = false;
-            if (Objects.nonNull(this.window)) {
-                this.window.dispose();
+        log("QuitController.quit");
+        if (approved()) {
+            log("    (was already approved)");
+            // TERMINATE APP:
+            if (Objects.nonNull(this.view)) {
+                log("    will dispose window");
+                this.view.dispose();
             } else {
                 System.exit(0);
             }
         } else {
-            // TODO check model: if dirty then pressed = askOk() else pressed = NO_OPTION
-            // TODO timeout for askOk dialog
-            val pressed = this.dlg.askOk();
-            if (pressed == CANCEL_OPTION || pressed == CLOSED_OPTION){
+            log("    (not yet approved)");
+            final DialogViews.QuitOptions answer;
+            if (this.model.isDirty()) {
+                log("    model is dirty");
+                answer = this.view.dialogs().askSaveDiscardCancel();
+            } else {
+                log("    model is not dirty");
+                answer = DialogViews.QuitOptions.DISCARD;
+            }
+            if (answer == DialogViews.QuitOptions.CANCEL) {
+                log("    user canceled shutdown");
                 r.cancelQuit();
             } else {
-                if (pressed == YES_OPTION) {
+                if (answer == DialogViews.QuitOptions.SAVE) {
+                    log("    user chose to Save changes");
                     this.command.save();
+                } else if (answer == DialogViews.QuitOptions.TIMED_OUT) {
+                    log("    user did not respond; will auto-save changes");
+                    this.command.save(false);
+                } else {
+                    log("    user chose to Discard changes");
                 }
-                this.approved = true;
+                this.approved.set(true);
                 r.performQuit();
             }
         }
     }
 
+    public boolean approved() {
+        return this.approved.get();
+    }
+
+    private static void log(final String s) {
+        System.out.println(s);
+        System.out.flush();
+    }
 
 
     private class LocalQuitResponse implements QuitResponse {

@@ -15,24 +15,20 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swingmvc;
 
-import java.awt.event.*;
+@SuppressWarnings("ClassCanBeRecord")
+public class ExampleImmutableModel {
+    private final ExampleModel m;
 
-public class MenuController {
-    public static final String CMD_SAVE = "Save";
-    public static final String CMD_QUIT = "Quit";
-    public static final String CMD_EXIT = "Exit";
-    public static final String CMD_LINE = "Line";
+    public ExampleImmutableModel(final ExampleModel m) {
+        this.m = m;
+    }
 
-    public MenuController(final MenuView view, final CommandController command, final QuitController controllerQuit) {
-        view.addActionListener(e -> {
-            // TODO commands
-            switch (e.getActionCommand()) {
-                case CMD_SAVE -> command.save();
-                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
-                case CMD_LINE -> System.out.println("-".repeat(64));
-            }
-        });
+    public String name() {
+        return this.m.name();
+    }
+    public int get() {
+        return this.m.get();
     }
 }

@@ -15,24 +15,32 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swingmvc;
 
-import java.awt.event.*;
+import lombok.val;
 
-public class MenuController {
-    public static final String CMD_SAVE = "Save";
-    public static final String CMD_QUIT = "Quit";
-    public static final String CMD_EXIT = "Exit";
-    public static final String CMD_LINE = "Line";
+import java.util.List;
 
-    public MenuController(final MenuView view, final CommandController command, final QuitController controllerQuit) {
-        view.addActionListener(e -> {
-            // TODO commands
-            switch (e.getActionCommand()) {
-                case CMD_SAVE -> command.save();
-                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
-                case CMD_LINE -> System.out.println("-".repeat(64));
-            }
-        });
+@SuppressWarnings({"InstantiationOfUtilityClass"})
+public class ExampleController {
+    private final ExampleView view;
+
+    public ExampleController(final ExampleModel model, final ExampleView view) {
+        this.view = view;
+
+        val command = new ExampleCommandController(model, view);
+        new ExampleActionController(command, view);
+        new ExampleMouseController(command, view);
     }
+
+
+
+
+    @SuppressWarnings("ConfusingMainMethod")
+    public void main(@SuppressWarnings("unused") final List<String> args) {
+        // can process args here (to update the model, for example)
+        this.view.refresh();
+        this.view.display();
+    }
+
 }

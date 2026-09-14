@@ -33,18 +33,19 @@ public class SwingQuitApp {
         SwingUtilities.invokeAndWait(SwingQuitApp::create);
     }
 
+    @SuppressWarnings("InstantiationOfUtilityClass")
     private static void create() {
-        val viewDialogs = new DialogViews();
-        val controllerCommand = new CommandController(viewDialogs);
-        val controllerQuit = new QuitController(controllerCommand, viewDialogs);
+        val model = new FakeModel();
+
+        val viewMenu = new MenuView();
+        val view = new SwingQuitView(viewMenu);
+
+        val controllerCommand = new CommandController();
+        val controllerQuit = new QuitController(controllerCommand, view, model);
         val controllerDesktop = new DesktopController(controllerQuit);
-        val controllerMenu = new MenuController(controllerCommand, controllerQuit);
+        val controllerKill = new KillController(controllerCommand, controllerQuit);
+        val controllerMenu = new MenuController(viewMenu, controllerCommand, controllerQuit);
 
-        val viewFrame = new SwingQuitView(controllerMenu, controllerQuit);
-
-        viewDialogs.setParent(viewFrame);
-        controllerQuit.setWindow(viewFrame);
-
-        viewFrame.display();
+        view.display();
     }
 }

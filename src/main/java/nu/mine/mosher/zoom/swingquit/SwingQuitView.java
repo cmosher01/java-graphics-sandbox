@@ -21,14 +21,15 @@ import lombok.val;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class SwingQuitView extends JFrame implements Disposable {
     private static final String UNTITLED_NAME = "untitled";
     private static final Component CENTER = null;
     private static final Toolkit TK = Toolkit.getDefaultToolkit();
 
-    public SwingQuitView(final MenuController controllerMenu, final QuitController quit) {
+    private final DialogViews dialogs = new DialogViews(this);
+
+    public SwingQuitView(final MenuView viewMenu) {
         super(UNTITLED_NAME);
 
         val dim = TK.getScreenSize();
@@ -36,17 +37,21 @@ public class SwingQuitView extends JFrame implements Disposable {
         setLocationRelativeTo(CENTER);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                quit.quit();
-            }
-        });
+//        addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(final WindowEvent e) {
+//                quit.quit();
+//            }
+//        });
 
-        setJMenuBar(controllerMenu);
+        setJMenuBar(viewMenu);
     }
 
     public void display() {
         setVisible(true);
+    }
+
+    public DialogViews dialogs() {
+        return this.dialogs;
     }
 }

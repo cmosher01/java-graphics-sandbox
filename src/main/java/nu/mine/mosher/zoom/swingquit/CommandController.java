@@ -19,19 +19,18 @@ package nu.mine.mosher.zoom.swingquit;
 
 import lombok.*;
 
-import java.awt.desktop.QuitResponse;
-import java.util.Objects;
-
-import static javax.swing.JOptionPane.*;
-
 @RequiredArgsConstructor
 public class CommandController {
-    private final DialogViews dlg;
-
-
-
     public void save() {
-        System.out.println("[save]");
+        save(true);
+    }
+
+    public void save(final boolean attended) {
+        // TODO unattended save (auto back up of existing file, or creation on new file for untitled documents)
+        // or allow an app-specific user setting for unattended auto save
+        System.out.println("[save"+(attended?"":" UNATTENDED")+"]");
+        // make sure unattended saves do not do anything with the view
+        // because it could be happening during an app shutdown sequence
     }
 
     public void close() {
