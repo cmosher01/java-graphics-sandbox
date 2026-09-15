@@ -17,6 +17,7 @@
 
 package nu.mine.mosher.zoom.swingquit;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class KillController {
     private final QuitController quit;
     private final CommandController command;

@@ -35,7 +35,7 @@ public class ExampleApp {
 
     private static void mainMvc(final List<String> args) {
         val model = new ExampleModel();
-        val view = new ExampleView(new ExampleImmutableModel(model));
+        val view = new ExampleView(model.readOnly());
         val controller = new ExampleController(model, view);
 
         controller.main(args);

@@ -27,7 +27,7 @@ import java.util.List;
 import static java.awt.event.KeyEvent.*;
 import static nu.mine.mosher.zoom.swingquit.MenuController.*;
 
-@SuppressWarnings("MagicConstant")
+@SuppressWarnings({"MagicConstant", "SpellCheckingInspection"})
 public class MenuView extends JMenuBar {
     private static final Desktop DT = Desktop.getDesktop();
     private static final Toolkit TK = Toolkit.getDefaultToolkit();

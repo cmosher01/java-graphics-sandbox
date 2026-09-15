@@ -34,7 +34,7 @@ public class CommandController {
 
 
 
-    public void filenew() {
+    public void newFile() {
     }
 
     public void open() {
@@ -124,6 +124,8 @@ public class CommandController {
 
     public void quit() {
         log("quit");
+        // TODO fix quit sequence (as in SwingQuitApp)
+        System.exit(0);
     }
 
     public void quit(final QuitResponse r) {

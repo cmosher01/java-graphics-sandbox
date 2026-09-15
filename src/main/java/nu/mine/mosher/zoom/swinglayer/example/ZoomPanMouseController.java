@@ -17,46 +17,37 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
-
-@RequiredArgsConstructor
-public class DragSelectionController {
-    private final DragSelectionModel model;
-    private final InteractiveRectsModel modelItems;
+public class ZoomPanMouseController {
     private final ZoomPanModel zp;
 
+    private Point2D.Double ptDragPivot;
 
-
-    private Point2D.Double ptOrig;
-    private Point2D.Double ptCurr;
-
-
+    public ZoomPanMouseController(final ZoomPanModel zp) {
+        this.zp = zp;
+    }
 
     public void press(final Point2D.Double at) {
-        this.ptOrig = at;
-        this.ptCurr = at;
-
-        this.model.set(this.ptOrig, this.ptCurr);
-        this.modelItems.selection().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+        this.ptDragPivot = at;
     }
 
     public void drag(final Point2D.Double at) {
-        if (!at.equals(this.ptCurr)) {
-            this.ptCurr = at;
-
-            this.model.set(this.ptOrig, this.ptCurr);
-            this.modelItems.selection().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+        if (Objects.nonNull(this.ptDragPivot)) {
+            val d = Swings.delta(this.ptDragPivot, at);
+            this.zp.pan(d.getX(), d.getY());
+            this.ptDragPivot = at;
         }
     }
 
     public void release() {
-        this.model.clear();
+        this.ptDragPivot = null;
     }
 
-    public boolean selecting() {
-        return this.model.selecting();
+    public void rotate(final Point2D.Double at, final int clicks) {
+        this.zp.zoom(clicks, at.getX(), at.getY());
     }
 }

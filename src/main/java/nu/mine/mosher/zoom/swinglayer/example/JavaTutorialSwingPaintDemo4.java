@@ -47,25 +47,24 @@ public class JavaTutorialSwingPaintDemo4 {
     private static void createAndShowGUI() {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-
-
-
-
+        // MODEL
         val zp = new ZoomPanModel();
-        val zpm = new ZoomPanMouse(zp);
-
-        val modelInteractiveRects = new InteractiveRectsModel();
-        val cntlrInteractiveRects = new InteractiveRectsController(modelInteractiveRects, zp);
-
-        val modelDragSelection = new DragSelectionModel();
-        val cntlrDragSelection = new DragSelectionController(modelDragSelection, modelInteractiveRects, zp);
-
         val axes = new AxesModel(zp);
+        val modelInteractiveRects = new InteractiveRectsModel();
+        val modelDragSelection = new DragSelectionModel();
+        val db = new DatabaseModel();
+        val status = new StatusModel(zp);
 
+
+        // VIEW
         val viewMain = new MainPane(modelInteractiveRects, zp, modelDragSelection, axes);
-
-        val status = new StatusModel(zp, viewMain);
         val sb = new StatusBarView(status);
+
+
+
+
+
+
 
 
 
@@ -74,39 +73,27 @@ public class JavaTutorialSwingPaintDemo4 {
         val f = new JFrame(title);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // see comments in MouseController
+//        f.addWindowFocusListener(new WindowAdapter() {
+//            @Override
+//            public void windowLostFocus(final WindowEvent e) {
+//                controller.windowLostFocus();
+//            }
+//        });
 
-
-
-        val db = new DatabaseModel();
-
-        val commands = new CommandController(db);
-        val desktop = new DesktopController(commands);
-        val mb = MenuController.createMenuBar(commands, title, db);
-        f.setJMenuBar(mb);
-
-        val controller = new MouseController(viewMain, sb, zp, zpm, status, cntlrInteractiveRects, cntlrDragSelection);
-        f.addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowLostFocus(final WindowEvent e) {
-                controller.windowLostFocus();
-            }
-        });
-
-
-
+        val viewMouse = new MouseView();
 
         val paneComposite = new JPanel();
         paneComposite.setLayout(new OverlayLayout(paneComposite));
-        paneComposite.add(controller);
+        paneComposite.add(viewMouse);
         paneComposite.add(viewMain);
 
         val view = f.getContentPane();
         view.add(paneComposite, BorderLayout.CENTER);
         view.add(sb, BorderLayout.PAGE_END);
 
-
-
-
+        val viewMenu = new MenuView();
+        f.setJMenuBar(viewMenu);
 
         // resize main frame window to 80% of screen size, and center it
         f.setSize(Swings.scale(.8, Toolkit.getDefaultToolkit().getScreenSize()));
@@ -119,6 +106,17 @@ public class JavaTutorialSwingPaintDemo4 {
 //        f.setBackground(Solarized.GREEN);
 
         f.setVisible(true);
+
+
+
+        // CONTROLLER
+        val controllerZoomPan = new ZoomPanMouseController(zp);
+        val controllerInteractiveRects = new InteractiveRectsController(modelInteractiveRects, zp);
+        val controllerDragSelection = new DragSelectionController(modelDragSelection, modelInteractiveRects, zp);
+        val controllerCommands = new CommandController(db);
+        val controllerDesktop = new DesktopController(controllerCommands);
+        val controllerMenu = new MenuController(viewMenu, controllerCommands);
+        val controller = new MouseController(viewMouse, viewMain, sb, zp, controllerZoomPan, status, controllerInteractiveRects, controllerDragSelection);
     }
 
 }

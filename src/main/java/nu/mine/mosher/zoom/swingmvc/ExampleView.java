@@ -18,6 +18,7 @@
 package nu.mine.mosher.zoom.swingmvc;
 
 import lombok.val;
+import nu.mine.mosher.zoom.swinglayer.example.MenuRefresher;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ import javax.swing.*;
 
 public class ExampleView extends JFrame {
     // read-only access to <MODEL>
-    private final ExampleImmutableModel model;
+    private final ExampleModel.Immutable model;
 
     // visual components of <VIEW>
     private final JLabel label = new JLabel("", SwingConstants.CENTER);
@@ -41,7 +42,7 @@ public class ExampleView extends JFrame {
 
 
 
-    public ExampleView(final ExampleImmutableModel model) {
+    public ExampleView(final ExampleModel.Immutable model) {
         super(model.name());
         this.model = model;
 
@@ -79,6 +80,9 @@ public class ExampleView extends JFrame {
             file.add(this.reset);
             file.addSeparator();
             file.add(this.exit);
+            file.addMenuListener(MenuRefresher.refresh(() -> {
+                this.reset.setEnabled(this.model.get() != 0);
+            }));
         }
 
         val mb = new JMenuBar();

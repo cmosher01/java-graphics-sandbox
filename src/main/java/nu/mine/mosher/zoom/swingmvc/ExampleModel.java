@@ -27,4 +27,19 @@ public class ExampleModel {
     // mutators
     public void inc() { value++; }
     public void reset() { value = INIT; }
+
+
+
+    public Immutable readOnly() {
+        return new Immutable();
+    }
+
+    public class Immutable {
+        public String name() {
+            return ExampleModel.this.name();
+        }
+        public int get() {
+            return ExampleModel.this.get();
+        }
+    }
 }

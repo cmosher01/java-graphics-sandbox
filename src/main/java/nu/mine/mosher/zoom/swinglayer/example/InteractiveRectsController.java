@@ -61,7 +61,7 @@ public class InteractiveRectsController {
             val item = optItem.get();
             this.wasSelected = item.selected();
             if (!this.wasSelected) {
-                this.model.selectOne(item, true);
+                this.model.selection().select(item, true);
             }
         }
     }
@@ -70,7 +70,7 @@ public class InteractiveRectsController {
         if (has()) {
             val d = Swings.delta(this.optptDragPivot.get(), at);
             if (d.x != 0 && d.y != 0) {
-                this.model.moveSelection(d);
+                this.model.selection().move(d);
                 if (DYNAMIC_BOUNDS_UPDATING) {
                     this.model.updateBounds();
                     this.zp.setZoomOutMinFromBounds(this.model.bounds());
@@ -87,12 +87,12 @@ public class InteractiveRectsController {
                 this.zp.setZoomOutMinFromBounds(this.model.bounds());
             } else if (this.wasSelected) {
                 val item = optItem.get();
-                this.model.selectOne(item, false);
+                this.model.selection().select(item, false);
             }
             this.optItem = Optional.empty();
             this.optptDragPivot = Optional.empty();
         } else if (!dragged) {
-            this.model.clearSelection();
+            this.model.selection().clear();
         }
     }
 }

@@ -17,37 +17,38 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.val;
+import javax.swing.event.*;
 
-import java.awt.geom.Point2D;
-import java.util.Objects;
-
-public class ZoomPanMouse {
-    private final ZoomPanModel zp;
-
-    private Point2D.Double ptDragPivot;
-
-    public ZoomPanMouse(final ZoomPanModel zp) {
-        this.zp = zp;
+/**
+ * Use refresh() to facilitate menu state updates.
+ * Don't use any other methods in this interface.
+ */
+@FunctionalInterface
+public interface MenuRefresher extends MenuListener {
+    /**
+     * Pass result to JMenu.addMenuListener().
+     * Upon menu selection, the lambda will be called.
+     * The lambda is intended to set the menu state appropriately
+     * (enabled/disabled items, etc.)
+     * @param lambda
+     * @return
+     */
+    static MenuRefresher refresh(final Runnable lambda) {
+        return lambda::run;
     }
 
-    public void press(final Point2D.Double at) {
-        this.ptDragPivot = at;
+    void run();
+
+    @Override
+    default void menuSelected(MenuEvent e) {
+        run();
     }
 
-    public void drag(final Point2D.Double at) {
-        if (Objects.nonNull(this.ptDragPivot)) {
-            val d = Swings.delta(this.ptDragPivot, at);
-            this.zp.pan(d.getX(), d.getY());
-            this.ptDragPivot = at;
-        }
+    @Override
+    default void menuDeselected(MenuEvent e) {
     }
 
-    public void release() {
-        this.ptDragPivot = null;
-    }
-
-    public void rotate(final Point2D.Double at, final int clicks) {
-        this.zp.zoom(clicks, at.getX(), at.getY());
+    @Override
+    default void menuCanceled(MenuEvent e) {
     }
 }

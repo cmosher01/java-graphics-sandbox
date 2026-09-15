@@ -19,6 +19,7 @@ package nu.mine.mosher.zoom.swingquit;
 
 import lombok.*;
 
+@SuppressWarnings("ClassCanBeRecord")
 @RequiredArgsConstructor
 public class CommandController {
     private final SwingQuitView view;
@@ -34,7 +35,7 @@ public class CommandController {
         // make sure unattended saves do not do anything with the view
         // because it could be happening during an app shutdown sequence
 
-        System.out.println("[save "+(attended?"":" UN")+"ATTENDED]: "+this.model.getName());
+        System.out.println("[save "+(attended?"":" UN")+"ATTENDED]: "+this.model.getTitle());
 
         this.model.setDirty(false);
 

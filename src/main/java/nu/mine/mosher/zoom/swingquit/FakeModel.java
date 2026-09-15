@@ -35,7 +35,7 @@ public class FakeModel {
 
 
 
-    public String getName() {
+    public String getTitle() {
         return this.name+(this.dirty?" *":"");
     }
 
@@ -45,12 +45,13 @@ public class FakeModel {
         return new Immutable();
     }
 
+    // this is used by the views, so they can't modify the state
     public class Immutable {
-        public String getName() {
-            return FakeModel.this.getName();
+        public String getTitle() {
+            return FakeModel.this.getTitle();
         }
         public boolean isDirty() {
-            return dirty;
+            return FakeModel.this.isDirty();
         }
     }
 }

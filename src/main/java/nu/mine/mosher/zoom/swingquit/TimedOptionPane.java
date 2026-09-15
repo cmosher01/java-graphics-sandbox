@@ -80,22 +80,34 @@ public class TimedOptionPane extends JOptionPane {
 
         final KeyEventDispatcher detectKeypress = e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
+                System.out.println("key press detected");
                 // the user is here, so stop the countdown
                 t.timer.stop();
             }
             return false;
         };
 
+        final MouseListener detectMouseclick = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("mouse click detected");
+                // the user is here, so stop the countdown
+                t.timer.stop();
+            }
+        };
+
         t.updateTimeout();
+
+        t.addMouseListener(detectMouseclick);
         KFM.addKeyEventDispatcher(detectKeypress);
         t.timer.start();
         t.dialog.setVisible(true);
         t.timer.stop();
         KFM.removeKeyEventDispatcher(detectKeypress);
+        t.removeMouseListener(detectMouseclick);
+
         return Optional.ofNullable(t.getValue()).orElse(CLOSED_OPTION);
     }
-
-
 
     private void updateTimeout() {
         if (this.initialValue instanceof TimerButton tb) {
@@ -127,10 +139,12 @@ public class TimedOptionPane extends JOptionPane {
         public TimerButton(final String s) {
             this.format = s;
         }
+
         @Override
         public String toString() {
             return this.format;
         }
+
         private void set(final String template, final int seconds) {
             this.format = String.format(template, seconds);
         }

@@ -22,30 +22,23 @@ import lombok.val;
 import javax.swing.*;
 import java.awt.*;
 
-public class SwingQuitView extends JFrame implements Disposable {
+public class SwingQuitView extends JFrame {
     private static final Component CENTER = null;
     private static final Toolkit TK = Toolkit.getDefaultToolkit();
 
     private final FakeModel.Immutable model;
 
     private final DialogViews dialogs = new DialogViews(this);
-    private MenuView menu;
+    private final MenuView menu = new MenuView();
 
     public SwingQuitView(final FakeModel.Immutable model) {
         this.model = model;
-        this.menu = new MenuView();
 
         val dim = TK.getScreenSize();
         setSize(new Dimension((int)(.8*dim.width), (int)(.8*dim.height)));
         setLocationRelativeTo(CENTER);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-//        addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(final WindowEvent e) {
-//                quit.quit();
-//            }
-//        });
 
         setJMenuBar(this.menu);
     }
@@ -64,7 +57,7 @@ public class SwingQuitView extends JFrame implements Disposable {
 
     public void refresh() {
         // this would read from the model and set visible Swing elements
-        setTitle(this.model.getName());
-        System.out.println("Refresh view from model: "+this.model.getName()+" [dirty: "+this.model.isDirty()+"]");
+        setTitle(this.model.getTitle());
+        System.out.println("Refresh view from model: "+this.model.getTitle()+" [dirty: "+this.model.isDirty()+"]");
     }
 }

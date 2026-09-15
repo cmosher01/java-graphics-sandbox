@@ -18,7 +18,6 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
-import nu.mine.mosher.zoom.spacialgrid.SpatialGrid;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -39,19 +38,16 @@ public class InteractiveRectsModel {
     /**
      * All interactive rectangles, in back-to-front Z-order.
      */
-    private static final boolean USE_SPATIAL_TREE = false; // doesn't work when zooming out; no noticeable improvement anyway
     private final ArrayList<InteractiveRect> sqs = new ArrayList<>();
-    private final SpatialGrid<InteractiveRect> sqq = new SpatialGrid<>(ITEM_WIDTH);
 
 
 
     private Rectangle2D.Double bounds;
     private Rectangle2D.Double boundsOutset;
 
-    /**
-     * Set of currently selected items. Redundant with InteractiveRect::selected() property.
-     */
-    private final Set<InteractiveRect> selection = Collections.newSetFromMap(new IdentityHashMap<>());
+
+
+    private final InteractiveRectsSelectionModel selection = new InteractiveRectsSelectionModel(this.sqs);
 
 
 
@@ -67,9 +63,6 @@ public class InteractiveRectsModel {
             final double y = rand.nextDouble(-MAX_COORD, MAX_COORD);
             val item = new InteractiveRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
             this.sqs.add(item);
-            if (USE_SPATIAL_TREE) {
-                this.sqq.insert(new SpatialGrid.Rectangle<>(x, y, ITEM_WIDTH, ITEM_HEIGHT, item));
-            }
         }
     }
 
@@ -96,16 +89,9 @@ public class InteractiveRectsModel {
 
 
     public Optional<InteractiveRect> getAt(final Point2D.Double at) {
-        if (USE_SPATIAL_TREE) {
-            var found = this.sqq.query(at.getX()-1, at.getY()-1, 2, 2);
-            if (!found.isEmpty()) {
-                return Optional.of(found.getLast().unwrap());
-            }
-        } else {
-            for (val sq : this.sqs.reversed()) {
-                if (sq.contains(at)) {
-                    return Optional.of(sq);
-                }
+        for (val sq : this.sqs.reversed()) {
+            if (sq.contains(at)) {
+                return Optional.of(sq);
             }
         }
         return Optional.empty();
@@ -114,44 +100,9 @@ public class InteractiveRectsModel {
 
 
 
-    // TODO move all selection related method/vars to separate class
-    public void clearSelection() {
-        this.selection.forEach(sq -> sq.select(false));
-        this.selection.clear();
+    public InteractiveRectsSelectionModel selection() {
+        return this.selection;
     }
-
-    public void selectOne(final InteractiveRect sq, final boolean select) {
-        sq.select(select);
-        if (select) {
-            this.selection.add(sq);
-        } else {
-            this.selection.remove(sq);
-        }
-    }
-
-    public void setSelectionFromRectangle(final Rectangle2D.Double r) {
-        // TODO potential optimization in searching for hits
-        if (USE_SPATIAL_TREE) {
-            var found = this.sqq.query(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-            clearSelection();
-            found.forEach(h -> selectOne(h.unwrap(), true));
-        } else {
-            for (val sq : this.sqs.reversed()) {
-                val hit = sq.intersects(r);
-                selectOne(sq, hit);
-            }
-        }
-    }
-
-    public void moveSelection(final Point2D.Double delta) {
-        this.selection.forEach(sq -> {
-            sq.move(delta);
-            if (USE_SPATIAL_TREE) {
-                throw new UnsupportedOperationException("need to update spatial tree");
-            }
-        });
-    }
-
 
 
 
@@ -181,15 +132,10 @@ public class InteractiveRectsModel {
     }
 
     public void paint(final Graphics2D g, final Rectangle2D clip, ZoomPanModel zp) {
-        if (USE_SPATIAL_TREE && 0.0001 < zp.zoomFactor()) {
-            var found = this.sqq.query(clip.getX(), clip.getY(), clip.getWidth(), clip.getHeight());
-            found.forEach(h -> h.unwrap().paint(g));
-        } else {
-            this.sqs.forEach(sq -> {
-                if (sq.intersects(clip)) {
-                    sq.paint(g);
-                }
-            });
-        }
+        this.sqs.forEach(sq -> {
+            if (sq.intersects(clip)) {
+                sq.paint(g);
+            }
+        });
     }
 }

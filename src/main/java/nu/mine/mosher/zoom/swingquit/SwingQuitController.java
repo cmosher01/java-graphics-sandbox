@@ -21,13 +21,14 @@ import lombok.*;
 
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class SwingQuitController {
     private final FakeModel model;
     private final SwingQuitView view;
 
 
 
-    @SuppressWarnings("InstantiationOfUtilityClass")
+    @SuppressWarnings({"InstantiationOfUtilityClass", "unused"})
     public SwingQuitController(final FakeModel model, final SwingQuitView view) {
         this.model = model;
         this.view = view;

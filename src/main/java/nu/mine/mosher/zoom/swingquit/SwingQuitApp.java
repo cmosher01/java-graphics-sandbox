@@ -23,6 +23,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class SwingQuitApp {
     @SneakyThrows
     public static void main(final String... args) {
@@ -33,8 +34,6 @@ public class SwingQuitApp {
 
 
 
-    private static final Toolkit TK = Toolkit.getDefaultToolkit();
-    private static final Desktop DT = Desktop.getDesktop();
     private final List<String> args;
 
     private SwingQuitApp(final String... args) {
@@ -42,6 +41,7 @@ public class SwingQuitApp {
     }
 
     private void preSwingSetup() {
+        // note: can access args here, to allow user to change settings
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.macos.useScreenMenuBar", "true");
     }

@@ -26,21 +26,17 @@ import java.awt.geom.Point2D;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
-public class MouseController extends JComponent {
-    public static final int STATUS_REFRESH_MILLIS = 500;
+public class MouseController {
+    public int STATUS_REFRESH_MILLIS = 500;
 
-
-
-    public MouseController(final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouse zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
-        setOpaque(false);
-
+    public MouseController(final MouseView viewMouse, final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouseController zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
         val mouse = new MouseAdapter() {
             private boolean dragged;
 
             @Override
             public void mouseMoved(final MouseEvent e) {
                 val at = pointOf(e);
-                status.set(at);
+                status.set(paneMain, at);
                 sb.refresh();
             }
 
@@ -53,7 +49,7 @@ public class MouseController extends JComponent {
 
                 this.dragged = false;
                 if (e.isShiftDown()) {
-                    mouseCtlrDragSelection.press(clipPoint(e.getPoint()));
+                    mouseCtlrDragSelection.press(clipPoint(e.getPoint(), viewMouse));
                 } else if (modelMouse.want(cnvAt)) {
                     modelMouse.press();
                 } else {
@@ -70,7 +66,7 @@ public class MouseController extends JComponent {
 
                 this.dragged = true;
                 if (mouseCtlrDragSelection.selecting()) {
-                    mouseCtlrDragSelection.drag(clipPoint(e.getPoint()));
+                    mouseCtlrDragSelection.drag(clipPoint(e.getPoint(), viewMouse));
                 } else if (modelMouse.has()) {
                     val cnvAt = zp.viewportToCanvas(at);
                     modelMouse.drag(cnvAt);
@@ -79,7 +75,7 @@ public class MouseController extends JComponent {
                 }
 
                 paneMain.repaint();
-                status.set(at);
+                status.set(paneMain, at);
                 sb.refresh();
                 e.consume();
             }
@@ -117,32 +113,34 @@ public class MouseController extends JComponent {
                 zpMouse.rotate(at, e.getWheelRotation());
 
                 paneMain.repaint();
-                status.set(at);
+                status.set(paneMain, at);
                 sb.refresh();
                 e.consume();
             }
         };
 
-        addMouseListener(mouse);
-        addMouseMotionListener(mouse);
-        addMouseWheelListener(mouse);
+        viewMouse.addMouseListener(mouse);
+        viewMouse.addMouseMotionListener(mouse);
+        viewMouse.addMouseWheelListener(mouse);
 
-        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
-                awtMouseReleased();
-            }
-        }, AWTEvent.MOUSE_EVENT_MASK);
+//        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+//            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+//                awtMouseReleased();
+//            }
+//        }, AWTEvent.MOUSE_EVENT_MASK);
 
-        addComponentListener(new ComponentAdapter() {
+        viewMouse.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(final ComponentEvent e) {
-                status.set();
+                status.set(paneMain);
                 sb.refresh();
             }
         });
 
+
+
         new Timer(STATUS_REFRESH_MILLIS, e -> {
-            status.set();
+            status.set(paneMain);
             sb.refresh();
         }).start();
     }
@@ -156,19 +154,19 @@ public class MouseController extends JComponent {
     // A dropped MOUSE_RELEASE can cause the selection rectangle to stay on the screen.
     // It's proving difficult to fix these without ruining the nominal behavior.
 
-    public void windowLostFocus() {
-    }
-
-    private void awtMouseReleased() {
-    }
-
-
+//    public void windowLostFocus() {
+//    }
+//
+//    private void awtMouseReleased() {
+//    }
 
 
 
-    private Point2D.Double clipPoint(final Point p) {
+
+
+    private static Point2D.Double clipPoint(final Point p, final JComponent view) {
         return new Point2D.Double(
-            Math.clamp(p.x, 0, getWidth()),
-            Math.clamp(p.y, 0, getHeight()));
+            Math.clamp(p.x, 1, view.getWidth()-1),
+            Math.clamp(p.y, 1, view.getHeight()-1));
     }
 }

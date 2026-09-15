@@ -15,20 +15,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingmvc;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-@SuppressWarnings("ClassCanBeRecord")
-public class ExampleImmutableModel {
-    private final ExampleModel m;
+import javax.swing.*;
+import java.awt.event.*;
 
-    public ExampleImmutableModel(final ExampleModel m) {
-        this.m = m;
-    }
-
-    public String name() {
-        return this.m.name();
-    }
-    public int get() {
-        return this.m.get();
+/**
+ * Invisible "glass" pane that captures mouse input events and
+ * forwards them to the MouseController
+ */
+public class MouseView extends JComponent {
+    public MouseView() {
+        setOpaque(false);
     }
 }

@@ -54,4 +54,5 @@ public final class MenuAccelerators {
     public static final KeyStroke ACCEL_PREFERENCES = getKeyStroke(VK_COMMA, CMD);
 
     public static final KeyStroke ACCEL_HELP = getKeyStroke(VK_SLASH, SHIFT_CMD);
+    public static final KeyStroke ACCEL_ABOUT = null;
 }

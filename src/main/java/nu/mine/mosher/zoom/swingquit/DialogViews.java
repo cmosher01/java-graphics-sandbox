@@ -26,6 +26,7 @@ import java.util.List;
 
 import static javax.swing.JOptionPane.*;
 
+@SuppressWarnings("ClassCanBeRecord")
 @RequiredArgsConstructor
 public class DialogViews {
     // TODO make TIMEOUT_SECONDS a user preference
