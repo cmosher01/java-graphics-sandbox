@@ -19,7 +19,7 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
+import java.util.ArrayList;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 

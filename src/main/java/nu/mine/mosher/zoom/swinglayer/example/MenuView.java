@@ -67,7 +67,7 @@ public class MenuView extends JMenuBar {
     private final ActiveMenu actClose = ActiveMenu.create(CMD_CLOSE, ACCEL_CLOSE);
     private final ActiveMenu actSave = ActiveMenu.create(CMD_SAVE, ACCEL_SAVE);
     private final ActiveMenu actSaveAs = ActiveMenu.create(CMD_SAVE_AS, ACCEL_SAVE_AS);
-    private final ActiveMenu actPageSetup = ActiveMenu.create(CMD_PAGE_SETUP, ACCEL_PASTE);
+    private final ActiveMenu actPageSetup = ActiveMenu.create(CMD_PAGE_SETUP, ACCEL_PAGE_SETUP);
     private final ActiveMenu actPrint = ActiveMenu.create(CMD_PRINT, ACCEL_PRINT);
     private final ActiveMenu actQuit = ActiveMenu.create(CMD_QUIT, ACCEL_QUIT);
     private final ActiveMenu actUndo = ActiveMenu.create(CMD_UNDO, ACCEL_UNDO);

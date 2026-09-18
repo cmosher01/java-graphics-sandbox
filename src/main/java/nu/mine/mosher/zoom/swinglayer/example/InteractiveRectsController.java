@@ -17,7 +17,7 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.*;
+import lombok.val;
 
 import java.awt.geom.Point2D;
 import java.util.Optional;

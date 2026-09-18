@@ -19,7 +19,6 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
 
-import java.awt.*;
 import java.awt.geom.*;
 
 /**

@@ -22,7 +22,6 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.*;
 
-import javax.swing.*;
 import java.util.List;
 
 public class FamilyTreeXyEditor {

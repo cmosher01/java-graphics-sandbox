@@ -18,7 +18,6 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 import javax.swing.*;
-import java.awt.event.*;
 
 /**
  * Invisible "glass" pane that captures mouse input events and

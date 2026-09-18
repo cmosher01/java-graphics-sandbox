@@ -29,6 +29,7 @@ import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE__1_GRAY__BRT
 @RequiredArgsConstructor
 public class AxesView {
     private static final Point2D.Double ORIGIN = new Point2D.Double();
+
     private static final Color AXES_COLOR = BASE__1_GRAY__BRT;
     private static final Stroke AXES_STROKE = Swings.simpleStroke();
 

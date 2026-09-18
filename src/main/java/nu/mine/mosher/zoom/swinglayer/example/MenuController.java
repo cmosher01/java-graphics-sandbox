@@ -17,8 +17,6 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.*;
-
 /**
  * Sets itself as a listener of actions on the menu view,
  * in order to forward them to the command controller

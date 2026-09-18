@@ -17,7 +17,6 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import java.awt.*;
 import java.awt.geom.*;
 
 public class InteractiveRectModel extends Rectangle2D.Double {

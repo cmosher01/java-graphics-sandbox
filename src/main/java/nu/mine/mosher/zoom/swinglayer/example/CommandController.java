@@ -20,7 +20,6 @@ package nu.mine.mosher.zoom.swinglayer.example;
 import lombok.*;
 
 import java.awt.*;
-import java.awt.desktop.QuitResponse;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
