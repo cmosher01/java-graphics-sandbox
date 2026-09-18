@@ -24,10 +24,10 @@ import java.awt.*;
 public final class StatusBarView extends JPanel {
     private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
 
-    private final StatusModel status;
+    private final StatusBarModel status;
     private final JLabel label;
 
-    public StatusBarView(final StatusModel status) {
+    public StatusBarView(final StatusBarModel status) {
         super(new BorderLayout());
         this.status = status;
 

@@ -26,7 +26,7 @@ import java.awt.geom.Rectangle2D;
 import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public final class MainPane extends JPanel {
+public final class MainView extends JPanel {
     private static final LayoutManager NO_LAYOUT_MANAGER = null;
 
     private static final boolean BACKGROUND_FILL = true;
@@ -36,19 +36,20 @@ public final class MainPane extends JPanel {
 
 
 
-    private final InteractiveRectsModel model;
-    private final ZoomPanModel zp;
-    private final DragSelectionModel modelDragSelection;
-    private final AxesModel axes;
+    private final ZoomPanModel modelZoomPan;
+    private final ZoomPanView viewZoomPan;
+    private final InteractiveRectsView viewRects;
+    private final DragSelectionView viewDragSelection;
+    private final AxesView viewAxes;
 
 
-    public MainPane(final InteractiveRectsModel model, final ZoomPanModel zp, final DragSelectionModel modelDragSelection, final AxesModel axes) {
+    public MainView(final ZoomPanModel modelZoomPan, final ZoomPanView viewZoomPan, final InteractiveRectsView viewRects, final DragSelectionView viewDragSelection, final AxesView viewAxes) {
         super(NO_LAYOUT_MANAGER);
-
-        this.model = model;
-        this.zp = zp;
-        this.modelDragSelection = modelDragSelection;
-        this.axes = axes;
+        this.modelZoomPan = modelZoomPan;
+        this.viewZoomPan = viewZoomPan;
+        this.viewRects = viewRects;
+        this.viewDragSelection = viewDragSelection;
+        this.viewAxes = viewAxes;
 
         setOpaque(false);
     }
@@ -71,18 +72,18 @@ public final class MainPane extends JPanel {
 
 
 
-            this.zp.paint(g);
+            this.viewZoomPan.paint(g);
 
             val clip = clip();
 
-            this.model.paintBackground(g);
+            this.viewRects.paintBackground(g);
 
             if (AXES) {
-                this.axes.paint(g, super.getWidth(), super.getHeight());
+                this.viewAxes.paint(g, super.getWidth(), super.getHeight());
             }
 
-            this.model.paint(g, clip, this.zp);
-            this.modelDragSelection.paint(g, this.zp);
+            this.viewRects.paint(g, clip);
+            this.viewDragSelection.paint(g, this.modelZoomPan);
         }
     }
 
@@ -103,6 +104,6 @@ public final class MainPane extends JPanel {
      * @return clipping rect
      */
     public Rectangle2D.Double clip() {
-        return this.zp.viewportToCanvas(viewportClip());
+        return this.modelZoomPan.viewportToCanvas(viewportClip());
     }
 }

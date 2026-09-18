@@ -23,122 +23,108 @@ import lombok.val;
 
 import javax.swing.*;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.List;
-
 import static nu.mine.mosher.zoom.swinglayer.example.MenuAccelerators.*;
-import static nu.mine.mosher.zoom.swinglayer.example.MenuController.*;
 
 
 
 public class MenuView extends JMenuBar {
-    private static final Desktop DT = Desktop.getDesktop();
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
+    // ellipsis, "dot dot dot"
+    private static final String DDD = Character.toString(0x2026);
+
+    // TODO store as resources for internationalization purposes
+    private static final String MENU_FILE = "File";
+    private static final String CMD_NEW = "New";
+    private static final String CMD_OPEN = "Open"+DDD;
+    private static final String CMD_CLOSE = "Close";
+    private static final String CMD_SAVE = "Save";
+    private static final String CMD_SAVE_AS = "Save As"+DDD;
+    private static final String CMD_PAGE_SETUP = "Page Setup";
+    private static final String CMD_PRINT = "Print"+DDD;
+    private static final String CMD_QUIT = "Quit";
+
+    private static final String MENU_EDIT = "Edit";
+    private static final String CMD_UNDO = "Undo";
+    private static final String CMD_REDO = "Redo";
+    private static final String CMD_CUT = "Cut";
+    private static final String CMD_COPY = "Copy";
+    private static final String CMD_PASTE = "Paste";
+    private static final String CMD_DELETE = "Delete";
+    private static final String CMD_SELECT_All = "Select All";
+    private static final String CMD_FIND = "Find"+DDD;
+    private static final String CMD_FIND_NEXT = "Find Next";
+    private static final String CMD_FIND_PREVIOUS = "Find Previous";
+    private static final String CMD_PREFERENCES = "Preferences";
+
+    private static final String MENU_HELP = "Help";
+    private static final String CMD_HELP = "Help";
+    private static final String CMD_ABOUT = "About";
 
 
 
-    private final JMenuItem newFile = new JMenuItem(CMD_NEW);
-    private final JMenuItem open = new JMenuItem(CMD_OPEN);
-    private final JMenuItem close = new JMenuItem(CMD_CLOSE);
-    private final JMenuItem save = new JMenuItem(CMD_SAVE);
-    private final JMenuItem saveAs = new JMenuItem(CMD_SAVE_AS);
-    private final JMenuItem pageSetup = new JMenuItem(CMD_PAGE_SETUP);
-    private final JMenuItem print = new JMenuItem(CMD_PRINT);
-    private final JMenuItem quit = new JMenuItem(CMD_QUIT);
-    private final JMenuItem undo = new JMenuItem(CMD_UNDO);
-    private final JMenuItem redo = new JMenuItem(CMD_REDO);
-    private final JMenuItem cut = new JMenuItem(CMD_CUT);
-    private final JMenuItem copy = new JMenuItem(CMD_COPY);
-    private final JMenuItem paste = new JMenuItem(CMD_PASTE);
-    private final JMenuItem delete = new JMenuItem(CMD_DELETE);
-    private final JMenuItem selectAll = new JMenuItem(CMD_SELECT_All);
-    private final JMenuItem find = new JMenuItem(CMD_FIND);
-    private final JMenuItem findNext = new JMenuItem(CMD_FIND_NEXT);
-    private final JMenuItem findPrevious = new JMenuItem(CMD_FIND_PREVIOUS);
-    private final JMenuItem preferences = new JMenuItem(CMD_PREFERENCES);
-    private final JMenuItem help = new JMenuItem(CMD_HELP);
-    private final JMenuItem about = new JMenuItem(CMD_ABOUT);
-    private final List<AbstractButton> actions = List.of(
-        newFile, open, close, save, saveAs, pageSetup, print, quit,
-        undo, redo, cut, copy, paste, delete, selectAll, find, findNext, findPrevious, preferences,
-        help, about);
-
-    public void addActionListener(final ActionListener controller) {
-        this.actions.forEach(a -> a.addActionListener(controller));
-    }
+    private final ActiveMenu actNew = ActiveMenu.create(CMD_NEW, ACCEL_NEW);
+    private final ActiveMenu actOpen = ActiveMenu.create(CMD_OPEN, ACCEL_OPEN);
+    private final ActiveMenu actClose = ActiveMenu.create(CMD_CLOSE, ACCEL_CLOSE);
+    private final ActiveMenu actSave = ActiveMenu.create(CMD_SAVE, ACCEL_SAVE);
+    private final ActiveMenu actSaveAs = ActiveMenu.create(CMD_SAVE_AS, ACCEL_SAVE_AS);
+    private final ActiveMenu actPageSetup = ActiveMenu.create(CMD_PAGE_SETUP, ACCEL_PASTE);
+    private final ActiveMenu actPrint = ActiveMenu.create(CMD_PRINT, ACCEL_PRINT);
+    private final ActiveMenu actQuit = ActiveMenu.create(CMD_QUIT, ACCEL_QUIT);
+    private final ActiveMenu actUndo = ActiveMenu.create(CMD_UNDO, ACCEL_UNDO);
+    private final ActiveMenu actRedo = ActiveMenu.create(CMD_REDO, ACCEL_REDO);
+    private final ActiveMenu actCut = ActiveMenu.create(CMD_CUT, ACCEL_CUT);
+    private final ActiveMenu actCopy = ActiveMenu.create(CMD_COPY, ACCEL_COPY);
+    private final ActiveMenu actPaste = ActiveMenu.create(CMD_PASTE, ACCEL_PASTE);
+    private final ActiveMenu actDelete = ActiveMenu.create(CMD_DELETE, ACCEL_DELETE);
+    private final ActiveMenu actSelectAll = ActiveMenu.create(CMD_SELECT_All, ACCEL_SELECT_ALL);
+    private final ActiveMenu actFind = ActiveMenu.create(CMD_FIND, ACCEL_FIND);
+    private final ActiveMenu actFindNext = ActiveMenu.create(CMD_FIND_NEXT, ACCEL_FIND_NEXT);
+    private final ActiveMenu actFindPrevious = ActiveMenu.create(CMD_FIND_PREVIOUS, ACCEL_FIND_PREVIOUS);
+    private final ActiveMenu actPreferences = ActiveMenu.create(CMD_PREFERENCES, ACCEL_PREFERENCES);
+    private final ActiveMenu actHelp = ActiveMenu.create(CMD_HELP, ACCEL_HELP);
+    private final ActiveMenu actAbout = ActiveMenu.create(CMD_ABOUT, ACCEL_ABOUT);
 
 
 
     public MenuView(/*final InteractiveRectsModel.Immutable model*/) {
-        this.newFile.setAccelerator(ACCEL_NEW);
-        this.open.setAccelerator(ACCEL_OPEN);
-        this.close.setAccelerator(ACCEL_CLOSE);
-        this.save.setAccelerator(ACCEL_SAVE);
-        this.saveAs.setAccelerator(ACCEL_SAVE_AS);
-        this.pageSetup.setAccelerator(ACCEL_PAGE_SETUP);
-        this.preferences.setAccelerator(ACCEL_PREFERENCES);
-        if (!DT.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-            // On Mac, Cmd-Q causes execution of BOTH this Quit menu item,
-            // and the Application menu's Quit item.
-            // So only add the accelerator if we don't have APP_QUIT_HANDLER:
-            this.quit.setAccelerator(ACCEL_QUIT);
-        }
-        this.undo.setAccelerator(ACCEL_UNDO);
-        this.redo.setAccelerator(ACCEL_REDO);
-        this.cut.setAccelerator(ACCEL_CUT);
-        this.copy.setAccelerator(ACCEL_COPY);
-        this.paste.setAccelerator(ACCEL_PASTE);
-        this.delete.setAccelerator(ACCEL_DELETE);
-        this.selectAll.setAccelerator(ACCEL_SELECT_ALL);
-        this.find.setAccelerator(ACCEL_FIND);
-        this.findNext.setAccelerator(ACCEL_FIND_NEXT);
-        this.findPrevious.setAccelerator(ACCEL_FIND_PREVIOUS);
-        if (!DT.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            // don't clash with Mac's Application menu preferences item
-            this.preferences.setAccelerator(ACCEL_PREFERENCES);
-        }
-        this.help.setAccelerator(ACCEL_HELP);
-        this.about.setAccelerator(ACCEL_ABOUT);
-
-
-
-        val menuFile = new JMenu("File");
-        menuFile.add(newFile);
-        menuFile.add(open);
+        val menuFile = new JMenu(MENU_FILE);
+        menuFile.add(this.actNew.menu());
+        menuFile.add(this.actOpen.menu());
         menuFile.addSeparator();
-        menuFile.add(close);
+        menuFile.add(this.actClose.menu());
         menuFile.addSeparator();
-        menuFile.add(save);
-        menuFile.add(saveAs);
+        menuFile.add(this.actSave.menu());
+        menuFile.add(this.actSaveAs.menu());
         menuFile.addSeparator();
-        menuFile.add(pageSetup);
-        menuFile.add(print);
+        menuFile.add(this.actPageSetup.menu());
+        menuFile.add(this.actPrint.menu());
         menuFile.addSeparator();
-        menuFile.add(quit);
+        menuFile.add(this.actQuit.menu());
 
         menuFile.addMenuListener(MenuRefresher.refresh(() -> {
-//            save.setEnabled(model.isDirty());
+//            this.actSave.setEnabled(this.model.isDirty());
+            this.actNew.setEnabled(false);
         }));
 
         add(menuFile);
 
 
 
-        val menuEdit = new JMenu("Edit");
-        menuEdit.add(undo);
-        menuEdit.add(redo);
+        val menuEdit = new JMenu(MENU_EDIT);
+        menuEdit.add(this.actUndo.menu());
+        menuEdit.add(this.actRedo.menu());
         menuEdit.addSeparator();
-        menuEdit.add(cut);
-        menuEdit.add(copy);
-        menuEdit.add(paste);
-        menuEdit.add(delete);
-        menuEdit.add(selectAll);
+        menuEdit.add(this.actCut.menu());
+        menuEdit.add(this.actCopy.menu());
+        menuEdit.add(this.actPaste.menu());
+        menuEdit.add(this.actDelete.menu());
+        menuEdit.add(this.actSelectAll.menu());
         menuEdit.addSeparator();
-        menuEdit.add(find);
-        menuEdit.add(findNext);
-        menuEdit.add(findPrevious);
+        menuEdit.add(this.actFind.menu());
+        menuEdit.add(this.actFindNext.menu());
+        menuEdit.add(this.actFindPrevious.menu());
         menuEdit.addSeparator();
-        menuEdit.add(preferences);
+        menuEdit.add(this.actPreferences.menu());
 
         menuEdit.addMenuListener(MenuRefresher.refresh(() -> {
         }));
@@ -147,14 +133,80 @@ public class MenuView extends JMenuBar {
 
 
 
-        val menuHelp = new JMenu("Help");
-        menuHelp.add(help);
+        val menuHelp = new JMenu(MENU_HELP);
+        menuHelp.add(this.actHelp.menu());
         menuHelp.addSeparator();
-        menuHelp.add(about);
+        menuHelp.add(this.actAbout.menu());
 
         menuHelp.addMenuListener(MenuRefresher.refresh(() -> {
         }));
 
         add(menuHelp);
+    }
+
+
+
+    public void setNew(final Runnable lambda) {
+        this.actNew.setAction(lambda);
+    }
+    public void setOpen(final Runnable lambda) {
+        this.actOpen.setAction(lambda);
+    }
+    public void setClose(final Runnable lambda) {
+        this.actClose.setAction(lambda);
+    }
+    public void setSave(final Runnable lambda) {
+        this.actSave.setAction(lambda);
+    }
+    public void setSaveAs(final Runnable lambda) {
+        this.actSaveAs.setAction(lambda);
+    }
+    public void setPageSetup(final Runnable lambda) {
+        this.actPageSetup.setAction(lambda);
+    }
+    public void setPrint(final Runnable lambda) {
+        this.actPrint.setAction(lambda);
+    }
+    public void setQuit(final Runnable lambda) {
+        this.actQuit.setAction(lambda);
+    }
+    public void setUndo(final Runnable lambda) {
+        this.actUndo.setAction(lambda);
+    }
+    public void setRedo(final Runnable lambda) {
+        this.actRedo.setAction(lambda);
+    }
+    public void setCut(final Runnable lambda) {
+        this.actCut.setAction(lambda);
+    }
+    public void setCopy(final Runnable lambda) {
+        this.actCopy.setAction(lambda);
+    }
+    public void setPaste(final Runnable lambda) {
+        this.actPaste.setAction(lambda);
+    }
+    public void setDelete(final Runnable lambda) {
+        this.actDelete.setAction(lambda);
+    }
+    public void setSelectAll(final Runnable lambda) {
+        this.actSelectAll.setAction(lambda);
+    }
+    public void setFind(final Runnable lambda) {
+        this.actFind.setAction(lambda);
+    }
+    public void setFindNext(final Runnable lambda) {
+        this.actFindNext.setAction(lambda);
+    }
+    public void setFindPrevious(final Runnable lambda) {
+        this.actFindPrevious.setAction(lambda);
+    }
+    public void setPreferences(final Runnable lambda) {
+        this.actPreferences.setAction(lambda);
+    }
+    public void setHelp(final Runnable lambda) {
+        this.actHelp.setAction(lambda);
+    }
+    public void setAbout(final Runnable lambda) {
+        this.actAbout.setAction(lambda);
     }
 }

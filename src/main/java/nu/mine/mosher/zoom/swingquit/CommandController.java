@@ -25,8 +25,11 @@ public class CommandController {
     private final SwingQuitView view;
     private final FakeModel model;
 
+    public static final boolean ATTENDED = true;
+    public static final boolean UNATTENDED = false;
+
     public void save() {
-        save(true);
+        save(ATTENDED);
     }
 
     public void save(final boolean attended) {

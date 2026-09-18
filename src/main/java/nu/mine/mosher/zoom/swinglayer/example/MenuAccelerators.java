@@ -26,9 +26,26 @@ import static javax.swing.KeyStroke.*;
 
 @SuppressWarnings("MagicConstant")
 public final class MenuAccelerators {
+    private static final Desktop DT = Desktop.getDesktop();
+    private static final KeyStroke NO_ACCEL = null;
     private static final int NO_MODIFIERS = 0;
     private static final int CMD = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     private static final int SHIFT_CMD = SHIFT_DOWN_MASK | CMD;
+
+
+
+    // On Mac, Cmd-Q causes execution of BOTH this Quit menu item,
+    // and the Application menu's Quit item.
+    // So only add the accelerator if we don't have APP_QUIT_HANDLER:
+    public static final KeyStroke ACCEL_QUIT =
+        DT.isSupported(Desktop.Action.APP_QUIT_HANDLER)
+            ? NO_ACCEL
+            : getKeyStroke(VK_Q, CMD);
+
+    public static final KeyStroke ACCEL_PREFERENCES =
+        DT.isSupported(Desktop.Action.APP_PREFERENCES)
+            ? NO_ACCEL
+            : getKeyStroke(VK_COMMA, CMD);
 
 
 
@@ -39,7 +56,6 @@ public final class MenuAccelerators {
     public static final KeyStroke ACCEL_SAVE_AS = getKeyStroke(VK_S, SHIFT_CMD);
     public static final KeyStroke ACCEL_PAGE_SETUP = getKeyStroke(VK_P, SHIFT_CMD);
     public static final KeyStroke ACCEL_PRINT = getKeyStroke(VK_P, CMD);
-    public static final KeyStroke ACCEL_QUIT = getKeyStroke(VK_Q, CMD);
 
     public static final KeyStroke ACCEL_UNDO = getKeyStroke(VK_Z, CMD);
     public static final KeyStroke ACCEL_REDO = getKeyStroke(VK_Z, SHIFT_CMD);
@@ -51,8 +67,7 @@ public final class MenuAccelerators {
     public static final KeyStroke ACCEL_FIND = getKeyStroke(VK_F, CMD);
     public static final KeyStroke ACCEL_FIND_NEXT = getKeyStroke(VK_G, CMD);
     public static final KeyStroke ACCEL_FIND_PREVIOUS = getKeyStroke(VK_G, SHIFT_CMD);
-    public static final KeyStroke ACCEL_PREFERENCES = getKeyStroke(VK_COMMA, CMD);
 
     public static final KeyStroke ACCEL_HELP = getKeyStroke(VK_SLASH, SHIFT_CMD);
-    public static final KeyStroke ACCEL_ABOUT = null;
+    public static final KeyStroke ACCEL_ABOUT = NO_ACCEL;
 }

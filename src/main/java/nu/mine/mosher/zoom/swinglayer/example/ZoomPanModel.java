@@ -86,11 +86,6 @@ public class ZoomPanModel {
         this.panY += dy;
     }
 
-    public void paint(final Graphics2D g) {
-        g.translate(this.panX, this.panY);
-        g.scale(this.zoomFactor, this.zoomFactor);
-    }
-
     public Point2D.Double canvasToViewport(final Point2D p) {
         return new Point2D.Double(zoomFactor*p.getX()+panX, zoomFactor*p.getY()+panY);
     }
@@ -110,6 +105,14 @@ public class ZoomPanModel {
     public void setZoomOutMinFromBounds(final Rectangle2D b) {
         this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
         clampZoom();
+    }
+
+    public double panX() {
+        return this.panX;
+    }
+
+    public double panY() {
+        return this.panY;
     }
 
     public double zoomFactor() {

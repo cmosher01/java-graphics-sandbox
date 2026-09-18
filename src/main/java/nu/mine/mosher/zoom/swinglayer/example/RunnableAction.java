@@ -15,27 +15,28 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-// ***
-@SuppressWarnings("ClassCanBeRecord")
-public class KillController {
-    private final QuitController quit;
-    private final CommandController command;
+public class RunnableAction extends AbstractAction {
+    private final Runnable lambda;
 
-    public KillController(final CommandController command, final QuitController quit) {
-        this.quit = quit;
-        this.command = command;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shuttingDown));
+    public static RunnableAction create(final String name, final Runnable lambda) {
+         final var o = new RunnableAction(lambda);
+         o.putValue(NAME, name);
+         return o;
     }
 
-    private void shuttingDown() {
-        // TODO can we just check if the model exists and is dirty, instead of "approved"
-        // this means the model would be removed by the quit controller
-        if (!this.quit.approved()) {
-            this.command.save(UNATTENDED);
-        }
+    private RunnableAction(final Runnable lambda) {
+        this.lambda = lambda;
+    }
+
+
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        this.lambda.run();
     }
 }

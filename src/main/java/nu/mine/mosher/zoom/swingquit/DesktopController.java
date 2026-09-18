@@ -19,23 +19,20 @@ package nu.mine.mosher.zoom.swingquit;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.desktop.*;
 
 import static java.awt.Desktop.Action.*;
 import static java.awt.desktop.QuitStrategy.*;
 
+// ***
 public class DesktopController {
     private static final Desktop DT = Desktop.getDesktop();
 
     public DesktopController(final QuitController controller) {
         if (DT.isSupported(APP_QUIT_HANDLER)) {
-            DT.setQuitHandler((e, response) -> quit(controller, response));
+            DT.setQuitHandler((e, response) ->
+                SwingUtilities.invokeLater(() -> controller.quit(response)));
             DT.disableSuddenTermination();
             DT.setQuitStrategy(CLOSE_ALL_WINDOWS);
         }
-    }
-
-    private static void quit(final QuitController controller, final QuitResponse response) {
-        SwingUtilities.invokeLater(() -> controller.quit(response));
     }
 }

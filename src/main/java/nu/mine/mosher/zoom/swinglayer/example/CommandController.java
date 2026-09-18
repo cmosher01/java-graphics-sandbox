@@ -28,6 +28,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class CommandController {
+    public static final boolean ATTENDED = true;
+    public static final boolean UNATTENDED = false;
+
+
+
     private final DatabaseModel db;
 
 
@@ -35,6 +40,7 @@ public class CommandController {
 
 
     public void newFile() {
+        System.out.println("NEW");
     }
 
     public void open() {
@@ -54,6 +60,10 @@ public class CommandController {
     }
 
     public void save() {
+        save(ATTENDED);
+    }
+
+    public void save(final boolean attended) {
 
     }
 
@@ -98,6 +108,7 @@ public class CommandController {
     }
 
     public void find() {
+        System.out.println("FIND");
     }
 
     public void findNext() {
@@ -122,15 +133,6 @@ public class CommandController {
         log("preferences");
     }
 
-    public void quit() {
-        log("quit");
-        // TODO fix quit sequence (as in SwingQuitApp)
-        System.exit(0);
-    }
-
-    public void quit(final QuitResponse r) {
-        log("quit-desktop");
-    }
 
 
 

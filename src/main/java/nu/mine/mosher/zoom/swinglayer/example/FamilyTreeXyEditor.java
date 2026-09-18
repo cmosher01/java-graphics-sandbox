@@ -15,27 +15,20 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+// From: https://docs.oracle.com/javase/tutorial/uiswing/examples/painting/
+// with my corrections, additions, and refactorings (Chris Mosher)
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-// ***
-@SuppressWarnings("ClassCanBeRecord")
-public class KillController {
-    private final QuitController quit;
-    private final CommandController command;
+import lombok.*;
 
-    public KillController(final CommandController command, final QuitController quit) {
-        this.quit = quit;
-        this.command = command;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shuttingDown));
-    }
+import javax.swing.*;
+import java.util.List;
 
-    private void shuttingDown() {
-        // TODO can we just check if the model exists and is dirty, instead of "approved"
-        // this means the model would be removed by the quit controller
-        if (!this.quit.approved()) {
-            this.command.save(UNATTENDED);
-        }
+public class FamilyTreeXyEditor {
+    @SneakyThrows
+    public static void main(final String... args) {
+        val application = new FamilyTreeXyEditorApplication();
+        application.run(List.of(args));
     }
 }

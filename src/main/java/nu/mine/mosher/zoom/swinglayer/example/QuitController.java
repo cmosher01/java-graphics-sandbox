@@ -15,31 +15,31 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import nu.mine.mosher.zoom.swingquit.DialogViews.QuitOptions;
 
 import java.awt.desktop.QuitResponse;
 import java.awt.event.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
-import static nu.mine.mosher.zoom.swingquit.DialogViews.QuitOptions.*;
+import static nu.mine.mosher.zoom.swinglayer.example.CommandController.*;
+import static nu.mine.mosher.zoom.swinglayer.example.DialogViews.QuitOptions.*;
 
-// ***
+
 public class QuitController {
     private final CommandController command;
-    private final SwingQuitView view;
-    private final FakeModel model;
+    private final FrameView view;
+    private final InteractiveRectsModel model;
+    private final StatusBarController controllerStatusBar;
 
     private final AtomicBoolean approved = new AtomicBoolean();
 
 
-
-    public QuitController(final CommandController command, final SwingQuitView view, final FakeModel model) {
+    public QuitController(final CommandController command, final FrameView view, final InteractiveRectsModel model, StatusBarController controllerStatusBar) {
         this.command = command;
         this.view = view;
         this.model = model;
+        this.controllerStatusBar = controllerStatusBar;
 
         view.addWindowListener(new WindowAdapter() {
             @Override
@@ -85,9 +85,10 @@ public class QuitController {
      */
     public void quit(final QuitResponse r) {
         if (approved()) {
+            this.controllerStatusBar.close();
             this.view.dispose(); // terminates EDT (and therefore the application)
         } else {
-            final QuitOptions answer;
+            final DialogViews.QuitOptions answer;
             if (this.model.isDirty()) {
                 answer = this.view.dialogs().askSaveDiscardCancel();
             } else {

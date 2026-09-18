@@ -25,7 +25,7 @@ import java.awt.geom.Point2D;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType"})
-public final class StatusModel {
+public final class StatusBarModel {
     @SuppressWarnings("UnnecessaryUnicodeEscape")
     private static final String TIMES = "\u00d7";
 
@@ -42,7 +42,7 @@ public final class StatusModel {
 
 
 
-    public StatusModel(final ZoomPanModel zp) {
+    public StatusBarModel(final ZoomPanModel zp) {
         this.zp = zp;
     }
 
@@ -52,19 +52,19 @@ public final class StatusModel {
         return this.s;
     }
 
-    public void set(final MainPane pane) {
-        set(pane, Optional.empty());
+    public void set(final MainView view) {
+        set(view, Optional.empty());
     }
 
-    public void set(final MainPane pane, final Point2D mouse) {
-        set(pane, Optional.of(new Point2D.Double(mouse.getX(), mouse.getY())));
+    public void set(final MainView view, final Point2D mouse) {
+        set(view, Optional.of(new Point2D.Double(mouse.getX(), mouse.getY())));
     }
 
 
 
-    private void set(final MainPane pane, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
-        val mouse = mouse(pane, opt_vwport_mouseEvnt);
-        val clip = pane.clip();
+    private void set(final MainView view, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+        val mouse = mouse(view, opt_vwport_mouseEvnt);
+        val clip = view.clip();
         this.s = String.format("zoom=%012.8f%s window=(%.1f,%.1f)[%.1f%s%.1f] mouse=(%.2f,%.2f)",
             this.zp.zoomFactor(), TIMES,
             clip.getX(), clip.getY(), clip.getWidth(), TIMES, clip.getHeight(),
@@ -72,7 +72,7 @@ public final class StatusModel {
     }
 
     // gets the current mouse position in canvas coordinates
-    private Point2D.Double mouse(final MainPane pane, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+    private Point2D.Double mouse(final MainView view, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
         Optional<Point2D.Double> opt_canvas_mouseEvnt = Optional.empty();
         if (opt_vwport_mouseEvnt.isPresent()) {
             this.canvas_mouseEvntPrev = this.zp.viewportToCanvas(opt_vwport_mouseEvnt.get());
@@ -85,7 +85,7 @@ public final class StatusModel {
             if (Objects.nonNull(pi)) {
                 val vwport_mouseInfoRaw = pi.getLocation();
                 if (Objects.nonNull(vwport_mouseInfoRaw)) {
-                    SwingUtilities.convertPointFromScreen(vwport_mouseInfoRaw, pane);
+                    SwingUtilities.convertPointFromScreen(vwport_mouseInfoRaw, view);
                     val vwport_mouseInfo = new Point2D.Double(vwport_mouseInfoRaw.getX(), vwport_mouseInfoRaw.getY()+MOUSE_INFO_DY);
                     opt_canvas_mouseInfo = Optional.of(this.zp.viewportToCanvas(vwport_mouseInfo));
                 }
@@ -94,7 +94,7 @@ public final class StatusModel {
 
         Optional<Point2D.Double> opt_canvas_mousePane = Optional.empty();
         {
-            val vwport_mousePaneRaw = pane.getMousePosition();
+            val vwport_mousePaneRaw = view.getMousePosition();
             if (Objects.nonNull(vwport_mousePaneRaw)) {
                 val vwport_mousePane = new Point2D.Double(vwport_mousePaneRaw.getX(), vwport_mousePaneRaw.getY()+MOUSE_PANE_DY);
                 opt_canvas_mousePane = Optional.of(this.zp.viewportToCanvas(vwport_mousePane));
@@ -107,8 +107,8 @@ public final class StatusModel {
     // will we ever need this?
 //    public boolean inBounds() {
 //        // TODO check for nulls; use doubles
-//        val siz = this.pane.getSize();
-//        val loc = this.pane.getLocationOnScreen();
+//        val siz = this.view.getSize();
+//        val loc = this.view.getLocationOnScreen();
 //        val vp = new Rectangle(loc.x, loc.y, siz.width, siz.height);
 //        val mousePosition = MouseInfo.getPointerInfo().getLocation();
 //        return vp.contains(mousePosition);

@@ -17,13 +17,9 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import java.awt.*;
 import java.awt.geom.*;
 
 public class DragSelectionModel {
-    private static final Color RECT_FILL_COLOR = new Color(38, 139, 210, 10);
-    private static final Color RECT_STROKE_COLOR = new Color(38, 139, 210);
-
     private final Rectangle2D.Double bounds = new Rectangle2D.Double();
 
     public boolean selecting() {
@@ -46,17 +42,5 @@ public class DragSelectionModel {
 
     public void clear() {
         this.bounds.setRect( 0, 0, 0, 0);
-    }
-
-
-
-    public void paint(final Graphics2D g, ZoomPanModel zp) {
-        if (selecting()) {
-            g.setColor(RECT_FILL_COLOR);
-            g.fill(zp.viewportToCanvas(this.bounds));
-
-            g.setColor(RECT_STROKE_COLOR);
-            g.draw(zp.viewportToCanvas(this.bounds));
-        }
     }
 }

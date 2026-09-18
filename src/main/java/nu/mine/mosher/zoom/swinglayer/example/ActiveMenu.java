@@ -15,27 +15,36 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-// ***
-@SuppressWarnings("ClassCanBeRecord")
-public class KillController {
-    private final QuitController quit;
-    private final CommandController command;
+public class ActiveMenu extends AbstractAction {
+    private JMenuItem menu;
+    private Runnable lambda;
 
-    public KillController(final CommandController command, final QuitController quit) {
-        this.quit = quit;
-        this.command = command;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shuttingDown));
+    public static ActiveMenu create(final String name, final KeyStroke accel) {
+        final var o = new ActiveMenu(name);
+        o.menu = new JMenuItem(o);
+        o.menu.setAccelerator(accel);
+        return o;
     }
 
-    private void shuttingDown() {
-        // TODO can we just check if the model exists and is dirty, instead of "approved"
-        // this means the model would be removed by the quit controller
-        if (!this.quit.approved()) {
-            this.command.save(UNATTENDED);
-        }
+    private ActiveMenu(final String name) {
+        super(name);
+    }
+
+    public JMenuItem menu() {
+        return this.menu;
+    }
+
+    public void setAction(final Runnable lambda) {
+        this.lambda = lambda;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+        this.lambda.run();
     }
 }

@@ -15,12 +15,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.*;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.util.List;
 
@@ -33,6 +32,8 @@ public class DialogViews {
     private static final int TIMEOUT_SECONDS = 15;
 
     private final Component parent;
+
+
 
     /**
      * @return

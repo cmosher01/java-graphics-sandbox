@@ -26,10 +26,10 @@ public class DropLineChart /*implements Graphic*/ {
 //    private static final double BOUNDS_OUTSET = 1000.0D;
 //
 //
-//    private final ArrayList<InteractiveRect> sqs = new ArrayList<>();
+//    private final ArrayList<InteractiveRectModel> sqs = new ArrayList<>();
 //    private final LineOfText tx = new LineOfText("This is my custom Panel!", new Point2D.Double(200D,200D));
 //
-//    private InteractiveRect selection;
+//    private InteractiveRectModel selection;
 //
 //
 //
@@ -48,7 +48,7 @@ public class DropLineChart /*implements Graphic*/ {
 //        for (int i = 0; i < n; i++) {
 //            final double x = rand.nextDouble(-maxCoord, maxCoord);
 //            final double y = rand.nextDouble(-maxCoord, maxCoord);
-//            this.sqs.add(new InteractiveRect(x, y,));
+//            this.sqs.add(new InteractiveRectModel(x, y,));
 //        }
 //    }
 

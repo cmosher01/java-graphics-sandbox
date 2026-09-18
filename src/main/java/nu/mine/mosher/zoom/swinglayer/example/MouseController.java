@@ -23,21 +23,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
 public class MouseController {
-    public int STATUS_REFRESH_MILLIS = 500;
-
-    public MouseController(final MouseView viewMouse, final MainPane paneMain, final StatusBarView sb, ZoomPanModel zp, final ZoomPanMouseController zpMouse, final StatusModel status, final InteractiveRectsController modelMouse, final DragSelectionController mouseCtlrDragSelection) {
+    public MouseController(
+        final MouseView viewMouse,
+        final MainView viewMain,
+        final StatusBarView viewStatusBar,
+        final ZoomPanModel modelZoomPan,
+        final ZoomPanMouseController controllerZoomPan,
+        final StatusBarModel modelStatus,
+        final InteractiveRectsController controllerRects,
+        final DragSelectionController controllerDragSelection) {
         val mouse = new MouseAdapter() {
             private boolean dragged;
 
             @Override
             public void mouseMoved(final MouseEvent e) {
                 val at = pointOf(e);
-                status.set(paneMain, at);
-                sb.refresh();
+                modelStatus.set(viewMain, at);
+                viewStatusBar.refresh();
             }
 
 
@@ -45,18 +52,18 @@ public class MouseController {
             @Override
             public void mousePressed(final MouseEvent e) {
                 val at = pointOf(e);
-                val cnvAt = zp.viewportToCanvas(at);
+                val cnvAt = modelZoomPan.viewportToCanvas(at);
 
                 this.dragged = false;
                 if (e.isShiftDown()) {
-                    mouseCtlrDragSelection.press(clipPoint(e.getPoint(), viewMouse));
-                } else if (modelMouse.want(cnvAt)) {
-                    modelMouse.press();
+                    controllerDragSelection.press(clipPoint(e.getPoint(), viewMouse));
+                } else if (controllerRects.want(cnvAt)) {
+                    controllerRects.press();
                 } else {
-                    zpMouse.press(at);
+                    controllerZoomPan.press(at);
                 }
 
-                paneMain.repaint();
+                viewMain.repaint();
                 e.consume();
             }
 
@@ -65,35 +72,35 @@ public class MouseController {
                 val at = pointOf(e);
 
                 this.dragged = true;
-                if (mouseCtlrDragSelection.selecting()) {
-                    mouseCtlrDragSelection.drag(clipPoint(e.getPoint(), viewMouse));
-                } else if (modelMouse.has()) {
-                    val cnvAt = zp.viewportToCanvas(at);
-                    modelMouse.drag(cnvAt);
+                if (controllerDragSelection.selecting()) {
+                    controllerDragSelection.drag(clipPoint(e.getPoint(), viewMouse));
+                } else if (controllerRects.has()) {
+                    val cnvAt = modelZoomPan.viewportToCanvas(at);
+                    controllerRects.drag(cnvAt);
                 } else {
-                    zpMouse.drag(at);
+                    controllerZoomPan.drag(at);
                 }
 
-                paneMain.repaint();
-                status.set(paneMain, at);
-                sb.refresh();
+                viewMain.repaint();
+                modelStatus.set(viewMain, at);
+                viewStatusBar.refresh();
                 e.consume();
             }
 
             @Override
             public void mouseReleased(final MouseEvent e) {
-                if (mouseCtlrDragSelection.selecting()) {
-                    mouseCtlrDragSelection.release();
-                } else if (modelMouse.has()) {
-                    modelMouse.release(this.dragged);
+                if (controllerDragSelection.selecting()) {
+                    controllerDragSelection.release();
+                } else if (controllerRects.has()) {
+                    controllerRects.release(this.dragged);
                 } else if (this.dragged) {
-                    zpMouse.release();
+                    controllerZoomPan.release();
                 } else {
-                    modelMouse.release(this.dragged);
+                    controllerRects.release(this.dragged);
                 }
                 this.dragged = false;
 
-                paneMain.repaint();
+                viewMain.repaint();
                 e.consume();
             }
 
@@ -110,11 +117,11 @@ public class MouseController {
             public void mouseWheelMoved(final MouseWheelEvent e) {
                 val at = pointOf(e);
 
-                zpMouse.rotate(at, e.getWheelRotation());
+                controllerZoomPan.rotate(at, e.getWheelRotation());
 
-                paneMain.repaint();
-                status.set(paneMain, at);
-                sb.refresh();
+                viewMain.repaint();
+                modelStatus.set(viewMain, at);
+                viewStatusBar.refresh();
                 e.consume();
             }
         };
@@ -123,27 +130,32 @@ public class MouseController {
         viewMouse.addMouseMotionListener(mouse);
         viewMouse.addMouseWheelListener(mouse);
 
-//        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
-//            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
-//                awtMouseReleased();
-//            }
-//        }, AWTEvent.MOUSE_EVENT_MASK);
-
         viewMouse.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(final ComponentEvent e) {
-                status.set(paneMain);
-                sb.refresh();
+                modelStatus.set(viewMain);
+                viewStatusBar.refresh();
             }
         });
 
 
 
-        new Timer(STATUS_REFRESH_MILLIS, e -> {
-            status.set(paneMain);
-            sb.refresh();
-        }).start();
+// SEE COMMENTS BELOW
+//        viewMain.addWindowFocusListener(new WindowAdapter() {
+//            @Override
+//            public void windowLostFocus(final WindowEvent e) {
+//                windowLostFocus();
+//            }
+//        });
+//
+//        Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+//            if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+//                awtMouseReleased();
+//            }
+//        }, AWTEvent.MOUSE_EVENT_MASK);
     }
+
+
 
 
 

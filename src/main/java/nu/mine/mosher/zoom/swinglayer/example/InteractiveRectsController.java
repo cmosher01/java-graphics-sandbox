@@ -32,7 +32,7 @@ public class InteractiveRectsController {
     private final InteractiveRectsModel model;
     private final ZoomPanModel zp;
 
-    private Optional<InteractiveRect> optItem = Optional.empty();
+    private Optional<InteractiveRectModel> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
 

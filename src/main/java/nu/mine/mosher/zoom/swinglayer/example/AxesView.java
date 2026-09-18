@@ -27,12 +27,12 @@ import static nu.mine.mosher.zoom.swinglayer.example.Solarized.BASE__1_GRAY__BRT
 
 
 @RequiredArgsConstructor
-public class AxesModel {
+public class AxesView {
     private static final Point2D.Double ORIGIN = new Point2D.Double();
     private static final Color AXES_COLOR = BASE__1_GRAY__BRT;
     private static final Stroke AXES_STROKE = Swings.simpleStroke();
 
-    private final ZoomPanModel zp;
+    private final ZoomPanModel modelZoomPan;
 
     public void paint(final Graphics2D g, final double w, final double h) {
         g.setStroke(AXES_STROKE);
@@ -42,13 +42,13 @@ public class AxesModel {
 
     private void axesClipped(final Graphics2D g, final double w, final double h) {
         // L = left, R = right, T = top, B = bottom
-        val origin = zp.canvasToViewport(ORIGIN);
+        val origin = this.modelZoomPan.canvasToViewport(ORIGIN);
         val y = origin.y;
-        val c_L = zp.viewportToCanvas(new Point2D.Double(0, y));
-        val c_R = zp.viewportToCanvas(new Point2D.Double(w, y));
+        val c_L = this.modelZoomPan.viewportToCanvas(new Point2D.Double(0, y));
+        val c_R = this.modelZoomPan.viewportToCanvas(new Point2D.Double(w, y));
         val x = origin.x;
-        val c_T = zp.viewportToCanvas(new Point2D.Double(x, 0));
-        val c_B = zp.viewportToCanvas(new Point2D.Double(x, h));
+        val c_T = this.modelZoomPan.viewportToCanvas(new Point2D.Double(x, 0));
+        val c_B = this.modelZoomPan.viewportToCanvas(new Point2D.Double(x, h));
 
         g.draw(new Line2D.Double(c_L.x, c_L.y, c_R.x, c_R.y));
         g.draw(new Line2D.Double(c_T.x, c_T.y, c_B.x, c_B.y));

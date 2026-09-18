@@ -38,7 +38,7 @@ public class SwingQuitView extends JFrame {
         setSize(new Dimension((int)(.8*dim.width), (int)(.8*dim.height)));
         setLocationRelativeTo(CENTER);
 
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // ***
 
         setJMenuBar(this.menu);
     }

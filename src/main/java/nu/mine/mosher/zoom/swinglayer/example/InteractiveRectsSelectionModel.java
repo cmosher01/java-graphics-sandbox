@@ -24,12 +24,12 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class InteractiveRectsSelectionModel {
-    private final ArrayList<InteractiveRect> sqs;
+    private final ArrayList<InteractiveRectModel> sqs;
 
     /**
-     * Set of currently selected items. Redundant with InteractiveRect::selected property.
+     * Set of currently selected items. Redundant with InteractiveRectModel::selected property.
      */
-    private final Set<InteractiveRect> selection = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<InteractiveRectModel> selection = Collections.newSetFromMap(new IdentityHashMap<>());
 
 
     public void clear() {
@@ -37,7 +37,7 @@ public class InteractiveRectsSelectionModel {
         this.selection.clear();
     }
 
-    public void select(final InteractiveRect sq, final boolean select) {
+    public void select(final InteractiveRectModel sq, final boolean select) {
         sq.select(select);
         if (select) {
             this.selection.add(sq);

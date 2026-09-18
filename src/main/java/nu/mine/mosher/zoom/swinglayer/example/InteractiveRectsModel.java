@@ -19,11 +19,8 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
 
-import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
-
-import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 public class InteractiveRectsModel {
     private static final int ITEM_COUNT = 1_000_000;
@@ -38,7 +35,7 @@ public class InteractiveRectsModel {
     /**
      * All interactive rectangles, in back-to-front Z-order.
      */
-    private final ArrayList<InteractiveRect> sqs = new ArrayList<>();
+    private final ArrayList<InteractiveRectModel> sqs = new ArrayList<>();
 
 
 
@@ -56,12 +53,17 @@ public class InteractiveRectsModel {
         updateBounds();
     }
 
+
+    ArrayList<InteractiveRectModel> sqs() {
+        return this.sqs;
+    }
+
     private void generateRandomObjects() {
         val rand = new Random();
         for (int i = 0; i < ITEM_COUNT; i++) {
             final double x = rand.nextDouble(-MAX_COORD, MAX_COORD);
             final double y = rand.nextDouble(-MAX_COORD, MAX_COORD);
-            val item = new InteractiveRect(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+            val item = new InteractiveRectModel(x, y, ITEM_WIDTH, ITEM_HEIGHT);
             this.sqs.add(item);
         }
     }
@@ -88,7 +90,7 @@ public class InteractiveRectsModel {
 
 
 
-    public Optional<InteractiveRect> getAt(final Point2D.Double at) {
+    public Optional<InteractiveRectModel> getAt(final Point2D.Double at) {
         for (val sq : this.sqs.reversed()) {
             if (sq.contains(at)) {
                 return Optional.of(sq);
@@ -109,33 +111,10 @@ public class InteractiveRectsModel {
 
 
 
-    private static final boolean BOUNDS_FILL = true;
-    private static final Color BOUNDS_FILL_COLOR = BASE__3_BEIGE_BRT;
-
-    private static final boolean BOUNDS_DRAW = true;
-    private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
-    private static final Stroke BOUNDS_DRAW_STROKE = Swings.simpleStroke(100);
 
 
-
-    public void paintBackground(final Graphics2D g) {
-        if (BOUNDS_FILL) {
-            g.setColor(BOUNDS_FILL_COLOR);
-            g.fill(boundsOutset());
-        }
-
-        if (BOUNDS_DRAW) {
-            g.setStroke(BOUNDS_DRAW_STROKE);
-            g.setColor(BOUNDS_DRAW_COLOR);
-            g.draw(boundsOutset());
-        }
-    }
-
-    public void paint(final Graphics2D g, final Rectangle2D clip, ZoomPanModel zp) {
-        this.sqs.forEach(sq -> {
-            if (sq.intersects(clip)) {
-                sq.paint(g);
-            }
-        });
+    public boolean isDirty() {
+        // TODO
+        return true;
     }
 }

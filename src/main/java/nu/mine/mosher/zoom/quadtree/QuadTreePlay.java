@@ -19,9 +19,7 @@ package nu.mine.mosher.zoom.quadtree;
 
 import lombok.*;
 import nu.mine.mosher.zoom.quadtree.pvto.QuadTree;
-import nu.mine.mosher.zoom.swinglayer.example.InteractiveRect;
 
-import javax.sound.midi.SysexMessage;
 import java.util.*;
 
 public class QuadTreePlay {

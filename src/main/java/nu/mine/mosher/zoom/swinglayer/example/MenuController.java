@@ -19,65 +19,32 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import javax.swing.*;
 
+/**
+ * Sets itself as a listener of actions on the menu view,
+ * in order to forward them to the command controller
+ */
 public class MenuController {
-    @SuppressWarnings("UnnecessaryUnicodeEscape")
-    // ellipsis, "dot dot dot"
-    private static final String DDD = "\u2026";
-
-
-
-    public static final String CMD_NEW = "New";
-    public static final String CMD_OPEN = "Open"+DDD;
-    public static final String CMD_CLOSE = "Close";
-    public static final String CMD_SAVE = "Save";
-    public static final String CMD_SAVE_AS = "Save As"+DDD;
-    public static final String CMD_PAGE_SETUP = "Page Setup";
-    public static final String CMD_PRINT = "Print"+DDD;
-    public static final String CMD_QUIT = "Quit";
-    public static final String CMD_UNDO = "Undo";
-    public static final String CMD_REDO = "Redo";
-    public static final String CMD_CUT = "Cut";
-    public static final String CMD_COPY = "Copy";
-    public static final String CMD_PASTE = "Paste";
-    public static final String CMD_DELETE = "Delete";
-    public static final String CMD_SELECT_All = "Select All";
-    public static final String CMD_FIND = "Find"+DDD;
-    public static final String CMD_FIND_NEXT = "Find Next";
-    public static final String CMD_FIND_PREVIOUS = "Find Previous";
-    public static final String CMD_PREFERENCES = "Preferences";
-    public static final String CMD_HELP = "Help";
-    public static final String CMD_ABOUT = "About";
-    //TODO can we use Action objects instead? How well would it fit with MVC architecture? Is Undo/Redo related?
-//    public final Action actionNew = new Action() ???
-
-
-
-    public MenuController(final MenuView view, final CommandController command) {
-        view.addActionListener(e -> {
-            switch (e.getActionCommand()) {
-                case CMD_NEW -> command.newFile();
-                case CMD_OPEN -> command.open();
-                case CMD_CLOSE -> command.close();
-                case CMD_SAVE -> command.save();
-                case CMD_SAVE_AS -> command.saveAs();
-                case CMD_PAGE_SETUP -> command.pageSetup();
-                case CMD_PRINT -> command.print();
-                case CMD_QUIT -> command.quit();
-//                case CMD_QUIT -> controllerQuit.quit();
-                case CMD_UNDO -> command.undo();
-                case CMD_REDO -> command.redo();
-                case CMD_CUT -> command.cut();
-                case CMD_COPY -> command.copy();
-                case CMD_PASTE -> command.paste();
-                case CMD_DELETE -> command.delete();
-                case CMD_SELECT_All -> command.selectAll();
-                case CMD_FIND -> command.find();
-                case CMD_FIND_NEXT -> command.findNext();
-                case CMD_FIND_PREVIOUS -> command.findPrevious();
-                case CMD_PREFERENCES -> command.preferences();
-                case CMD_HELP -> command.help();
-                case CMD_ABOUT -> command.about();
-            }
-        });
+    public MenuController(final MenuView view, final CommandController command, final QuitController quit) {
+        view.setNew(command::newFile);
+        view.setOpen(command::open);
+        view.setClose(command::close);
+        view.setSave(command::save);
+        view.setSaveAs(command::saveAs);
+        view.setPageSetup(command::pageSetup);
+        view.setPrint(command::print);
+        view.setQuit(quit::quit);
+        view.setUndo(command::undo);
+        view.setRedo(command::redo);
+        view.setCut(command::cut);
+        view.setCopy(command::copy);
+        view.setPaste(command::paste);
+        view.setDelete(command::delete);
+        view.setSelectAll(command::selectAll);
+        view.setFind(command::find);
+        view.setFindNext(command::findNext);
+        view.setFindPrevious(command::findPrevious);
+        view.setPreferences(command::preferences);
+        view.setHelp(command::help);
+        view.setAbout(command::about);
     }
 }

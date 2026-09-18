@@ -30,7 +30,7 @@ public class MenuController {
         view.addActionListener(e -> {
             switch (e.getActionCommand()) {
                 case CMD_SAVE -> command.save();
-                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit();
+                case CMD_QUIT, CMD_EXIT -> controllerQuit.quit(); // ***
                 case CMD_LINE -> System.out.println("-".repeat(64));
                 // by default, EDT write stack trace to stderr on throw:
                 case CMD_THROW -> throw new RuntimeException("User requested RuntimeException");

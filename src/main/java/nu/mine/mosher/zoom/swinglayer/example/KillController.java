@@ -15,11 +15,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
 
-// ***
+import static nu.mine.mosher.zoom.swinglayer.example.CommandController.*;
+
 @SuppressWarnings("ClassCanBeRecord")
 public class KillController {
     private final QuitController quit;
@@ -34,6 +34,7 @@ public class KillController {
     private void shuttingDown() {
         // TODO can we just check if the model exists and is dirty, instead of "approved"
         // this means the model would be removed by the quit controller
+        System.out.println("shutting down...");
         if (!this.quit.approved()) {
             this.command.save(UNATTENDED);
         }

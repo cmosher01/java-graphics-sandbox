@@ -83,7 +83,7 @@ public final class ZoomPanUi extends LayerUI<JPanel> {
     public void paint(final Graphics g, final JComponent c) {
         val g2 = (Graphics2D)g.create();
         g2.setClip(null);
-        this.zp.paint(g2);
+//        this.zp.paint(g2);
         super.paint(g2, c);
         g2.dispose();
     }

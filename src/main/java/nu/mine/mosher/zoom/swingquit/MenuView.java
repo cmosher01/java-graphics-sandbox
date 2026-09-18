@@ -50,9 +50,9 @@ public class MenuView extends JMenuBar {
             // On Mac, Cmd-Q causes execution of BOTH this Quit menu item,
             // and the Application menu's Quit item.
             // So only add the accelerator if we don't have APP_QUIT_HANDLER:
-            this.quit.setAccelerator(KeyStroke.getKeyStroke(VK_Q, CMD));
+            this.quit.setAccelerator(KeyStroke.getKeyStroke(VK_Q, CMD)); // ***
         }
-        this.exit.setAccelerator(KeyStroke.getKeyStroke(VK_E, CMD));
+        this.exit.setAccelerator(KeyStroke.getKeyStroke(VK_E, CMD)); // ***
         this.line.setAccelerator(KeyStroke.getKeyStroke(VK_L, CMD));
 
         val file = new JMenu("File");

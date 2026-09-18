@@ -19,13 +19,14 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import lombok.val;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.desktop.*;
 
 import static java.awt.Desktop.Action.*;
 
 public class DesktopController {
-    public DesktopController(final CommandController command) {
+    public DesktopController(final CommandController command, final QuitController quit) {
         if (!Desktop.isDesktopSupported() || GraphicsEnvironment.isHeadless()) {
             return;
         }
@@ -44,7 +45,8 @@ public class DesktopController {
             desktop.setPreferencesHandler(e -> command.preferences());
         }
         if (desktop.isSupported(APP_QUIT_HANDLER)) {
-            desktop.setQuitHandler((e, r) -> command.quit(r));
+            desktop.setQuitHandler((e, response) ->
+                SwingUtilities.invokeLater(() -> quit.quit(response)));
             desktop.disableSuddenTermination();
             desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
         }

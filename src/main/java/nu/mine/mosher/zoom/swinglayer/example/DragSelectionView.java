@@ -15,27 +15,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swingquit;
+package nu.mine.mosher.zoom.swinglayer.example;
 
-import static nu.mine.mosher.zoom.swingquit.CommandController.*;
+import lombok.RequiredArgsConstructor;
 
-// ***
-@SuppressWarnings("ClassCanBeRecord")
-public class KillController {
-    private final QuitController quit;
-    private final CommandController command;
+import java.awt.*;
 
-    public KillController(final CommandController command, final QuitController quit) {
-        this.quit = quit;
-        this.command = command;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shuttingDown));
-    }
+@RequiredArgsConstructor
+public class DragSelectionView {
+    private static final Color RECT_FILL_COLOR = new Color(38, 139, 210, 10);
+    private static final Color RECT_STROKE_COLOR = new Color(38, 139, 210);
 
-    private void shuttingDown() {
-        // TODO can we just check if the model exists and is dirty, instead of "approved"
-        // this means the model would be removed by the quit controller
-        if (!this.quit.approved()) {
-            this.command.save(UNATTENDED);
+    private final DragSelectionModel model;
+
+    public void paint(final Graphics2D g, ZoomPanModel zp) {
+        if (this.model.selecting()) {
+            g.setColor(RECT_FILL_COLOR);
+            g.fill(zp.viewportToCanvas(this.model.bounds()));
+
+            g.setColor(RECT_STROKE_COLOR);
+            g.draw(zp.viewportToCanvas(this.model.bounds()));
         }
     }
 }
