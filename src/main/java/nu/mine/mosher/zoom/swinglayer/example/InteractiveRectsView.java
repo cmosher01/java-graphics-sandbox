@@ -25,6 +25,7 @@ import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 public class InteractiveRectsView {
     private final InteractiveRectsModel model;
+    private final ZoomPanModel modelZoomPan;
     private final ArrayList<InteractiveRectView> views = new ArrayList<>();
 
     private static final boolean BOUNDS_FILL = true;
@@ -32,11 +33,15 @@ public class InteractiveRectsView {
 
     private static final boolean BOUNDS_DRAW = true;
     private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
-    private static final Stroke BOUNDS_DRAW_STROKE = Swings.simpleStroke(100);
+//    private static final Stroke BOUNDS_DRAW_STROKE = Swings.simpleStroke(100);
+    private static final Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
 
-    public InteractiveRectsView(final InteractiveRectsModel model) {
+
+
+    public InteractiveRectsView(final InteractiveRectsModel model, ZoomPanModel modelZoomPan) {
         this.model = model;
-        this.model.sqs().forEach(modelRect -> this.views.add(new InteractiveRectView(modelRect)));
+        this.modelZoomPan = modelZoomPan;
+        this.model.sqs().forEach(modelRect -> this.views.add(new InteractiveRectView(modelRect, modelZoomPan)));
     }
 
 

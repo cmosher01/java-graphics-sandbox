@@ -20,13 +20,18 @@ package nu.mine.mosher.zoom.swinglayer.example;
 import lombok.val;
 
 import java.awt.geom.*;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class InteractiveRectsModel {
     private static final int ITEM_COUNT = 1_000_000;
     private static final double MAX_COORD = 1.0e8D;
-    public static final double ITEM_WIDTH = 10_000.0D;
-    public static final double ITEM_HEIGHT = 3_000.0D;
+//    public static final double ITEM_WIDTH = 10_000.0D;
+//    public static final double ITEM_HEIGHT = 3_000.0D;
+
+    public static final double ITEM_WIDTH = 60.0D;
+    public static final double ITEM_HEIGHT = 30.0D;
 
     private static final double BOUNDS_OUTSET = ITEM_WIDTH;
 
@@ -49,8 +54,33 @@ public class InteractiveRectsModel {
 
 
     public InteractiveRectsModel() {
-        generateRandomObjects();
+//        generateRandomObjects();
+        readDemoFrom(Path.of(".", "Eaton.xy"));
         updateBounds();
+    }
+
+    private void readDemoFrom(final Path path) {
+        int c = 0;
+        try (Scanner scanner = new Scanner(path.toFile())) {
+            // Check if there are still tokens (doubles) to read
+            while (scanner.hasNextDouble()) {
+                val x = scanner.nextDouble();
+                val y = scanner.nextDouble();
+                val n = scanner.nextLine().strip();
+                for (int dx = 0; dx < 10; ++dx) {
+                    for (int dy = 0; dy < 50; ++dy) {
+                        val x2 = 31000*dx+x;
+                        val y2 =  8000*dy+y;
+                        val item = new InteractiveRectModel(x2, y2, ITEM_WIDTH, ITEM_HEIGHT, n);
+                        this.sqs.add(item);
+                        ++c;
+                    }
+                }
+            }
+        } catch (final FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        }
+        System.out.printf("Total count of individuals in chart: %d\n", c);
     }
 
 
@@ -63,7 +93,7 @@ public class InteractiveRectsModel {
         for (int i = 0; i < ITEM_COUNT; i++) {
             final double x = rand.nextDouble(-MAX_COORD, MAX_COORD);
             final double y = rand.nextDouble(-MAX_COORD, MAX_COORD);
-            val item = new InteractiveRectModel(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+            val item = new InteractiveRectModel(x, y, ITEM_WIDTH, ITEM_HEIGHT, "Test Test Test");
             this.sqs.add(item);
         }
     }

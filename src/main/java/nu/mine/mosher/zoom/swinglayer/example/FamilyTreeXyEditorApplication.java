@@ -49,7 +49,7 @@ public class FamilyTreeXyEditorApplication {
         val viewMouse = new MouseView();
         val viewAxes = new AxesView(modelZoomPan);
         val viewZoomPan = new ZoomPanView(modelZoomPan);
-        val viewInteractiveRects = new InteractiveRectsView(modelInteractiveRects);
+        val viewInteractiveRects = new InteractiveRectsView(modelInteractiveRects, modelZoomPan);
         val viewDragSelection = new DragSelectionView(modelDragSelection);
         val viewMain = new MainView(modelZoomPan, viewZoomPan, viewInteractiveRects, viewDragSelection, viewAxes);
         val viewStatusBar = new StatusBarView(modelStatusBar);

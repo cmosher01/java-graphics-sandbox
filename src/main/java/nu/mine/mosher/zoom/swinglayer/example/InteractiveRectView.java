@@ -24,15 +24,21 @@ import java.awt.*;
 @RequiredArgsConstructor
 public class InteractiveRectView {
     private final InteractiveRectModel model;
+    private final ZoomPanModel modelZoomPan;
 
-//    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 7);
 
-    // TODO potential optimization in drawing when zoomed far out
     public void paint(final Graphics2D g) {
         if (this.model.selected()) {
             g.setColor(Solarized.MAGENTA);
         } else {
-            g.setColor(Solarized.BASE__1_GRAY__BRT);
+//            g.setColor(Color.WHITE);
+            if (0.1D <= this.modelZoomPan.zoomFactor()) {
+                g.setColor(Solarized.BASE__2_BEIGE_DRK);
+            } else {
+                g.setColor(Solarized.BASE__1_GRAY__BRT);
+            }
         }
 
         // fill and fillRect seem equally fast, and sufficient:
@@ -43,9 +49,17 @@ public class InteractiveRectView {
 
 
 
-//        g.setStroke(STROKE);
-//        g.draw(this.model);
+
+        if (0.1D <= this.modelZoomPan.zoomFactor()) {
+            g.setStroke(Swings.simpleStroke());
+            g.setColor(Solarized.BASE_02_BLACK_BRT);
+            g.draw(this.model);
 //        g.drawRect((int)this.model().x, (int)this.model().y, (int)this.model().width, (int)this.model().height);
+
+            g.setFont(FONT);
+            g.setColor(Solarized.BASE_02_BLACK_BRT);
+            g.drawString(this.model.tag(), (int) this.model.x + 5, (int) this.model.y + 18);
+        }
     }
 
     public InteractiveRectModel model() {

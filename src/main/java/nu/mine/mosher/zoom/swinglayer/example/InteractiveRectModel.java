@@ -21,10 +21,16 @@ import java.awt.*;
 import java.awt.geom.*;
 
 public class InteractiveRectModel extends Rectangle2D.Double {
+    private final String tag;
     private boolean selected;
 
-    public InteractiveRectModel(final double x, final double y, final double width, final double height) {
+    public InteractiveRectModel(final double x, final double y, final double width, final double height, final String tag) {
         super(x, y, width, height);
+        this.tag = tag;
+    }
+
+    public String tag() {
+        return this.tag;
     }
 
     public boolean selected() {

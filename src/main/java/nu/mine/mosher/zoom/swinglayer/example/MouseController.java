@@ -23,10 +23,95 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
-import java.util.List;
 
 import static nu.mine.mosher.zoom.swinglayer.example.Swings.pointOf;
 
+/**
+ * mouse press
+ * if [SHIFT]
+ *     (same action whether or not clicking on a plaque)
+ *     clear selection
+ *     begin selection rectangle (selecting all and only intersecting plaques)
+ *     consume
+ * else if hit plaque
+ *     if plaque not selected, add it to selection
+ *     consume
+ * else
+ *     pass through for panning
+ *
+ *
+ *
+ * mouse drag
+ * if selecting
+ *     continue selection rectangle (selecting all and only intersecting plaques)
+ *     consume
+ * else if hit plaque
+ *     if selection exists, move all plaques/recalculate
+ *     consume
+ * else
+ *     pass through for panning
+ *
+ *
+ *
+ * mouse release
+ * if selecting
+ *     clear selection rectangle (leaving selection intact)
+ *     consume
+ * else if hit plaque
+ *     if plaque was selected before mouse press, and not dragged, remove it from selection
+ *     consume
+ * else if not dragged
+ *     clear selection
+ *     consume
+ * else
+ *     pass through for panning
+ *
+ *
+ * mouse click
+ * (click is press and release without intervening dragging)
+ * this is a NOP; handle everything in press/(drag)/release event handlers
+ *
+ *
+ *
+ *
+ * TEST CASES
+ *
+ * 24 nominal test cases:
+ *     landed on: 1. bg, 2. selected indi, or 3. unselected indi
+ *     draged, or not
+ *     was [SHIFT] held down, or not
+ *     were any other indi already selected, or not
+ * [There are also additional, anomalous cases of fast-dragging or window losing focus,
+ * which cause dropped mouse release events]
+ *
+ * click:
+ *     PRESS, RELEASE
+ *
+ *     not on an individual:
+ *         clear the Selection
+ *     an individual in the Selection:
+ *         remove from the Selection
+ *     an individual not in the Selection:
+ *         add to ths Selection
+ *
+ * drag:
+ *     PRESS, DRAG, RELEASE
+ *
+ *     not on an individual:
+ *         visually move (pan) the entire canvas around under the window
+ *     an individual in the Selection:
+ *         move all individuals in the Selection
+ *     an individual not in the Selection:
+ *         add that individual to the Selection and
+ *         move all individuals in the Selection
+ *
+ * [SHIFT]drag:
+ *     [SHIFT]PRESS, RELEASE
+ *     [SHIFT]PRESS, DRAG, RELEASE
+ *
+ *     select all and only the individuals that intersect the rectangle
+ *     described by click-position and current-mouse-position
+ */
 public class MouseController {
     public MouseController(
         final MouseView viewMouse,
