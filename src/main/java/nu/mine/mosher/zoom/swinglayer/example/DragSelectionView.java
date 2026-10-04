@@ -23,8 +23,9 @@ import java.awt.*;
 
 @RequiredArgsConstructor
 public class DragSelectionView {
-    private static final Color RECT_FILL_COLOR = new Color(38, 139, 210, 10);
-    private static final Color RECT_STROKE_COLOR = new Color(38, 139, 210);
+    private static final Color RECT_STROKE_COLOR = Solarized.MAGENTA;
+    private static final Color RECT_FILL_COLOR = new Color(
+        RECT_STROKE_COLOR.getRed(), RECT_STROKE_COLOR.getGreen(), RECT_STROKE_COLOR.getBlue(), 32);
 
     private final DragSelectionModel model;
 

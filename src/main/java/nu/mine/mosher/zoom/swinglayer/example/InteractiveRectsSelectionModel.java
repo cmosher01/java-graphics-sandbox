@@ -23,7 +23,7 @@ import java.awt.geom.*;
 import java.util.*;
 
 @RequiredArgsConstructor
-public class InteractiveRectsSelectionModel {
+public class InteractiveRectsSelectionModel implements Selectable<InteractiveRectModel> {
     private final ArrayList<InteractiveRectModel> sqs;
 
     /**
@@ -32,11 +32,13 @@ public class InteractiveRectsSelectionModel {
     private final Set<InteractiveRectModel> selection = Collections.newSetFromMap(new IdentityHashMap<>());
 
 
+    @Override
     public void clear() {
         this.selection.forEach(sq -> sq.select(false));
         this.selection.clear();
     }
 
+    @Override
     public void select(final InteractiveRectModel sq, final boolean select) {
         sq.select(select);
         if (select) {
@@ -46,14 +48,21 @@ public class InteractiveRectsSelectionModel {
         }
     }
 
+    @Override
     public void setFromRectangle(final Rectangle2D.Double r) {
         for (val sq : this.sqs.reversed()) {
-            val hit = sq.intersects(r);
+            val hit = sq.rect().intersects(r);
             select(sq, hit);
         }
     }
 
+    @Override
     public void move(final Point2D.Double delta) {
         this.selection.forEach(sq -> sq.move(delta));
+    }
+
+    @Override
+    public void anchor() {
+        this.selection.forEach(InteractiveRectModel::anchor);
     }
 }

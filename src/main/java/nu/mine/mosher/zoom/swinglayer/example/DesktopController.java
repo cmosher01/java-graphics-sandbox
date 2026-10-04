@@ -22,27 +22,30 @@ import lombok.val;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.desktop.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 
 import static java.awt.Desktop.Action.*;
 
 public class DesktopController {
-    public DesktopController(final CommandController command, final QuitController quit) {
+    public DesktopController(final CommandController controllerCommand, final DocumentController controllerDocument, final QuitController quit) {
         if (!Desktop.isDesktopSupported() || GraphicsEnvironment.isHeadless()) {
             return;
         }
         val desktop = Desktop.getDesktop();
 
         if (desktop.isSupported(APP_OPEN_FILE)) {
-            desktop.setOpenFileHandler(e -> command.open(e.getFiles()));
+            desktop.setOpenFileHandler(e -> controllerDocument.open(toPaths(e.getFiles())));
         }
         if (desktop.isSupported(APP_PRINT_FILE)) {
-            desktop.setPrintFileHandler(e -> command.print(e.getFiles()));
+            desktop.setPrintFileHandler(e -> controllerCommand.print(toPaths(e.getFiles())));
         }
         if (desktop.isSupported(APP_ABOUT)) {
-            desktop.setAboutHandler(e -> command.about());
+            desktop.setAboutHandler(e -> controllerCommand.about());
         }
         if (desktop.isSupported(APP_PREFERENCES)) {
-            desktop.setPreferencesHandler(e -> command.preferences());
+            desktop.setPreferencesHandler(e -> controllerCommand.preferences());
         }
         if (desktop.isSupported(APP_QUIT_HANDLER)) {
             desktop.setQuitHandler((e, response) ->
@@ -50,5 +53,9 @@ public class DesktopController {
             desktop.disableSuddenTermination();
             desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
         }
+    }
+
+    private static List<Path> toPaths(final List<File> files) {
+        return files.stream().map(File::toPath).toList();
     }
 }

@@ -99,6 +99,7 @@ public class QuitController {
             } else {
                 if (answer == SAVE) {
                     this.command.save(ATTENDED);
+                    // TODO save as could result in user pressing cancel, which should cancel the quit process
                 } else if (answer == TIMED_OUT) {
                     this.command.save(UNATTENDED);
                 }

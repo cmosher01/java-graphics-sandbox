@@ -78,7 +78,7 @@ public class TimedOptionPane extends JOptionPane {
 
         final KeyEventDispatcher detectKeypress = e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
-                System.out.println("key press detected");
+//                System.out.println("key press detected");
                 // the user is here, so stop the countdown
                 t.timer.stop();
             }
@@ -88,7 +88,7 @@ public class TimedOptionPane extends JOptionPane {
         final MouseListener detectMouseclick = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("mouse click detected");
+//                System.out.println("mouse click detected");
                 // the user is here, so stop the countdown
                 t.timer.stop();
             }

@@ -23,46 +23,50 @@ import java.awt.*;
 
 @RequiredArgsConstructor
 public class InteractiveRectView {
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 7);
+    private static final Color RECT_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
+
     private final InteractiveRectModel model;
     private final ZoomPanModel modelZoomPan;
 
-    private static final Stroke STROKE = new BasicStroke(100f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
-    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 7);
+
 
     public void paint(final Graphics2D g) {
         if (this.model.selected()) {
-            g.setColor(Solarized.MAGENTA);
+            g.setColor(RECT_FILL_COLOR);
         } else {
-//            g.setColor(Color.WHITE);
-            if (0.1D <= this.modelZoomPan.zoomFactor()) {
-                g.setColor(Solarized.BASE__2_BEIGE_DRK);
+            if (showDetails()) {
+                g.setColor(Solarized.BASE__3_BEIGE_BRT);
             } else {
                 g.setColor(Solarized.BASE__1_GRAY__BRT);
             }
         }
 
-        // fill and fillRect seem equally fast, and sufficient:
-        // there is only the slightest perceptible lagging when quickly
-        // panning a million rectangles within the clipping region
-        g.fill(this.model);
-//        g.fillRect((int)this.model().x, (int)this.model().y, (int)this.model().width, (int)this.model().height);
+        g.fill(this.model.rect());
 
-
-
-
-        if (0.1D <= this.modelZoomPan.zoomFactor()) {
+        if (showDetails()) {
             g.setStroke(Swings.simpleStroke());
-            g.setColor(Solarized.BASE_02_BLACK_BRT);
-            g.draw(this.model);
-//        g.drawRect((int)this.model().x, (int)this.model().y, (int)this.model().width, (int)this.model().height);
+            g.setColor(Solarized.BASE__0_GRAY__LGT);
+            g.draw(this.model.rect());
 
             g.setFont(FONT);
-            g.setColor(Solarized.BASE_02_BLACK_BRT);
-            g.drawString(this.model.tag(), (int) this.model.x + 5, (int) this.model.y + 18);
+            if (this.model.selected()) {
+                g.setColor(Solarized.MAGENTA);
+            } else {
+                g.setColor(Solarized.BASE_02_BLACK_BRT);
+            }
+            // TODO don't hard-code offsets:
+            g.drawString(this.model.tag(), (float)this.model.rect().x+2F, (float)this.model.rect().y+18F);
         }
     }
 
     public InteractiveRectModel model() {
         return this.model;
+    }
+
+
+
+    private boolean showDetails() {
+        return 0.1 <= this.modelZoomPan.zoomFactor();
     }
 }

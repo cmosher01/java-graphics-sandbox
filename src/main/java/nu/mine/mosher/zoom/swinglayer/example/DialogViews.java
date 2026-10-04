@@ -21,31 +21,75 @@ import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.nio.file.*;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static javax.swing.JOptionPane.*;
 
-@SuppressWarnings("ClassCanBeRecord")
+@SuppressWarnings({"ClassCanBeRecord", "OptionalUsedAsFieldOrParameterType"})
 @RequiredArgsConstructor
 public class DialogViews {
     // TODO make TIMEOUT_SECONDS a user preference
     private static final int TIMEOUT_SECONDS = 15;
+    private static final boolean SINGLE_FILE_SELECTION = false;
+    private static final boolean MULTIPLE_FILE_SELECTION = true;
 
-    private final Component parent;
+    private final JFrame parent;
 
+    public List<Path> chooseFilesToOpen() {
+        val fd = new FileDialog(this.parent, "Open...", FileDialog.LOAD);
+        fd.setMultipleMode(SINGLE_FILE_SELECTION);
+        fd.setDirectory(UserPrefs.dir().toString());
+        fd.setVisible(true);
 
+        val d = parseDir(fd.getDirectory());
+        d.ifPresent(UserPrefs::dir);
 
-    /**
-     * @return
-     * JFileChooser.APPROVE_OPTION
-     * JFileChooser.CANCEL_OPTION
-     * JFileChooser.ERROR_OPTION
-     */
-    public int saveFileDialog() {
-        return new JFileChooser().showSaveDialog(this.parent);
+        val ret = Stream.of(fd.getFiles()).map(File::toPath).toList();
+
+        fd.dispose();
+
+        return ret;
     }
 
+//    public List<Path> chooseFilesToOpenSwing() {
+//        val fd = new JFileChooser(UserPrefs.dir().toFile());
+//        fd.setMultiSelectionEnabled(SINGLE_FILE_SELECTION);
+//
+//        val answer = fd.showOpenDialog(this.parent);
+//
+//        val d = Optional.ofNullable(fd.getCurrentDirectory());
+//        val ret = Stream.of(fd.getSelectedFiles()).map(File::toPath).toList();
+//
+//        d.ifPresent(file -> UserPrefs.dir(file.toPath()));
+//
+//        return ret;
+//    }
 
+    public Optional<Path> saveAsFileDialog(final Optional<Path> pathFile) {
+        val fd = new FileDialog(this.parent, "Save As...", FileDialog.SAVE);
+        if (pathFile.isPresent()) {
+            fd.setFile(pathFile.get().toString());
+        } else {
+            fd.setDirectory(UserPrefs.dir().toString());
+            fd.setFile("");
+        }
+        fd.setVisible(true);
+
+        val d = parseDir(fd.getDirectory());
+        d.ifPresent(UserPrefs::dir);
+
+        Optional<Path> ret = Optional.empty();
+        val f = parseFile(fd.getFile());
+        if (f.isPresent()) {
+            val dOrCurr = d.orElse(Path.of(""));
+            ret = Optional.of(dOrCurr.resolve(f.get()));
+        }
+        return ret;
+    }
 
     public enum QuitOptions {
         SAVE, DISCARD, CANCEL, TIMED_OUT
@@ -54,7 +98,6 @@ public class DialogViews {
     /**
      * @return QuitOptions: SAVE, DISCARD, CANCEL, TIMED_OUT
      */
-    // ***
     public QuitOptions askSaveDiscardCancel() {
         val save = new TimedOptionPane.TimerButton("Save (%ds)");
         val discard = "Discard";
@@ -63,7 +106,7 @@ public class DialogViews {
 
         val answer = TimedOptionPane.showTimedOptionDialog(
             TIMEOUT_SECONDS, this.parent, "Save?", "Quitting",
-            YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, null, options, save);
+            YES_NO_CANCEL_OPTION, QUESTION_MESSAGE, /*TODO icons*/null, options, save);
 
         final QuitOptions ret;
         if (answer == save) {
@@ -74,6 +117,28 @@ public class DialogViews {
             ret = QuitOptions.CANCEL;
         } else {
             ret = QuitOptions.TIMED_OUT;
+        }
+        return ret;
+    }
+
+
+
+    private static Optional<Path> parseDir(final String dir) {
+        Optional<Path> ret = Optional.empty();
+        if (Objects.nonNull(dir) && !dir.isBlank()) {
+            val p = Path.of(dir.strip());
+            if (Files.isDirectory(p)) {
+                ret = Optional.of(p);
+            }
+        }
+        return ret;
+    }
+
+    private static Optional<Path> parseFile(final String file) {
+        Optional<Path> ret = Optional.empty();
+        if (Objects.nonNull(file) && !file.isBlank() && !file.equals(".") && !file.equals("..")) {
+            val p = Path.of(file.strip());
+            ret = Optional.of(p);
         }
         return ret;
     }

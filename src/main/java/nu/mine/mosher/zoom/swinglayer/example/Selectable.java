@@ -17,38 +17,12 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import javax.swing.event.*;
+import java.awt.geom.*;
 
-/**
- * Use refresh() to facilitate menu state updates.
- * Don't use any other methods in this interface.
- */
-@FunctionalInterface
-public interface MenuRefresher extends MenuListener {
-    /**
-     * Pass result to JMenu.addMenuListener().
-     * Upon menu selection, the lambda will be called.
-     * The lambda is intended to set the menu state appropriately
-     * (enabled/disabled items, etc.)
-     * @param lambda
-     * @return
-     */
-    static MenuRefresher refresh(final Runnable lambda) {
-        return lambda::run;
-    }
-
-    void run();
-
-    @Override
-    default void menuSelected(MenuEvent e) {
-        run();
-    }
-
-    @Override
-    default void menuDeselected(MenuEvent e) {
-    }
-
-    @Override
-    default void menuCanceled(MenuEvent e) {
-    }
+public interface Selectable<T> {
+    void select(T item, boolean select);
+    void setFromRectangle(Rectangle2D.Double r);
+    void move(Point2D.Double delta);
+    void anchor();
+    void clear();
 }

@@ -18,25 +18,22 @@
 package nu.mine.mosher.zoom.swinglayer.example;
 
 
-import static nu.mine.mosher.zoom.swinglayer.example.CommandController.*;
+import static nu.mine.mosher.zoom.swinglayer.example.DocumentController.*;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class KillController {
-    private final QuitController quit;
-    private final CommandController command;
+    private final QuitController controllerQuit;
+    private final DocumentController controllerDocument;
 
-    public KillController(final CommandController command, final QuitController quit) {
-        this.quit = quit;
-        this.command = command;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shuttingDown));
+    public KillController(final DocumentController controllerDocument, final QuitController controllerQuit) {
+        this.controllerQuit = controllerQuit;
+        this.controllerDocument = controllerDocument;
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
     }
 
-    private void shuttingDown() {
-        // TODO can we just check if the model exists and is dirty, instead of "approved"
-        // this means the model would be removed by the quit controller
-        System.out.println("shutting down...");
-        if (!this.quit.approved()) {
-            this.command.save(UNATTENDED);
+    private void onShutdown() {
+        if (!this.controllerQuit.approved()) {
+            this.controllerDocument.close(UNATTENDED);
         }
     }
 }

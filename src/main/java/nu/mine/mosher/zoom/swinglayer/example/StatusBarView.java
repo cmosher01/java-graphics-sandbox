@@ -24,15 +24,15 @@ import java.awt.*;
 public final class StatusBarView extends JPanel {
     private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
 
-    private final StatusBarModel status;
+    private final StatusBarModel model;
     private final JLabel label;
 
-    public StatusBarView(final StatusBarModel status) {
+    public StatusBarView(final StatusBarModel model) {
         super(new BorderLayout());
-        this.status = status;
+        this.model = model;
 
         setBorder(new EmptyBorder(4,14,5,14));
-        setBackground(Solarized.BASE__2_BEIGE_DRK);
+        setBackground(Solarized.BASE__3_BEIGE_BRT);
 
         this.label = new JLabel();
         this.label.setBackground(this.getBackground());
@@ -41,6 +41,6 @@ public final class StatusBarView extends JPanel {
     }
 
     public void refresh() {
-        this.label.setText(this.status.get());
+        this.label.setText(this.model.get());
     }
 }

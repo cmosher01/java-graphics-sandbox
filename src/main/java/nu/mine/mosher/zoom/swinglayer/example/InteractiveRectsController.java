@@ -36,10 +36,9 @@ public class InteractiveRectsController {
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
 
-    public InteractiveRectsController(InteractiveRectsModel model, ZoomPanModel zp) {
+    public InteractiveRectsController(final InteractiveRectsModel model, final ZoomPanModel zp) {
         this.model = model;
         this.zp = zp;
-        zp.setZoomOutMinFromBounds(model.bounds());
     }
 
 
@@ -58,7 +57,7 @@ public class InteractiveRectsController {
 
     public void press() {
         if (has()) {
-            val item = optItem.get();
+            val item = this.optItem.get();
             this.wasSelected = item.selected();
             if (!this.wasSelected) {
                 this.model.selection().select(item, true);
@@ -69,7 +68,8 @@ public class InteractiveRectsController {
     public void drag(final Point2D.Double at) {
         if (has()) {
             val d = Swings.delta(this.optptDragPivot.get(), at);
-            if (d.x != 0 && d.y != 0) {
+//            System.out.printf("drag by (%.1f,%.1f)\n", d.getX(), d.getY());
+            if (d.x != 0 || d.y != 0) {
                 this.model.selection().move(d);
                 if (DYNAMIC_BOUNDS_UPDATING) {
                     this.model.updateBounds();
@@ -83,10 +83,11 @@ public class InteractiveRectsController {
     public void release(final boolean dragged) {
         if (has()) {
             if (dragged) {
+                this.model.selection().anchor();
                 this.model.updateBounds();
                 this.zp.setZoomOutMinFromBounds(this.model.bounds());
             } else if (this.wasSelected) {
-                val item = optItem.get();
+                val item = this.optItem.get();
                 this.model.selection().select(item, false);
             }
             this.optItem = Optional.empty();

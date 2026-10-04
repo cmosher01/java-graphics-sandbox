@@ -17,74 +17,60 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.*;
+import lombok.Setter;
 
-import java.nio.file.Path;
-import java.util.*;
+public class Grid {
+    @Setter
+    private double grid;
+    @Setter
+    private double offset;
+    @Setter
+    private boolean active;
 
-@RequiredArgsConstructor
-public class CommandController {
-    private final FrameView viewFrame;
-    private final MenuView viewMenu;
 
 
-
-    public void newFile() {
+    public Grid() {
+        this(1, 0);
+        this.active = false;
     }
 
-    public void pageSetup() {
+    public Grid(final double grid) {
+        this(grid, 0);
     }
 
-    public void print() {
-    }
-
-    public void print(final List<Path> paths) {
-    }
-
-
-
-    public void undo() {
-        this.viewFrame.refresh();
-        this.viewMenu.refresh();
-    }
-
-    public void redo() {
-        this.viewFrame.refresh();
-        this.viewMenu.refresh();
-    }
-
-    public void cut() {
-    }
-
-    public void copy() {
-    }
-
-    public void paste() {
-    }
-
-    public void delete() {
-    }
-
-    public void selectAll() {
-    }
-
-    public void find() {
-    }
-
-    public void findNext() {
-    }
-
-    public void findPrevious() {
+    public Grid(final double grid, final double offset) {
+        this.grid = grid;
+        this.offset = offset;
+        this.active = true;
     }
 
 
 
-    public void help() {
+    public double snap(final double u) {
+        final double ret;
+        if (this.active) {
+            ret = round(u)*this.grid + this.offset;
+        } else {
+            ret = u;
+        }
+        return ret;
     }
 
-    public void about() {
+
+
+    public void activate() {
+        this.active = true;
     }
 
-    public void preferences() {
+    public void deactivate() {
+        this.active = false;
+    }
+
+
+
+
+
+    private long round(final double u) {
+        return Math.round(Math.rint((u - this.offset) / this.grid));
     }
 }

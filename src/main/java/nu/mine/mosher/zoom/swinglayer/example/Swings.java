@@ -75,4 +75,12 @@ public final class Swings {
     private static int toInt(final double d) {
         return (int)Math.round(Math.rint(d));
     }
+
+    public static Color mix(final Color c1, final Color c2, final double ratio) {
+        final double r = Math.max(0D, Math.min(1D, ratio));
+        final int rd = (int)(r*c1.getRed  () + (1-r)*c2.getRed  ());
+        final int gn = (int)(r*c1.getGreen() + (1-r)*c2.getGreen());
+        final int bl = (int)(r*c1.getBlue () + (1-r)*c2.getBlue ());
+        return new Color(rd, gn, bl);
+    }
 }

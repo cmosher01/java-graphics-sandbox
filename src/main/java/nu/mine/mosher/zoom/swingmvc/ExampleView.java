@@ -18,7 +18,6 @@
 package nu.mine.mosher.zoom.swingmvc;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.example.MenuRefresher;
 
 import java.util.List;
 
@@ -80,9 +79,10 @@ public class ExampleView extends JFrame {
             file.add(this.reset);
             file.addSeparator();
             file.add(this.exit);
-            file.addMenuListener(MenuRefresher.refresh(() -> {
-                this.reset.setEnabled(this.model.get() != 0);
-            }));
+// This doesn't work; menu item state needs to be updated earlier (to support accelerator keys):
+//            file.addMenuListener(MenuRefresher.refresh(() -> {
+//                this.reset.setEnabled(this.model.get() != 0);
+//            }));
         }
 
         val mb = new JMenuBar();

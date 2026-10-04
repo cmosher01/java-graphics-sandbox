@@ -23,9 +23,9 @@ import java.awt.geom.Point2D;
 
 
 @RequiredArgsConstructor
-public class DragSelectionController {
+public class DragSelectionController<T> {
     private final DragSelectionModel model;
-    private final InteractiveRectsModel modelItems;
+    private final Selectable<T> selectable;
     private final ZoomPanModel zp;
 
 
@@ -40,7 +40,7 @@ public class DragSelectionController {
         this.ptCurr = at;
 
         this.model.set(this.ptOrig, this.ptCurr);
-        this.modelItems.selection().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+        this.selectable.setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
     }
 
     public void drag(final Point2D.Double at) {
@@ -48,7 +48,7 @@ public class DragSelectionController {
             this.ptCurr = at;
 
             this.model.set(this.ptOrig, this.ptCurr);
-            this.modelItems.selection().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+            this.selectable.setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
         }
     }
 

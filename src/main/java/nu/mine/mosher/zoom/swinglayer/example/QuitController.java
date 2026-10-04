@@ -22,21 +22,21 @@ import java.awt.desktop.QuitResponse;
 import java.awt.event.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static nu.mine.mosher.zoom.swinglayer.example.CommandController.*;
+import static nu.mine.mosher.zoom.swinglayer.example.DocumentController.*;
 import static nu.mine.mosher.zoom.swinglayer.example.DialogViews.QuitOptions.*;
 
 
 public class QuitController {
-    private final CommandController command;
+    private final DocumentController controllerDocument;
     private final FrameView view;
-    private final InteractiveRectsModel model;
+    private final DocumentModel model;
     private final StatusBarController controllerStatusBar;
 
     private final AtomicBoolean approved = new AtomicBoolean();
 
 
-    public QuitController(final CommandController command, final FrameView view, final InteractiveRectsModel model, StatusBarController controllerStatusBar) {
-        this.command = command;
+    public QuitController(final DocumentController controllerDocument, final FrameView view, final DocumentModel model, StatusBarController controllerStatusBar) {
+        this.controllerDocument = controllerDocument;
         this.view = view;
         this.model = model;
         this.controllerStatusBar = controllerStatusBar;
@@ -89,7 +89,7 @@ public class QuitController {
             this.view.dispose(); // terminates EDT (and therefore the application)
         } else {
             final DialogViews.QuitOptions answer;
-            if (this.model.isDirty()) {
+            if (this.model.isModified()) {
                 answer = this.view.dialogs().askSaveDiscardCancel();
             } else {
                 answer = DISCARD;
@@ -98,14 +98,22 @@ public class QuitController {
             if (answer == CANCEL) {
                 r.cancelQuit();
             } else {
+                boolean ok;
                 if (answer == SAVE) {
-                    this.command.save(ATTENDED);
+                    ok = this.controllerDocument.close(ATTENDED);
                 } else if (answer == TIMED_OUT) {
-                    this.command.save(UNATTENDED);
+                    ok = this.controllerDocument.close(UNATTENDED);
+                } else { // if (answer == DISCARD)
+                    ok = true;
                 }
 
-                this.approved.set(true);
-                r.performQuit();
+                if (ok) {
+                    this.approved.set(true);
+                    r.performQuit();
+                } else {
+                    r.cancelQuit();
+
+                }
             }
         }
     }

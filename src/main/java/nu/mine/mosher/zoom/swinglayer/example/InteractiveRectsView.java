@@ -24,25 +24,24 @@ import java.util.ArrayList;
 import static nu.mine.mosher.zoom.swinglayer.example.Solarized.*;
 
 public class InteractiveRectsView {
-    private final InteractiveRectsModel model;
-    private final ZoomPanModel modelZoomPan;
-    private final ArrayList<InteractiveRectView> views = new ArrayList<>();
-
     private static final boolean BOUNDS_FILL = true;
-    private static final Color BOUNDS_FILL_COLOR = BASE__3_BEIGE_BRT;
+    private static final Color BOUNDS_FILL_COLOR = BASE__2_BEIGE_DRK;
 
     private static final boolean BOUNDS_DRAW = true;
     private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
-//    private static final Stroke BOUNDS_DRAW_STROKE = Swings.simpleStroke(100);
-    private static final Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
+    private static final Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
 
 
 
-    public InteractiveRectsView(final InteractiveRectsModel model, ZoomPanModel modelZoomPan) {
+    private final InteractiveRectsModel model;
+    private final ArrayList<InteractiveRectView> views = new ArrayList<>();
+    private final ZoomPanModel modelZoomPan;
+
+    public InteractiveRectsView(final InteractiveRectsModel model, final ZoomPanModel modelZoomPan) {
         this.model = model;
         this.modelZoomPan = modelZoomPan;
-        this.model.sqs().forEach(modelRect -> this.views.add(new InteractiveRectView(modelRect, modelZoomPan)));
     }
+
 
 
     public void paintBackground(final Graphics2D g) {
@@ -60,9 +59,15 @@ public class InteractiveRectsView {
 
     public void paint(final Graphics2D g, final Rectangle2D clip) {
         this.views.forEach(sq -> {
-            if (sq.model().intersects(clip)) {
+            if (sq.model().rect().intersects(clip)) {
                 sq.paint(g);
             }
         });
+    }
+
+    public void refresh() {
+        this.views.clear();
+        this.model.sqs().forEach(modelRect ->
+            this.views.add(new InteractiveRectView(modelRect, this.modelZoomPan)));
     }
 }

@@ -24,10 +24,24 @@ import lombok.*;
 
 import java.util.List;
 
+import static java.lang.Boolean.*;
+
 public class FamilyTreeXyEditor {
+    private static final String TITLE = "Family Tree XY Editor";
+
     @SneakyThrows
     public static void main(final String... args) {
+        preSwingSetup();
         val application = new FamilyTreeXyEditorApplication();
         application.run(List.of(args));
+    }
+
+    private static void preSwingSetup() {
+        System.setProperty("apple.awt.application.name", TITLE);
+        System.setProperty("sun.awt.noerasebackground", TRUE.toString());
+        System.setProperty("swing.boldMetal", FALSE.toString());
+        System.setProperty("sun.java2d.opengl", TRUE.toString());
+        System.setProperty("apple.laf.useScreenMenuBar", TRUE.toString());
+        System.setProperty("com.apple.macos.useScreenMenuBar", TRUE.toString());
     }
 }

@@ -24,62 +24,52 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
-
 public class FamilyTreeXyEditorApplication {
-    private static final String TITLE = "Family Tree XY Editor";
-
-    public void run(final List<String> args) throws InterruptedException, InvocationTargetException {
-        preSwingSetup();
+    public void run(final @NonNull List<String> args) throws InterruptedException, InvocationTargetException {
         SwingUtilities.invokeAndWait(() -> mainMvc(args));
     }
 
-    private void mainMvc(final List<String> args) {
+    private void mainMvc(final @NonNull List<String> args) {
         postSwingSetup();
 
         // MODEL
         val modelCommandLineArgs = new CommandLineArgsModel(args);
         val modelZoomPan = new ZoomPanModel();
-        val modelInteractiveRects = new InteractiveRectsModel();
-        val modelDragSelection = new DragSelectionModel();
-        val modelDataBase = new DatabaseModel();
         val modelStatusBar = new StatusBarModel(modelZoomPan);
+        val modelDragSelection = new DragSelectionModel();
+        val modelInteractiveRects = new InteractiveRectsModel();
+        val modelDocument = new DocumentModel(modelInteractiveRects);
 
         // VIEW
-        val viewMenu = new MenuView();
         val viewMouse = new MouseView();
+        val viewStatusBar = new StatusBarView(modelStatusBar);
         val viewAxes = new AxesView(modelZoomPan);
         val viewZoomPan = new ZoomPanView(modelZoomPan);
         val viewInteractiveRects = new InteractiveRectsView(modelInteractiveRects, modelZoomPan);
         val viewDragSelection = new DragSelectionView(modelDragSelection);
-        val viewMain = new MainView(modelZoomPan, viewZoomPan, viewInteractiveRects, viewDragSelection, viewAxes);
-        val viewStatusBar = new StatusBarView(modelStatusBar);
-        val viewFrame = new FrameView(TITLE, viewMenu, viewMouse, viewMain, viewStatusBar);
+        val viewMain = new MainView(modelZoomPan, viewZoomPan, modelInteractiveRects, viewInteractiveRects, viewDragSelection, viewAxes);
+        val viewMenu = new MenuView(modelDocument);
+        val viewFrame = new FrameView(modelDocument, viewMenu, viewMouse, viewMain, viewStatusBar);
 
         // CONTROLLER
         val controllerZoomPan = new ZoomPanMouseController(modelZoomPan);
         val controllerInteractiveRects = new InteractiveRectsController(modelInteractiveRects, modelZoomPan);
-        val controllerDragSelection = new DragSelectionController(modelDragSelection, modelInteractiveRects, modelZoomPan);
-        val controllerCommands = new CommandController(modelDataBase);
+        val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelInteractiveRects.selection(), modelZoomPan);
         val controllerStatusBar = new StatusBarController(modelStatusBar, viewStatusBar, viewMain);
-        val controllerQuit = new QuitController(controllerCommands, viewFrame, modelInteractiveRects, controllerStatusBar);
-        val controllerKill = new KillController(controllerCommands, controllerQuit);
-        val controllerDesktop = new DesktopController(controllerCommands, controllerQuit);
-        val controllerMenu = new MenuController(viewMenu, controllerCommands, controllerQuit);
-        val controllerMouse = new MouseController(viewMouse, viewMain, viewStatusBar, modelZoomPan, controllerZoomPan, modelStatusBar, controllerInteractiveRects, controllerDragSelection);
+        val controllerCommands = new CommandController(viewFrame, viewMenu);
+        val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewInteractiveRects);
+        val controllerQuit = new QuitController(controllerDocument, viewFrame, modelDocument, controllerStatusBar);
+        val controllerKill = new KillController(controllerDocument, controllerQuit);
+        val controllerDesktop = new DesktopController(controllerCommands, controllerDocument, controllerQuit);
+        val controllerMenu = new MenuController(viewMenu, controllerDocument, controllerCommands, controllerQuit);
+        val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPan, modelStatusBar, controllerInteractiveRects, controllerDragSelection);
 
         viewFrame.display();
     }
 
 
 
-    private static void preSwingSetup() {
-        System.setProperty("apple.awt.application.name", TITLE);
-        System.setProperty("sun.awt.noerasebackground", "true");
-        System.setProperty("swing.boldMetal", "false");
-        System.setProperty("sun.java2d.opengl", "true");
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-    }
+
 
     @SneakyThrows
     private static void postSwingSetup() {

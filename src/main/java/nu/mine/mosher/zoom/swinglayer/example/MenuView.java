@@ -28,6 +28,8 @@ import static nu.mine.mosher.zoom.swinglayer.example.MenuAccelerators.*;
 
 
 public class MenuView extends JMenuBar {
+    private static final String APP_NAME = System.getProperty("apple.awt.application.name", "");
+
     @SuppressWarnings("UnnecessaryUnicodeEscape")
     // ellipsis, "dot dot dot"
     private static final String DDD = Character.toString(0x2026);
@@ -41,7 +43,7 @@ public class MenuView extends JMenuBar {
     private static final String CMD_SAVE_AS = "Save As"+DDD;
     private static final String CMD_PAGE_SETUP = "Page Setup";
     private static final String CMD_PRINT = "Print"+DDD;
-    private static final String CMD_QUIT = "Quit";
+    private static final String CMD_QUIT = "Quit "+APP_NAME;
 
     private static final String MENU_EDIT = "Edit";
     private static final String CMD_UNDO = "Undo";
@@ -58,7 +60,7 @@ public class MenuView extends JMenuBar {
 
     private static final String MENU_HELP = "Help";
     private static final String CMD_HELP = "Help";
-    private static final String CMD_ABOUT = "About";
+    private static final String CMD_ABOUT = "About "+APP_NAME;
 
 
 
@@ -86,38 +88,36 @@ public class MenuView extends JMenuBar {
 
 
 
-    public MenuView(/*final InteractiveRectsModel.Immutable model*/) {
+    private final DocumentModel modelDocument;
+
+
+
+    public MenuView(final DocumentModel modelDocument) {
+        this.modelDocument = modelDocument;
+
         val menuFile = new JMenu(MENU_FILE);
-        menuFile.add(this.actNew.menu());
+//        menuFile.add(this.actNew.menu());
         menuFile.add(this.actOpen.menu());
         menuFile.addSeparator();
         menuFile.add(this.actClose.menu());
         menuFile.addSeparator();
         menuFile.add(this.actSave.menu());
         menuFile.add(this.actSaveAs.menu());
-        menuFile.addSeparator();
-        menuFile.add(this.actPageSetup.menu());
-        menuFile.add(this.actPrint.menu());
+//        menuFile.addSeparator();
+//        menuFile.add(this.actPageSetup.menu());
+//        menuFile.add(this.actPrint.menu());
         menuFile.addSeparator();
         menuFile.add(this.actQuit.menu());
-
-        menuFile.addMenuListener(MenuRefresher.refresh(() -> {
-//            this.actSave.setEnabled(this.model.isDirty());
-            this.actNew.setEnabled(false);
-        }));
-
         add(menuFile);
-
-
 
         val menuEdit = new JMenu(MENU_EDIT);
         menuEdit.add(this.actUndo.menu());
         menuEdit.add(this.actRedo.menu());
         menuEdit.addSeparator();
-        menuEdit.add(this.actCut.menu());
-        menuEdit.add(this.actCopy.menu());
-        menuEdit.add(this.actPaste.menu());
-        menuEdit.add(this.actDelete.menu());
+//        menuEdit.add(this.actCut.menu());
+//        menuEdit.add(this.actCopy.menu());
+//        menuEdit.add(this.actPaste.menu());
+//        menuEdit.add(this.actDelete.menu());
         menuEdit.add(this.actSelectAll.menu());
         menuEdit.addSeparator();
         menuEdit.add(this.actFind.menu());
@@ -125,30 +125,29 @@ public class MenuView extends JMenuBar {
         menuEdit.add(this.actFindPrevious.menu());
         menuEdit.addSeparator();
         menuEdit.add(this.actPreferences.menu());
-
-        menuEdit.addMenuListener(MenuRefresher.refresh(() -> {
-        }));
-
         add(menuEdit);
-
-
 
         val menuHelp = new JMenu(MENU_HELP);
         menuHelp.add(this.actHelp.menu());
         menuHelp.addSeparator();
         menuHelp.add(this.actAbout.menu());
-
-        menuHelp.addMenuListener(MenuRefresher.refresh(() -> {
-        }));
-
         add(menuHelp);
     }
 
 
 
-    public void setNew(final Runnable lambda) {
-        this.actNew.setAction(lambda);
+    public void refresh() {
+        this.actOpen.setEnabled(!this.modelDocument.isOpen());
+        this.actClose.setEnabled(this.modelDocument.isOpen());
+        this.actSave.setEnabled(this.modelDocument.isOpen());
+        this.actSaveAs.setEnabled(this.modelDocument.isOpen());
     }
+
+
+
+//    public void setNew(final Runnable lambda) {
+//        this.actNew.setAction(lambda);
+//    }
     public void setOpen(final Runnable lambda) {
         this.actOpen.setAction(lambda);
     }
@@ -161,12 +160,12 @@ public class MenuView extends JMenuBar {
     public void setSaveAs(final Runnable lambda) {
         this.actSaveAs.setAction(lambda);
     }
-    public void setPageSetup(final Runnable lambda) {
-        this.actPageSetup.setAction(lambda);
-    }
-    public void setPrint(final Runnable lambda) {
-        this.actPrint.setAction(lambda);
-    }
+//    public void setPageSetup(final Runnable lambda) {
+//        this.actPageSetup.setAction(lambda);
+//    }
+//    public void setPrint(final Runnable lambda) {
+//        this.actPrint.setAction(lambda);
+//    }
     public void setQuit(final Runnable lambda) {
         this.actQuit.setAction(lambda);
     }
@@ -176,18 +175,18 @@ public class MenuView extends JMenuBar {
     public void setRedo(final Runnable lambda) {
         this.actRedo.setAction(lambda);
     }
-    public void setCut(final Runnable lambda) {
-        this.actCut.setAction(lambda);
-    }
-    public void setCopy(final Runnable lambda) {
-        this.actCopy.setAction(lambda);
-    }
-    public void setPaste(final Runnable lambda) {
-        this.actPaste.setAction(lambda);
-    }
-    public void setDelete(final Runnable lambda) {
-        this.actDelete.setAction(lambda);
-    }
+//    public void setCut(final Runnable lambda) {
+//        this.actCut.setAction(lambda);
+//    }
+//    public void setCopy(final Runnable lambda) {
+//        this.actCopy.setAction(lambda);
+//    }
+//    public void setPaste(final Runnable lambda) {
+//        this.actPaste.setAction(lambda);
+//    }
+//    public void setDelete(final Runnable lambda) {
+//        this.actDelete.setAction(lambda);
+//    }
     public void setSelectAll(final Runnable lambda) {
         this.actSelectAll.setAction(lambda);
     }

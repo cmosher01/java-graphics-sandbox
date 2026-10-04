@@ -32,10 +32,11 @@ public class FrameView extends JFrame {
     private static final Component CENTER_ON_SCREEN = null;
     private static final Toolkit TK = Toolkit.getDefaultToolkit();
 
+    private final DocumentModel modelDocument;
     private final DialogViews dialogs = new DialogViews(this);
 
-    public FrameView(final String title, final MenuView viewMenu, final MouseView viewMouse, final MainView viewMain, final StatusBarView viewStatusBar) {
-        super(title);
+    public FrameView(final DocumentModel modelDocument, final MenuView viewMenu, final MouseView viewMouse, final MainView viewMain, final StatusBarView viewStatusBar) {
+        this.modelDocument = modelDocument;
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
@@ -49,6 +50,7 @@ public class FrameView extends JFrame {
         getContentPane().add(compose(viewMouse, viewMain), CENTER);
         getContentPane().add(viewStatusBar, PAGE_END);
 
+        refresh();
 
         if (DEBUG_GREEN_BACKGROUND) {
             setBackground(Solarized.GREEN);
@@ -65,6 +67,10 @@ public class FrameView extends JFrame {
 
     public void display() {
         setVisible(true);
+    }
+
+    public void refresh() {
+        setTitle(this.modelDocument.getTitle());
     }
 
     public DialogViews dialogs() {

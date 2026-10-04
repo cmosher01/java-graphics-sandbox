@@ -22,6 +22,8 @@ import java.awt.geom.*;
 public class DragSelectionModel {
     private final Rectangle2D.Double bounds = new Rectangle2D.Double();
 
+
+
     public boolean selecting() {
         return !this.bounds.isEmpty();
     }
@@ -32,15 +34,21 @@ public class DragSelectionModel {
 
     public void set(final Point2D a, final Point2D b) {
         this.bounds.setFrameFromDiagonal(a, b);
+        forceNonEmpty();
+    }
+
+    public void clear() {
+        this.bounds.setRect( 0, 0, 0, 0);
+    }
+
+
+
+    private void forceNonEmpty() {
         if (this.bounds.width <= 0D) {
             this.bounds.width = 1D;
         }
         if (this.bounds.height <= 0D) {
             this.bounds.height = 1D;
         }
-    }
-
-    public void clear() {
-        this.bounds.setRect( 0, 0, 0, 0);
     }
 }

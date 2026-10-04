@@ -19,13 +19,39 @@ package nu.mine.mosher.zoom.swinglayer.example;
 
 import java.awt.geom.*;
 
-public class InteractiveRectModel extends Rectangle2D.Double {
+public class InteractiveRectModel {
+    public static final double ITEM_WIDTH = 60.0D;
+    public static final double ITEM_HEIGHT = 30.0D;
+
+    private final double w;
+    private final double h;
     private final String tag;
+
+    private final Grid grid;
+    private final DocumentModel modelDocument;
+
+    private double xOrg;
+    private double yOrg;
+    private double xRaw;
+    private double yRaw;
+    private double xCur;
+    private double yCur;
+
     private boolean selected;
 
-    public InteractiveRectModel(final double x, final double y, final double width, final double height, final String tag) {
-        super(x, y, width, height);
+
+
+    public InteractiveRectModel(final double x, final double y, final String tag, final DocumentModel modelDocument, final Grid grid) {
+        this.w = ITEM_WIDTH;
+        this.h = ITEM_HEIGHT;
         this.tag = tag;
+        this.grid = grid;
+        this.modelDocument = modelDocument;
+
+        this.xCur = x;
+        this.yCur = y;
+        anchor();
+        flip();
     }
 
     public String tag() {
@@ -41,7 +67,36 @@ public class InteractiveRectModel extends Rectangle2D.Double {
     }
 
     public void move(final Point2D.Double d) {
-        this.x += d.getX();
-        this.y += d.getY();
+        this.xRaw += d.getX();
+        this.yRaw += d.getY();
+        this.xCur = this.grid.snap(this.xRaw);
+        this.yCur = this.grid.snap(this.yRaw);
+        setDocumentModificationState();
+    }
+
+    private void setDocumentModificationState() {
+        if (isModified()) {
+            this.modelDocument.setModified();
+        } else {
+            this.modelDocument.refreshModified();
+        }
+    }
+
+    public boolean isModified() {
+        return this.xCur != this.xOrg || this.yCur != this.yOrg;
+    }
+
+    public void anchor() {
+        this.xRaw = this.xCur;
+        this.yRaw = this.yCur;
+    }
+
+    public void flip() {
+        this.xOrg = this.xCur;
+        this.yOrg = this.yCur;
+    }
+
+    public Rectangle2D.Double rect() {
+        return new Rectangle2D.Double(this.xCur, this.yCur, this.w, this.h);
     }
 }

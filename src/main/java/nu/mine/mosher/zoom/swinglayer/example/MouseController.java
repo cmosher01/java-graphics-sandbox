@@ -116,12 +116,13 @@ public class MouseController {
     public MouseController(
         final MouseView viewMouse,
         final MainView viewMain,
+        final FrameView viewFrame,
         final StatusBarView viewStatusBar,
         final ZoomPanModel modelZoomPan,
         final ZoomPanMouseController controllerZoomPan,
         final StatusBarModel modelStatus,
         final InteractiveRectsController controllerRects,
-        final DragSelectionController controllerDragSelection) {
+        final DragSelectionController<InteractiveRectModel> controllerDragSelection) {
         val mouse = new MouseAdapter() {
             private boolean dragged;
 
@@ -162,6 +163,7 @@ public class MouseController {
                 } else if (controllerRects.has()) {
                     val cnvAt = modelZoomPan.viewportToCanvas(at);
                     controllerRects.drag(cnvAt);
+                    viewFrame.refresh();
                 } else {
                     controllerZoomPan.drag(at);
                 }
@@ -263,7 +265,7 @@ public class MouseController {
 
     private static Point2D.Double clipPoint(final Point p, final JComponent view) {
         return new Point2D.Double(
-            Math.clamp(p.x, 1, view.getWidth()-1),
-            Math.clamp(p.y, 1, view.getHeight()-1));
+            Math.clamp(p.x, 0, view.getWidth()),
+            Math.clamp(p.y, 0, view.getHeight()));
     }
 }

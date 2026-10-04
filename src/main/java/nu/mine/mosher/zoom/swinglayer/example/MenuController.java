@@ -22,27 +22,27 @@ package nu.mine.mosher.zoom.swinglayer.example;
  * in order to forward them to the command controller
  */
 public class MenuController {
-    public MenuController(final MenuView view, final CommandController command, final QuitController quit) {
-        view.setNew(command::newFile);
-        view.setOpen(command::open);
-        view.setClose(command::close);
-        view.setSave(command::save);
-        view.setSaveAs(command::saveAs);
-        view.setPageSetup(command::pageSetup);
-        view.setPrint(command::print);
-        view.setQuit(quit::quit);
-        view.setUndo(command::undo);
-        view.setRedo(command::redo);
-        view.setCut(command::cut);
-        view.setCopy(command::copy);
-        view.setPaste(command::paste);
-        view.setDelete(command::delete);
-        view.setSelectAll(command::selectAll);
-        view.setFind(command::find);
-        view.setFindNext(command::findNext);
-        view.setFindPrevious(command::findPrevious);
-        view.setPreferences(command::preferences);
-        view.setHelp(command::help);
-        view.setAbout(command::about);
+    public MenuController(final MenuView view, final DocumentController controllerDocument, final CommandController controllerCommand, final QuitController controllerQuit) {
+//        view.setNew(controllerCommand::newFile);
+        view.setOpen(controllerDocument::open);
+        view.setClose(controllerDocument::close);
+        view.setSave(controllerDocument::save);
+        view.setSaveAs(controllerDocument::saveAs);
+//        view.setPageSetup(controllerCommand::pageSetup);
+//        view.setPrint(controllerCommand::print);
+        view.setQuit(controllerQuit::quit);
+        view.setUndo(controllerCommand::undo);
+        view.setRedo(controllerCommand::redo);
+//        view.setCut(controllerCommand::cut);
+//        view.setCopy(controllerCommand::copy);
+//        view.setPaste(controllerCommand::paste);
+//        view.setDelete(controllerCommand::delete);
+        view.setSelectAll(controllerCommand::selectAll);
+        view.setFind(controllerCommand::find);
+        view.setFindNext(controllerCommand::findNext);
+        view.setFindPrevious(controllerCommand::findPrevious);
+        view.setPreferences(controllerCommand::preferences);
+        view.setHelp(controllerCommand::help);
+        view.setAbout(controllerCommand::about);
     }
 }
