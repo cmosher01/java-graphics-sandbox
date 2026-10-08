@@ -18,7 +18,7 @@
 package nu.mine.mosher.zoom.swinglayer.playground;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.example.Solarized;
+import dev.cmosher01.genealogy.xy.Solarized;
 
 import java.awt.*;
 import java.awt.font.*;

@@ -48,7 +48,7 @@ repositories {
 }
 
 application {
-    mainClass = 'nu.mine.mosher.zoom.swinglayer.example.JavaTutorialSwingPaintDemo4'
+    mainClass = 'dev.cmosher01.genealogy.xy.FamilyTreeXyEditor'
 }
 
 javafx {
@@ -71,6 +71,7 @@ dependencies {
     implementation 'nu.mine.mosher.gedcom:gedcom-lib:latest.release', {
         exclude group: 'nu.mine.mosher.mopper', module: 'mopper'
     }
+
     implementation 'org.locationtech.jts:jts-core:latest.release'
 
     implementation 'org.graphstream:gs-core:latest.release'

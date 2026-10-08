@@ -18,7 +18,7 @@
 package nu.mine.mosher.zoom.swinglayer.playground.oldlayeruizoompan;
 
 import lombok.val;
-import nu.mine.mosher.zoom.swinglayer.example.ZoomPanModel;
+import dev.cmosher01.genealogy.xy.ZoomPanModel;
 
 import javax.swing.*;
 import javax.swing.plaf.LayerUI;
