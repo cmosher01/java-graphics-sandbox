@@ -57,7 +57,7 @@ public class DocumentModel {
     public void open(final @NonNull Path file) throws IOException {
         this.file = Optional.of(file);
         this.filename = new FileName(file.getFileName().toString());
-        this.model.readFrom(file, this);
+        this.model.readFrom(file);
     }
 
     public @NonNull String getTitle() {

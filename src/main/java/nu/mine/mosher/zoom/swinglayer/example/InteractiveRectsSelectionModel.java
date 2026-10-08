@@ -24,7 +24,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class InteractiveRectsSelectionModel implements Selectable<InteractiveRectModel> {
-    private final ArrayList<InteractiveRectModel> sqs;
+    private final ArrayList<InteractiveRectModel> universe;
 
     /**
      * Set of currently selected items. Redundant with InteractiveRectModel::selected property.
@@ -50,7 +50,7 @@ public class InteractiveRectsSelectionModel implements Selectable<InteractiveRec
 
     @Override
     public void setFromRectangle(final Rectangle2D.Double r) {
-        for (val sq : this.sqs.reversed()) {
+        for (val sq : this.universe.reversed()) {
             val hit = sq.rect().intersects(r);
             select(sq, hit);
         }
@@ -64,5 +64,15 @@ public class InteractiveRectsSelectionModel implements Selectable<InteractiveRec
     @Override
     public void anchor() {
         this.selection.forEach(InteractiveRectModel::anchor);
+    }
+
+    @Override
+    public boolean isModified() {
+        for (val sq : this.selection) {
+            if (sq.isModified()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

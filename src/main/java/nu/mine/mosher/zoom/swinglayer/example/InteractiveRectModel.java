@@ -28,7 +28,6 @@ public class InteractiveRectModel {
     private final String tag;
 
     private final Grid grid;
-    private final DocumentModel modelDocument;
 
     private double xOrg;
     private double yOrg;
@@ -41,12 +40,11 @@ public class InteractiveRectModel {
 
 
 
-    public InteractiveRectModel(final double x, final double y, final String tag, final DocumentModel modelDocument, final Grid grid) {
+    public InteractiveRectModel(final double x, final double y, final String tag, final Grid grid) {
         this.w = ITEM_WIDTH;
         this.h = ITEM_HEIGHT;
         this.tag = tag;
         this.grid = grid;
-        this.modelDocument = modelDocument;
 
         this.xCur = x;
         this.yCur = y;
@@ -71,15 +69,6 @@ public class InteractiveRectModel {
         this.yRaw += d.getY();
         this.xCur = this.grid.snap(this.xRaw);
         this.yCur = this.grid.snap(this.yRaw);
-        setDocumentModificationState();
-    }
-
-    private void setDocumentModificationState() {
-        if (isModified()) {
-            this.modelDocument.setModified();
-        } else {
-            this.modelDocument.refreshModified();
-        }
     }
 
     public boolean isModified() {

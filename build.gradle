@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2018-2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2018-2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -35,8 +35,13 @@ java {
 repositories {
     mavenCentral()
     maven {
+        url = uri('https://public:\u0067hp_fya6Kseu3XOBMg2icbg7f1LP6ZFYjj35v4Zj@maven.pkg.github.com/cmosher01/*')
+    }
+    maven {
         url = 'https://artifacts.unidata.ucar.edu/repository/unidata-all'
     }
+
+// extremely unreliable repository:
 //    maven {
 //        url = 'https://maven.scijava.org/repository/releases'
 //    }
@@ -63,8 +68,18 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
+    implementation 'nu.mine.mosher.gedcom:gedcom-lib:latest.release', {
+        exclude group: 'nu.mine.mosher.mopper', module: 'mopper'
+    }
     implementation 'org.locationtech.jts:jts-core:latest.release'
+
+    implementation 'org.graphstream:gs-core:latest.release'
+    implementation 'org.graphstream:gs-ui-swing:latest.release'
+    implementation 'org.neo4j.driver:neo4j-java-driver:latest.release'
+
 //    implementation 'net.imglib2:imglib2:latest.release'
 //    implementation 'net.imglib2:imglib2-ij:latest.release'
 //    implementation 'net.imglib2:imglib2-cache:1.0.0-beta-20'
+
+    implementation 'org.slf4j:slf4j-api:latest.release'
 }

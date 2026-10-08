@@ -53,7 +53,7 @@ public class FamilyTreeXyEditorApplication {
 
         // CONTROLLER
         val controllerZoomPan = new ZoomPanMouseController(modelZoomPan);
-        val controllerInteractiveRects = new InteractiveRectsController(modelInteractiveRects, modelZoomPan);
+        val controllerInteractiveRects = new InteractiveRectsController(modelInteractiveRects, modelZoomPan, modelDocument);
         val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelInteractiveRects.selection(), modelZoomPan);
         val controllerStatusBar = new StatusBarController(modelStatusBar, viewStatusBar, viewMain);
         val controllerCommands = new CommandController(viewFrame, viewMenu);

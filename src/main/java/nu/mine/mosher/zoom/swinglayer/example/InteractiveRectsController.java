@@ -17,12 +17,13 @@
 
 package nu.mine.mosher.zoom.swinglayer.example;
 
-import lombok.val;
+import lombok.*;
 
 import java.awt.geom.Point2D;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+@RequiredArgsConstructor
 public class InteractiveRectsController {
     // slight performance improvement (only slight) by setting this
     // to false, which causes the chart-bounding-rectangle to be updated
@@ -31,15 +32,12 @@ public class InteractiveRectsController {
 
     private final InteractiveRectsModel model;
     private final ZoomPanModel zp;
+    private final DocumentModel modelDocument;
 
     private Optional<InteractiveRectModel> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
 
-    public InteractiveRectsController(final InteractiveRectsModel model, final ZoomPanModel zp) {
-        this.model = model;
-        this.zp = zp;
-    }
 
 
     public boolean want(final Point2D.Double at) {
@@ -71,6 +69,11 @@ public class InteractiveRectsController {
 //            System.out.printf("drag by (%.1f,%.1f)\n", d.getX(), d.getY());
             if (d.x != 0 || d.y != 0) {
                 this.model.selection().move(d);
+                if (this.model.selection().isModified()) {
+                    this.modelDocument.setModified();
+                } else {
+                    this.modelDocument.refreshModified();
+                }
                 if (DYNAMIC_BOUNDS_UPDATING) {
                     this.model.updateBounds();
                     this.zp.setZoomOutMinFromBounds(this.model.bounds());

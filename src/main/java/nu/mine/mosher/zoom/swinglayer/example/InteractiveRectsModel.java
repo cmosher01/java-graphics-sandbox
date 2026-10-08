@@ -49,7 +49,7 @@ public class InteractiveRectsModel {
         return !this.sqs.isEmpty();
     }
 
-    public void readFrom(final Path path, final DocumentModel doc) throws IOException, InputMismatchException {
+    public void readFrom(final Path path) throws IOException, InputMismatchException {
         final Grid grid = new Grid(25,0);
 //        grid.deactivate();// TODO
 
@@ -58,7 +58,7 @@ public class InteractiveRectsModel {
                 val x = in.nextDouble();
                 val y = in.nextDouble();
                 val n = in.nextLine().strip();
-                val item = new InteractiveRectModel(x, y, n, doc, grid);
+                val item = new InteractiveRectModel(x, y, n, grid);
                 this.sqs.add(item);
             }
         }

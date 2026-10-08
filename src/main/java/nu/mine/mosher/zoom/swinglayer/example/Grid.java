@@ -24,7 +24,6 @@ public class Grid {
     private double grid;
     @Setter
     private double offset;
-    @Setter
     private boolean active;
 
 
@@ -49,7 +48,7 @@ public class Grid {
     public double snap(final double u) {
         final double ret;
         if (this.active) {
-            ret = round(u)*this.grid + this.offset;
+            ret = round(u) * this.grid + this.offset;
         } else {
             ret = u;
         }

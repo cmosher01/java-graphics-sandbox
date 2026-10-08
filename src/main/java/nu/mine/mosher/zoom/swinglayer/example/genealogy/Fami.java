@@ -15,15 +15,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
+package nu.mine.mosher.zoom.swinglayer.example.genealogy;
 
-import java.awt.geom.*;
+import java.util.ArrayList;
 
-public interface Selectable<T> {
-    void select(T item, boolean select);
-    void setFromRectangle(Rectangle2D.Double r);
-    void move(Point2D.Double delta);
-    void anchor();
-    void clear();
-    boolean isModified();
+public class Fami {
+    private final ArrayList<Indi> rIndiSpouses = new ArrayList<>(2);
+    private final ArrayList<Indi> rIndiChildren = new ArrayList<>(2);
+
+
+
+    public void addSpouse(final Indi indi) {
+        this.rIndiSpouses.add(indi);
+        indi.addAsSpouseTo(this);
+    }
+
+    public void addChild(final Indi indi) {
+        this.rIndiChildren.add(indi);
+        indi.addAsChildTo(this);
+    }
 }

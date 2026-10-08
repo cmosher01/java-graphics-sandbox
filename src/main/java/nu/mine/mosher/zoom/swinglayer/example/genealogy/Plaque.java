@@ -15,15 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package nu.mine.mosher.zoom.swinglayer.example;
+package nu.mine.mosher.zoom.swinglayer.example.genealogy;
 
-import java.awt.geom.*;
+import lombok.NonNull;
 
-public interface Selectable<T> {
-    void select(T item, boolean select);
-    void setFromRectangle(Rectangle2D.Double r);
-    void move(Point2D.Double delta);
-    void anchor();
-    void clear();
-    boolean isModified();
+public class Plaque {
+    private final @NonNull String name;
+    private final @NonNull String lifespan;
+    private final @NonNull String place;
+
+    public static Plaque create(final @NonNull String name, final @NonNull String lifespan, final @NonNull String place) {
+        return new Plaque(name, lifespan, place);
+    }
+
+    private Plaque(String name, String lifespan, String place) {
+        this.name = name;
+        this.lifespan = lifespan;
+        this.place = place;
+    }
 }
